@@ -1,5 +1,6 @@
 //////////////////////////////////
 // Author: [igrik] 				//
+// Date:   01.12.2017г. 		//
 // Thanks: baratorch, ZVS, MoP	//
 //////////////////////////////////
 
@@ -9,10 +10,17 @@
 #include "..\..\include\HoMM3_Extra.h"
 #include "..\..\include\WogClasses.h"
 
+#include "era.h"
+using namespace Era;
+
+
 Patcher* _P;
 PatcherInstance* _PI;
-PatcherInstance* _HD;
 
+// всё что касается HD мода
+PatcherInstance* _HD;
+_bool_ isHD = false;
+#define hdv(type, name) _P->VarValue<type>((_cstr_)(name))
 
 struct _TXT_;
 _TXT_* txtresWOG;
@@ -30,6 +38,9 @@ _Fnt_* smalfont2;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////// Диалог командира /////////////// /////////////////////////////////////////////////
 
+struct _DlgNPC_;
+#define o_dlgNPC ((_DlgNPC_*)0x28604D8)
+
 _DlgStaticDef_* CommDef;
 _DlgStaticTextPcx8ed_* statbar = NULL;
 bool art_npc_155 = false;
@@ -40,6 +51,7 @@ int time_click;
 int startDlg[3];
 int redraw_Dlg_hero;
 int textNCPHints[] = {29, 30, 31, 32, 33, 36, 37, 38, 39, 43, 44, 45, 50, 51, 57};
+
 
 int __stdcall Y_New_CommanderDlg_Proc(_CustomDlg_* dlg_Npc, _EventMsg_* msg)
 {
@@ -267,6 +279,8 @@ int __stdcall Y_New_CommanderDlg_Proc(_CustomDlg_* dlg_Npc, _EventMsg_* msg)
 
 int Y_New_CommanderDlg_Show(int NHero_id, bool lvl_up, bool is_del_bttn)
 {
+	_DlgNPC_* ZVS_DLG = o_dlgNPC;
+
 	_Npc_* npc = GetNpc(NHero_id);					// структура командира
 
 	if (npc->on == -1 ){ b_MsgBox(Get_ITxt(182, 1), MBX_OK); return 0;}	// командиры отключены
@@ -312,14 +326,14 @@ int Y_New_CommanderDlg_Show(int NHero_id, bool lvl_up, bool is_del_bttn)
 
 	_CustomDlg_* dlg = _CustomDlg_::Create(-1, -1, temp_1, temp_2, DF_SCREENSHOT | DF_SHADOW, Y_New_CommanderDlg_Proc);
 
-	int med_hi = /* o_medfont_Fnt->height*/ 20;
+	int med_hi = medfont2->height;
 
 	// деф командира
 	dlg->custom_data[0] = NHero_id; // передаем номер героя/командира в Dlg_Proc
 	dlg->custom_data[1] = lvl_up;   // передаем повышалка ли в Dlg_Proc
 	sprintf(o_TextBuffer, "%s", *(int*)(0x68295C+4+4*(o_CreatureInfo[npc->type + 174].town)) );
 	dlg->AddItem(_DlgStaticPcx8_::Create(20, 70, 100, 130, 4, /*"CRBKGNEU.pcx"*/ o_TextBuffer )); // фон замка под дефом командира нейтральный (id = 4)
-	dlg->AddItem(CommDef = _DlgStaticDef_::Create(-130, -80, 100, 130, 5, o_CreatureInfo[npc->type + 174].def_name, 0, 0, 0x12)); // шагающий деф командира (id = 5)
+	dlg->AddItem(CommDef = _DlgStaticDef_::Create(-130, -80, 100, 130, 5, o_CreatureInfo[npc->type + 174].def_name, 0, 0, 18)); // шагающий деф командира (id = 5)
 
 	// задник диалога под цвет игрока (id = 1)
 	_DlgStaticPcx8_* fonPcx;
@@ -354,14 +368,12 @@ int Y_New_CommanderDlg_Show(int NHero_id, bool lvl_up, bool is_del_bttn)
 	statbar = _DlgStaticTextPcx8ed_::Create(8, dlg->height -18 -8, dlg->width - 16, 18, "", "smalfont2.fnt", "AdRollvr.pcx", 1, 10, ALIGN_H_CENTER | ALIGN_V_CENTER); // HD_TStat.pcx
 	dlg->AddItem(statbar);
 
-	if (lvl_up)
-		 sprintf(o_TextBuffer, Get_ITxt(195, 1), npc->name, npc->now_level +1);
-	else sprintf(o_TextBuffer, "%s", npc->name);
-	dlg->AddItem(_DlgStaticText_::Create(131, 18, 370, med_hi, o_TextBuffer, "medfont2.fnt", 7, 11, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); // имя командира (id = 11)
-	if (npc->alive){
-		dlg->AddItem(_DlgStaticText_::Create(131, 18, 370, med_hi, txtresWOG->GetString(66), "medfont2.fnt", 27, 11, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); // описание мертв
-		dlg->AddItem(_DlgStaticText_::Create(131, 18, 370, med_hi, txtresWOG->GetString(66), "medfont2.fnt", 27, 11, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));	
+	if ( !(ZVS_DLG->Flags & 1) ){ // текстовые вставки " МЕРТВ!!! "  (id = 8, 9)
+		dlg->AddItem(_DlgStaticText_::Create(131, 20, 370, med_hi, txtresWOG->GetString(66), "medfont2.fnt", 27, 8, ALIGN_H_LEFT  | ALIGN_V_CENTER, 0)); 
+		dlg->AddItem(_DlgStaticText_::Create(131, 20, 370, med_hi, txtresWOG->GetString(66), "medfont2.fnt", 27, 9, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));	
 	}
+	// имя командира (id = 11)
+	dlg->AddItem(_DlgStaticText_::Create(131, 20, 370, med_hi, ZVS_DLG->Name, "medfont2.fnt", 7, 11, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
 
 	// артефакты (id 20...25)
 	// bool art_npc_155 = false;
@@ -1983,9 +1995,9 @@ _int_ __stdcall New_Dlg_ExpaMon_NULL(LoHook* h, HookContext* c)
 	return EXEC_DEFAULT; 
 } 
 
-int __stdcall Y_Dlg_CommanderWoG(HiHook* hook, _Npc_* npc, int is_lvlup, int is_del_bttn, int a4)
+int __stdcall Y_Dlg_CommanderWoG(HiHook* hook, _Npc_* npc, int is_lvlup, int is_del_bttn, int flags)
 {
-	CALL_4(void*, __thiscall, hook->GetDefaultFunc(), npc, is_lvlup, is_del_bttn, a4); 
+	CALL_4(void*, __thiscall, hook->GetDefaultFunc(), npc, is_lvlup, is_del_bttn, flags); 
 
 	startDlg[0] = npc->id;
 	startDlg[1] = is_lvlup;
@@ -2285,17 +2297,18 @@ void __stdcall Y_NewScenarioDlg_Create(HiHook* hook, _NewScenarioDlg_* this_, in
 }
 
 
-char* oVersionERA = "{Game Version:}\n\nHoMM3 ERA 2.7.7 \n (with Wog Native Dialogs)";
+char* oVersionERA = "{Game Version:}\n\nHoMM3 ERA 2.8.0 \n (with Wog Native Dialogs)";
+char* version_dll = "WoG Native Dialogs: 1.1.4";
 
-int __stdcall Y_Dlg_MainMenu_Create(HiHook* hook, _Dlg_* dlg) 
-{
-	int ret = 0;
-	ret = CALL_1(int, __thiscall, hook->GetDefaultFunc(), dlg);
+// int __stdcall Y_Dlg_MainMenu_Create(HiHook* hook, _Dlg_* dlg) 
+// {
+// 	int ret = 0;
+// 	ret = CALL_1(int, __thiscall, hook->GetDefaultFunc(), dlg);
 
-	dlg->AddItem(_DlgStaticText_::Create(4, 576, 200, 20, "HoMM3 ERA 2.7.7", "medfont2.fnt", 7, 545, ALIGN_H_LEFT | ALIGN_V_BOTTOM, 0)); 
+// 	dlg->AddItem(_DlgStaticText_::Create(4, 576, 200, 20, "HoMM3 ERA 2.7.7", "medfont2.fnt", 7, 545, ALIGN_H_LEFT | ALIGN_V_BOTTOM, 0)); 
 
-	return ret;
-}
+// 	return ret;
+// }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2339,7 +2352,7 @@ int __stdcall Y_Hook_MainLoop(LoHook* h, HookContext* c)
 	smalfont2 = _Fnt_::Load("smalfont2.fnt");
 
 	return EXEC_DEFAULT;
-} 
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2352,14 +2365,14 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     switch (ul_reason_for_call)
     {
     case DLL_PROCESS_ATTACH:
+
         if (!plugin_On)
         {
 			plugin_On = 1;    
 
 			_P = GetPatcher();
 			_PI = _P->CreateInstance("WoG_Native_Dialogs"); 
-			char* version_dll = "WoG Native Dialogs v.2.7.7";
-
+						
 			// загружаем HD данные
 			_HD = _P->GetInstance("HD.WoG"); if (_HD) { isHD = true; }
 
@@ -2370,7 +2383,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 			_PI->WriteLoHook(0x4EEAC0, Y_Hook_MainLoop);
 
 			// делаем показ версии игры в главном меню
-			_PI->WriteHiHook(0x4FB930, SPLICE_, EXTENDED_, THISCALL_, Y_Dlg_MainMenu_Create);
+			// _PI->WriteHiHook(0x4FB930, SPLICE_, EXTENDED_, THISCALL_, Y_Dlg_MainMenu_Create);
 
 			// диалог Экспы монстров
 			Y_ChangeBmp_To_DefFrame(); 			
@@ -2379,7 +2392,8 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 			_PI->WriteLoHook(0x724B80, New_Dlg_ExpaMon_Lo_IsBattle);
 			_PI->WriteLoHook(0x723DFF, New_Dlg_ExpaMon_NULL);	
 
-			// диалог командира
+			// диалог командира (старый вызов)
+			// новый пока пишется, но еще не доступен
 			_PI->WriteHiHook(0x76A46E, SPLICE_, EXTENDED_, THISCALL_, Y_Dlg_CommanderWoG);	
 			_PI->WriteLoHook(0x7736EF, Y_DlgNPC_SetResult);
 
@@ -2438,10 +2452,11 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 			_PI->WriteByte(0x754F6A +1, 0x14);
 			_PI->WriteLoHook(0x754E64, Y_WoGCurseDlg_Show);	
 
-// =================================================================================	
+// =================================================================================
+			// подмена сообщения по ПКМ на кнопке Создатели в главном меню	
 			// char* oVersionERA = "{Game Version:}\n\nHoMM3 ERA 2.7.7 \n (with Wog Native Dialogs)";
-			_PI->WriteDword(0x7066E1 +1, *(int*)&oVersionERA); // ENG
-			_PI->WriteDword(0x7066CE +1, *(int*)&oVersionERA); // RUS
+			//_PI->WriteDword(0x7066E1 +1, *(int*)&oVersionERA); // ENG
+			//_PI->WriteDword(0x7066CE +1, *(int*)&oVersionERA); // RUS
 
         }
         break;
