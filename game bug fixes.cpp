@@ -1,0 +1,504 @@
+// #include "stdafx.h"
+#include "..\..\include\homm3.h"
+
+Patcher* _P;
+PatcherInstance* _PI;
+
+// by RoseKavalier ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+int __stdcall AI_split_div0(LoHook *h, HookContext *c)
+{
+    if (c->ebx == 0) // enemy army value of 0?
+        c->ebx = 1; // make it 1 to prevent crash
+    return EXEC_DEFAULT;
+}
+
+// исправление бага посещения банков в которых дают существ 
+// вылет в диалоге присоедиенния монстров
+void __stdcall HH_Show_Hero_Info_Dlg(HiHook *h, int this_hero_id, int a1, int a2)
+{
+	CALL_3(void, __thiscall, h->GetDefaultFunc(), this_hero_id, a1, a2);
+	CALL_4(void, __thiscall, 0x417540, o_AdvMgr, 0, 0, 0); // Mobilize active hero
+}
+
+int __stdcall AI_waterwalk_fly(LoHook *h, HookContext *c)
+{
+    if (c->eax == 0) // no angel wings
+    {
+        _Hero_* hero = (_Hero_ *)(c->esi);
+        if (hero->spell[6] == 0 && hero->spell_level[6] == 0) // this AI hero does not have the means to cast fly (id = 6)
+        {
+            if (hero->spell[7] != 0 || hero->spell_level[7] != 0) // this AI hero has access to waterwalk (id = 7)
+            {
+                if (hero->waterwalk_cast_power == -1) // waterwalk is not cast ~ waterwalk field is *(&hero + 0x116) (see 0x4E6040 Cast_waterwalk function)
+                    c->return_address = 0x430231; // try to cast waterwalk instead (code checks for Boots of Levitation first...)
+                else
+                    c->return_address = 0x430540; // skip procedure
+                return NO_EXEC_DEFAULT;
+            }
+        }
+    }
+    return EXEC_DEFAULT;
+}
+
+int __stdcall AI_TP_cursed_check(LoHook *h, HookContext *c)
+{
+    _Hero_* hero = (_Hero_*)c->esi;
+    if (hero->GetSpecialTerrain() == 0x15) // 0x15 = cursed ground, 0x4E5130: __thiscall GetSpecialTerrain()
+    {
+        c->return_address = 0x56B6F4;
+        return NO_EXEC_DEFAULT;
+    }
+    return EXEC_DEFAULT;
+}
+
+// The Castle's Lighthouse building bonus
+int __stdcall castleOwnerCheck(LoHook *h, HookContext *c)
+{
+   _Town_ *town = (_Town_*)(c->ecx);
+   _Hero_ *hero = *(_Hero_**)(c->ebp - 4); // _Hero_ is stored in temp variable [LOCAL.1]
+
+   if (hero->owner_id == town->owner_id) // normal
+      return EXEC_DEFAULT;
+  
+   c->return_address = 0x4E4D6C; // skip procedure
+   return NO_EXEC_DEFAULT;
+}
+
+int __stdcall EarthquakeBug(LoHook *h, HookContext *c)
+{
+    _BattleStack_ *cre = (_BattleStack_ *)(c->eax - 0x84); // offset is to creature flags
+    if (cre->index_on_side == 0) // if creature is in position 0 (1st on the left), then we don't want it to be flagged 0x200000 aka CANNOT_MOVE aka WAR_MACHINE
+        return NO_EXEC_DEFAULT;
+    return EXEC_DEFAULT;
+}
+
+int __stdcall faerie_button(LoHook *h, HookContext *c)
+{
+    if (c->eax == 15) // item 0xF is spellbook for Faerie Dragon
+    {
+        c->edi = *(int*)0x6A6A00; // "Cast Spell" text ~ taken from 0x46B4FE
+        return NO_EXEC_DEFAULT;
+    }
+    return EXEC_DEFAULT;
+}
+
+int __stdcall faerie_button_RMB(LoHook *h, HookContext *c)
+{
+   if (c->esi == 15)
+   {
+      c->esi = *(int*)0x6A6A00; // "Cast Spell" text ~ taken from 0x46B4FE
+      return NO_EXEC_DEFAULT;
+   }
+   return EXEC_DEFAULT;
+}
+
+// by igrik ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+int __stdcall setActStack(LoHook* h, HookContext* c)
+{
+	_BattleStack_* mon = (_BattleStack_*)(int)(c->esi -656);
+
+	// если выстрелов у катапульты или балисты больше нет
+	// то делаем пропуски передачи хода этим машинам
+	if (mon->creature_id == 145 || mon->creature_id == 146) {
+		if ( mon->creature.shots < 1 ) {
+			c->return_address = 0x464DAD;
+			return NO_EXEC_DEFAULT;
+		}	
+	}
+	// если выстрелов у циклопов больше нет
+	// то забираем флаг "катапульта"
+	if (mon->creature_id == 94 || mon->creature_id == 95) {
+		if ( mon->creature.shots < 1 ) {
+			if ( mon->creature.flags & 32 ) {
+				mon->creature.flags -= 32;
+			}
+		}
+	}
+	return EXEC_DEFAULT;
+} 
+
+// создание инкремента боезапаса при атаке осадных стен "катапульта"
+int __stdcall catapultaShoot(LoHook* h, HookContext* c)
+{
+	_BattleStack_* mon = (_BattleStack_*)c->edi;
+	mon->creature.shots -= 1;
+
+	return EXEC_DEFAULT;
+} 
+
+// запрет на второй выстрел, если боезапас закончился
+// для баллисты и стрелков
+int __stdcall monstreShoot(LoHook* h, HookContext* c)
+{
+	_BattleStack_* mon = (_BattleStack_*)c->esi;
+
+	if (mon->creature.shots < 1) {
+		c->return_address = 0x43FFFC;
+		return NO_EXEC_DEFAULT;		
+	}
+
+	return EXEC_DEFAULT;
+} 
+
+_int_ __stdcall Y_FixBagCreatureGredeOfNeutrals(HiHook* hook, _Army_* army, _int_ creature_id)
+{
+    _int_ count = 0;
+    _int_ i = 0;
+    _int_ crGrade_id = GetCreatureGrade(creature_id);
+    do {
+        if (army->type[i] == creature_id || army->type[i] == crGrade_id) {
+            count += army->count[i];
+        }
+        i++;
+    } while ( i<7 );
+
+    return count;
+}
+
+int __stdcall fixHarpyBinds(LoHook* h, HookContext* c)
+{
+    if (*(int*)(c->ebx + 696)) {
+        c->return_address = 0x478365;
+        return NO_EXEC_DEFAULT;
+    }
+    return EXEC_DEFAULT;
+}
+
+int __stdcall ERM_Fix_EA_E(HiHook* hook, _BattleStack_* stack )
+{
+    int ret = 0;
+    _int32_ spell_duration[81]; // для сохранения длительности заклинаний
+    _int32_ spells_power[81];   // для сохранения силы действия заклинания
+
+    if (stack) {
+        for (int i=0; i<80; i++) {
+            spell_duration[i] = stack->active_spell_duration[i];
+            spells_power[i] = stack->active_spells_power[i];
+
+            if (spell_duration[i] > 0 ) // если заклинание наложено на стек, то сбрасываем его эффект
+                CALL_2(int, __thiscall, 0x444230, stack, i); // ResetSpellFromStack 0x444230
+        }
+    }
+
+    ret = CALL_1(int, __cdecl, hook->GetDefaultFunc(), stack);
+
+    for (int i=0; i<80; i++) {
+        if (spell_duration[i] > 0) { // если заклинание ранее было наложено, то восстанавливаем его
+            CALL_5(int, __thiscall, 0x444610, stack, i, spell_duration[i], spells_power[i], 0); // ApplySpell 0x444610
+        }
+    }
+
+    return ret;
+}
+
+// не считать кавалерийский бонус при полете
+_int_ __stdcall Y_AntiKavalierAndFly(LoHook* h, HookContext* c)
+{
+    if ( *(_dword_*)(c->ebx +132) >> 1 & 1 ) { // проверить флаг атакующего на полет
+        c->return_address = 0x4430A3; // обходим расчет кавалерийского бонуса (он всё равно не работает)
+        return NO_EXEC_DEFAULT;
+    }
+    return EXEC_DEFAULT;
+} 
+
+int __stdcall Y_SetCanselWitchHut(HiHook* hook, _Hero_* hero, _int_ skill, _byte_ skill_lvl) 
+{
+	if (o_WndMgr->result_dlg_item_id == DIID_CANCEL) {
+		return 0;
+	}
+
+	return CALL_3(int, __thiscall, hook->GetDefaultFunc(), hero, skill, skill_lvl);
+}
+
+int __stdcall Y_SetCanselScholarlySS(LoHook* h, HookContext* c)
+{
+	int sskill = c->edi;
+	_Hero_* hero = (_Hero_*)c->ebx;
+
+	if (!b_MsgBoxD(o_ADVEVENT_TXT->GetString(116), 2, 20, hero->second_skill[sskill] +3*sskill +2) ) 
+	{
+		if (hero->second_skill[sskill] == 1 ) {
+			hero->second_skill_count -= 1;
+			hero->second_skill_show[sskill] = 0;
+		}
+		hero->second_skill[sskill] -= 1;
+	}
+	c->return_address = 0x4A4B86;
+	return NO_EXEC_DEFAULT;
+}
+
+int __stdcall Y_FixWoG_GetCreatureGrade(LoHook* h, HookContext* c)
+{
+	int ID = *(int*)(c->ebp +8);
+	int mon_id = c->ecx; 
+	int mon_idGr =  *(int*)(0xA49590 +  mon_id*4);
+
+	if (mon_idGr == -2) {
+		return EXEC_DEFAULT;
+	} else if (mon_idGr == -1) {
+		mon_idGr = CALL_1(int, __fastcall, 0x47AAD0, mon_id);
+	}
+
+	int mon_idGr2 = *(int*)(0xA49590 +  mon_idGr*4);
+
+	if (mon_idGr2 == -2) {
+		return EXEC_DEFAULT;
+	} else if (mon_idGr2 == -1) {
+		mon_idGr = CALL_1(int, __fastcall, 0x47AAD0, mon_id);
+	}
+	
+	if (ID == mon_idGr2 ) { c->ecx = mon_idGr; }
+
+	return EXEC_DEFAULT;
+}
+
+_int_ __stdcall Y_FixNewRoundCountInTactics(LoHook* h, HookContext* c)
+{
+	o_BattleMgr->round = -1;
+	return EXEC_DEFAULT;
+}
+
+// исправление созданий WoG'ом корявых пакованых координат
+_dword_ __stdcall Y_WoG_MixedPos_Fix(HiHook* hook, int x, int y, int z)
+{
+	_dword_ xyz = b_pack_xyz(x, y, z);
+	return xyz; 
+}
+
+// исправление созданий WoG'ом корявых разпакованных координат
+void __stdcall Y_WoG_UnMixedPos_Fix(HiHook* hook, _dword_ x, _dword_ y, _dword_ z, _dword_ xyz)
+{
+	*(_dword_*)x = b_unpack_x(xyz);
+	*(_dword_*)y = b_unpack_y(xyz);
+	*(_dword_*)z = b_unpack_z(xyz);
+	return; 
+}
+
+// корректировка WoG ненависти существ
+// добавляем и существ 8-го уровня
+// и убираем ненависти всех элементалей
+_int_ __stdcall Y_SetWogHates(LoHook* h, HookContext* c)
+{
+	int mult = 0; // бонус урона ненависти в процентах
+	int amtype = *(int*)(c->ebp -4);
+	int dmtype = *(int*)(c->ebp -8);
+	 
+	switch(amtype){
+		case 12:  // Ангел
+		case 13:  // Архангел
+		case 150: // Верховный Архангел
+			if(dmtype == 54 || dmtype == 55 || dmtype == 153) mult = 50; break;
+		case 36:  // Джин
+		case 37:  // Мастар Джин
+			if(dmtype == 52 || dmtype == 53) mult = 50; break; 
+		case 41:  // Титан
+		case 152: // Громовержец
+			if(dmtype == 83 || dmtype == 155) mult = 50; break;
+		case 52:  // Ифрит
+		case 53:  // Ифрит Султан
+			if(dmtype == 36 || dmtype == 37) mult = 50; break;
+		case 54:  // Дьявол
+		case 55:  // Архидьявол
+		case 153: // Барон Ада
+			if(dmtype == 12 || dmtype == 13 || dmtype == 150) mult = 50; break;
+		case 83:  // Черный Дракон
+		case 155: // Тёмный Дракон
+			if(dmtype == 41 || dmtype == 152) mult = 50; break;
+		default: break;
+  }
+	// теперь бонус урона нужно занести в EDX
+	c->edx = mult;
+	c->return_address = 0x766EEB;
+	return NO_EXEC_DEFAULT;
+} 
+
+
+void startPlugin(Patcher* _P, PatcherInstance* _PI)
+{
+// by RoseKavalier ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	_PI->WriteLoHook(0x42DDA6, AI_split_div0); // Prevent crash when AI attacks "ghost" hero			
+	_PI->WriteByte(0x49E4EC +1, 99); // работающая кнопка Отмена в Арене
+
+	// ХЗ  что это (возможно операции со стеками)
+	_PI->WriteByte(0x49C021, 183);
+	_PI->WriteByte(0x4A763F, 183);
+	_PI->WriteByte(0x4A9423, 183);
+	_PI->WriteByte(0x4AA82E, 183);
+	_PI->WriteByte(0x4C9662, 183);
+	_PI->WriteByte(0x4FD164, 183);
+	_PI->WriteByte(0x505C9F, 183);
+	_PI->WriteByte(0x52CD36, 183);
+	_PI->WriteJmp(0x5A365D, 0x5A3666);
+	_PI->WriteJmp(0x5A37B9, 0x5A37C2);
+	_PI->WriteJmp(0x464DF1, 0x464DFB);
+	_PI->WriteHexPatch(0x4FD12A, "0F BF 78 24 83 FF FF 0F 84");
+	_PI->WriteHexPatch(0x505C75, "0F BF 77 24 83 FE FF 74");
+	_PI->WriteHexPatch(0x52CD26, "0F BF 7F 24 83 FF FF 74");
+	_PI->WriteHexPatch(0x44AA4F, "90 8B 7C 81 1C");
+	_PI->WriteHexPatch(0x44AA58, "90 89 F8 89 44 B2 1C");
+	_PI->WriteHexPatch(0x42D922, "90 8B 56 1C 89 45 DC 89 55 E4 90");
+	_PI->WriteHexPatch(0x42DA39, "8B 4D E4 90 57 51");
+	_PI->WriteHexPatch(0x42DAD9, "8B 4D E4 90 57 51");
+
+	// исправление бага посещения банков в которых дают существ (вылет в диалоге присоедиенния монстров) © RoseKavalier
+	_PI->WriteHiHook(0x5D52CA, CALL_, EXTENDED_, THISCALL_, HH_Show_Hero_Info_Dlg); // alternative 2 - should
+
+	_PI->WriteLoHook(0x56B344, AI_TP_cursed_check);
+	_PI->WriteLoHook(0x43020E, AI_waterwalk_fly);
+
+// by Ben80 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Arrow towers damage bug fix
+    // for cases:
+    // Armorer sec.skill, Stoning of creature, Air shield spell
+    _PI->WriteByte(0x41E3A4, 0x4D);
+    _PI->WriteByte(0x41E4DF, 0x4D);
+    _PI->WriteByte(0x465944, 0x4D);
+
+	// fix Fortress attack and defense bonuses for defended Hero
+    _PI->WriteByte(0x4639FE, 0x77);
+    _PI->WriteByte(0x463A31, 0x76);
+
+	// The Castle's Lighthouse building bonus
+    // is now only applied to the Castle's owner
+    _PI->WriteLoHook(0x4E4D40, castleOwnerCheck);
+
+	// Earthquake Bug will no longer kill creatures and end battle
+    _PI->WriteLoHook(0x465656, EarthquakeBug);
+
+// by igrik ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	// центрирование изображения по ПКМ в городе на иконке найма войск (ранее уходило сильно влево)
+	_PI->WriteHexPatch(0x5D47B3, "0F BF 57 18  8B 4F 24 B8  FF FF FF FF  90");
+
+	// исправить координаты кнопки Сказочных Драконов
+	_PI->WriteDword(0x5F3D9F, 235);  // подложка поз.Y
+	_PI->WriteByte(0x5F3DA4, 21);    // подложка поз.X
+	_PI->WriteDword(0x5F3DF5, 235);  // кнопка   поз.Y
+	_PI->WriteByte(0x5F3DFA, 21);    // кнопка   поз.X
+    _PI->WriteLoHook(0x5F5320, faerie_button);
+    _PI->WriteLoHook(0x5F4C99, faerie_button_RMB);
+
+	// исправление ошибки ERM в командре IF:N1, теперь командра работает 
+	// со всеми локальными, глобальными и отрицательными переменными z, а не только с z1
+	_PI->WriteByte(0x749093, 0xB0);
+	_PI->WriteByte(0x74909C, 0xB0);
+	_PI->WriteByte(0x7490B0, 0xB0);
+	_PI->WriteByte(0x7490B6, 0xB0);
+	_PI->WriteByte(0x7490CD, 0xB0);
+
+	// исправление неправильных иконок героев Инферно (Ксерафакс и Ксерон)
+	_PI->WriteDword(0x79984C, 63);
+	_PI->WriteDword(0x799850, 57);
+
+	// исправление неправильных кнопок
+	// в диалоге таверны
+	_PI->WriteDword(0x5D7ACA, 0x682A24); // iCN6432.def
+	// в диалоге резделения отрядов
+	_PI->WriteDword(0x449A41, 0x682A24); // iCN6432.def
+
+	// исправление бага блока командира, когда защита падала из-за флага "в защите"
+	_PI->WriteCodePatch(0x76E7D7, "%n", 24); // 15 nop 
+	_PI->WriteCodePatch(0x76E80B, "%n", 13); // 13 nop
+	_PI->WriteHexPatch(0x76E7D7, "8B4D 08 C601 01 C641 02 04");	
+
+	// исправление одного из багов Астрального духа
+	// убираем WoG сообщение, которое вызывает непонятную ошибку
+	_PI->WriteHexPatch(0x76D4B3, "EB17");
+
+	// расширяем свитч хинтов колдовства для описаний командиров
+	// и монстров с номером больше 134
+	_PI->WriteHexPatch(0x492A56, "81FF B7000000 90 7747");
+	_PI->WriteDword(0x492A63, *(_int_*)0x44825F);
+
+	// исправление бага палатки, когда на её ходу невозможно убежать или сделать другие действия
+	_PI->WriteByte(0x75C82C, 0xEB);
+	// возможность заходить в гильдию магов без наличия книги и денег у героя-гостя
+	_PI->WriteHexPatch(0x5CEA83, "EB74");
+	_PI->WriteHexPatch(0x5CEACD, "2800");
+
+	// исправление бага с исчезновением стартового героя при переигрывании
+	_PI->WriteByte(0x5029C0, 0xEB);
+
+	// исправления стрельбы при отрицат.боезапасе
+	// при передаче хода стеку
+	_PI->WriteLoHook(0x464D75, setActStack);
+	// при стрельбе по стенам (катапульта, циклопы)
+	_PI->WriteLoHook(0x445CF9, catapultaShoot);	
+	// второй выстрел монстрами
+	_PI->WriteLoHook(0x43FF92, monstreShoot);	
+	// второй выстрел баллистой
+	_PI->WriteLoHook(0x43FFF4, monstreShoot);	
+
+	// Решение бага (еще с SoD) исчезновения улучшенного стека при битве с даунгрейдом нейтралов
+	_PI->WriteHiHook(0x4AC5F5, CALL_, EXTENDED_, THISCALL_, Y_FixBagCreatureGredeOfNeutrals);
+
+	// фикс отлета гарпий, когда после удара они связаны корнями дендроидов
+    _PI->WriteLoHook(0x47835B, fixHarpyBinds);
+
+	// не считать кавалерийский бонус при полете
+	_PI->WriteLoHook(0x44307A, Y_AntiKavalierAndFly);
+
+	// Решение бага Вога, когда в бою накладывается опыт через EA:E и атака, защита, уроны, скорость, боезапасы и т.п. заново пересчитываются.
+	// Из-за этого теряются бонусы наложенных заклинаний (например бонус скорости от ускорения)
+	_PI->WriteHiHook(0x726DE4, CALL_, EXTENDED_, CDECL_, ERM_Fix_EA_E);
+
+	// Делаем кнопку отмены в Хижине Ведьмы 
+	_PI->WriteDword(0x4A7E63 +1, 2);
+	_PI->WriteHiHook(0x4A7E8A, CALL_, EXTENDED_, THISCALL_, Y_SetCanselWitchHut);
+
+	// Делаем кнопку отмены у ученого, предлагающего втор.навык
+	_PI->WriteLoHook(0x4A4AFE, Y_SetCanselScholarlySS);	
+
+	// Решаем проблему когда бонусы специалистов не считаются Супер существам
+	// _PI->WriteHiHook(0x4E64FA, CALL_, EXTENDED_, FASTCALL_, Y_FixWoG_GetCreatureGrade);
+	_PI->WriteLoHook(0x4E64D1, Y_FixWoG_GetCreatureGrade);
+
+	// o_BattleMgr->Round = 1; правка ошибки с номерами раундов SOD.
+	// После тактической фазы первый раунд всегда был = 1
+	// А без тактической фазы первый раунд всегда был = 0
+	// Теперь всегда первый раунд будет = 0
+	_PI->WriteLoHook(0x473E73, Y_FixNewRoundCountInTactics);
+	_PI->WriteLoHook(0x474B79, Y_FixNewRoundCountInTactics);
+	_PI->WriteLoHook(0x4758B3, Y_FixNewRoundCountInTactics);
+
+	// исправление созданий WoG'ом корявых пакованых координат
+	_PI->WriteHiHook(0x711E7F, SPLICE_, EXTENDED_, CDECL_, Y_WoG_MixedPos_Fix);
+	_PI->WriteHiHook(0x711F49, SPLICE_, SAFE_, CDECL_, Y_WoG_UnMixedPos_Fix);
+
+	// корректировка WoG ненависти существ
+	// добавляем и существ 8-го уровня
+	_PI->WriteLoHook(0x766E4E, Y_SetWogHates);
+	
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+BOOL APIENTRY DllMain( HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved )
+{
+    static _bool_ bug_fixes_On = 0;
+    switch (ul_reason_for_call)
+    {
+    case DLL_PROCESS_ATTACH:
+        if (!bug_fixes_On)
+        {
+			bug_fixes_On = 1;    
+
+			_P = GetPatcher();
+			_PI = _P->CreateInstance("ERA_bug_fixes"); 
+
+			startPlugin(_P, _PI);
+
+		}
+        break;
+
+    case DLL_THREAD_ATTACH:
+    case DLL_THREAD_DETACH:
+    case DLL_PROCESS_DETACH:
+        break;
+    }
+    return TRUE;
+}
+
+
