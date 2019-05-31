@@ -178,7 +178,7 @@ int __stdcall Y_New_CommanderDlg_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 
 		if (msg->subtype == MST_LBUTTONDOWN)  // ЛКМ при нажатии
 		{
-			if (dlgNPC->Request) // повышение уровня с выбором навыков
+			if (dlgNPC->Request == 2) // повышение уровня с выбором навыков
 			{ 
 				if ( msg->item_id >= 67 && msg->item_id <= 72 ) 
 				{
@@ -200,7 +200,7 @@ int __stdcall Y_New_CommanderDlg_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 			} else {// !dlgNPC->Request
 				if ( msg->item_id >= 48 && msg->item_id <= 53 ) {
 					int itid = msg->item_id -48;
-					if ( (dlgNPC->Flags & 4) ) { // если можно передавать артефакты
+					if ( (dlgNPC->Flags & 4) && (dlgNPC->Request == 0) ) { // если можно передавать артефакты
 
 						sprintf(o_TextBuffer, "%s\n\n%s", dlgNPC->ArtPopUpTexts[itid], txtresWOG->GetString(79));
 						b_MsgBoxD(o_TextBuffer, MBX_OKCANCEL, 8, (int)dlgNPC->ArtIcons[itid]);
@@ -232,21 +232,23 @@ int __stdcall Y_New_CommanderDlg_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 // 0x76A46E процесс подготовки окна командира тут
 _int_ __stdcall Y_Dlg_NPC_Show(HiHook* hook, _DlgNPC_* dlgNPC)
 {
-	// _Npc_* npc = GetNpc(28);	
-	time_click = 0;
+	time_click = 0; // переменная для дабл_клика
 	_Npc_* npc = GetNpc(dlgNPC->DlgTop);	// структура командира
 	dlgNPC->DlgTop = 0; // теперь её обнуляем и будем хранить данные о том, что при передаче арта герою нужно будет заново вызвать диалог
 
 	// если повышение уровня, то считаем сколько навыков можно изучить
 	// и если навыки все изучены, то неоходимо окно меньшего формата y = 505;
 	if ( dlgNPC->Request ) { // при повышении уровня
-		dlgNPC->Request = 0; // временно сбрасываем
 		for (int i = 0; i < 6; ++i ){ 
 			if ((int)o_dlgNPC->Next[i] < 102) { // 102 - последний кадр в Dlg_NPC2.def, дальше мусор (не считать)
-				dlgNPC->Request = 1; // и восстанавливаем, если есть что повышать из навыков командира
+				dlgNPC->Request = 2; // устанавливаем, что есть что повышать из навыков командира
 			}
 		}
 	}
+
+	// dlgNPC->Request = 0; // НЕ повышение уровня
+	// dlgNPC->Request = 1; // повышение уровня без картинок
+	// dlgNPC->Request = 2; // повышение уровня с картинками
 	
 	int medfontHI = /* medfont2->height*/ 20;
 	int tempVar;
@@ -254,7 +256,7 @@ _int_ __stdcall Y_Dlg_NPC_Show(HiHook* hook, _DlgNPC_* dlgNPC)
 	int x = 634; 
 	int y = 505;
 	char* name_pcx = "Dlg_NPCn.pcx";
-	if (dlgNPC->Request) { 
+	if (dlgNPC->Request == 2) { 
 		y = 600;
 		name_pcx = "Dlg_NPCu.pcx";
 	}
@@ -407,7 +409,7 @@ _int_ __stdcall Y_Dlg_NPC_Show(HiHook* hook, _DlgNPC_* dlgNPC)
 	// возврат -1 = удалит командира
 	dlgNPC->DlgLeft = 0;
 
-	if ( dlgNPC->Request ) { // при повышении уровня
+	if ( dlgNPC->Request == 2 ) { // при повышении уровня c выбором картинок
 		// (id = 66) подсказка выберите навыки для повышения 
 		dlg->AddItem(_DlgStaticText_::Create(133, 422, 366, medfontHI, txtresWOG->GetString(73), "medfont2.fnt", 7, 66, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
 		dlg->AddItem(_DlgStaticDef_::Create(40, 445, 70, 70, 67, "Dlg_NPC2.def", (int)dlgNPC->NextActive[0], 0, 18));
@@ -428,6 +430,7 @@ void __stdcall Y_Dlg_NPC_Prepare(HiHook* hook, _Npc_* npc, int is_lvlup, int btt
 {
 	CALL_4(void, __thiscall, hook->GetDefaultFunc(), npc, is_lvlup, bttn_del, flags);
 	o_dlgNPC->DlgTop = npc->id;
+	o_dlgNPC->Request = is_lvlup;
 
 	return;
 }
