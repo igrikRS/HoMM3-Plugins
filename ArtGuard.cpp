@@ -1,13 +1,13 @@
-// çàùèòà àðòåôàêòîâ îò êðàæè ðÿäîì ñ ìîíñòðàìè
-// àâòîð: igrik
-// äàòà: 07.04.2018
+// Ð·Ð°Ñ‰Ð¸Ñ‚Ð° Ð°Ñ€Ñ‚ÐµÑ„Ð°ÐºÑ‚Ð¾Ð² Ð¾Ñ‚ ÐºÑ€Ð°Ð¶Ð¸ Ñ€ÑÐ´Ð¾Ð¼ Ñ Ð¼Ð¾Ð½ÑÑ‚Ñ€Ð°Ð¼Ð¸
+// Ð°Ð²Ñ‚Ð¾Ñ€: igrik
+// Ð´Ð°Ñ‚Ð°: 07.04.2018
 
 #include "..\..\include\homm3.h"
 
 Patcher* _P;
 PatcherInstance* _PI;
 
-//	ÔÓÍÊÖÈß: åñòü ëè ñòðàæà ðÿäîì ñ îáúåêòîì (âîçâðàùàåò êîîðäèíàòû êëåòêè ñ ìîíñòðàìè)
+//	Ð¤Ð£ÐÐšÐ¦Ð˜Ð¯: ÐµÑÑ‚ÑŒ Ð»Ð¸ ÑÑ‚Ñ€Ð°Ð¶Ð° Ñ€ÑÐ´Ð¾Ð¼ Ñ Ð¾Ð±ÑŠÐµÐºÑ‚Ð¾Ð¼ (Ð²Ð¾Ð·Ð²Ñ€Ð°Ñ‰Ð°ÐµÑ‚ ÐºÐ¾Ð¾Ñ€Ð´Ð¸Ð½Ð°Ñ‚Ñ‹ ÐºÐ»ÐµÑ‚ÐºÐ¸ Ñ Ð¼Ð¾Ð½ÑÑ‚Ñ€Ð°Ð¼Ð¸)
 _int_ isGuardNearTheObject(_AdvMgr_* advMng, _int_ xyz)
 {
 	int xd = b_unpack_x(xyz);
@@ -15,12 +15,12 @@ _int_ isGuardNearTheObject(_AdvMgr_* advMng, _int_ xyz)
 	int z = b_unpack_z(xyz);
 
 	if (!(0x0100 & CALL_3(WORD, __fastcall, 0x4F8040, xd, yd, z)) ) {
-		return 0; // ìîíñòðîâ âîêðóã êëåòêè íåò
+		return 0; // Ð¼Ð¾Ð½ÑÑ‚Ñ€Ð¾Ð² Ð²Ð¾ÐºÑ€ÑƒÐ³ ÐºÐ»ÐµÑ‚ÐºÐ¸ Ð½ÐµÑ‚
 	} 
 
 	int x, y;
 	int size = advMng->map->size;
-	// ðÿä íà óðîâíå àðòà --------------------------------------------------------------------------------------
+	// Ñ€ÑÐ´ Ð½Ð° ÑƒÑ€Ð¾Ð²Ð½Ðµ Ð°Ñ€Ñ‚Ð° --------------------------------------------------------------------------------------
 	x = xd -1; y = yd;
 	if ( x >= 0 && x < size && y >= 0 && y < size) {
 		if (advMng->map->GetItem(x,y,z)->object_type == 54) {
@@ -30,7 +30,7 @@ _int_ isGuardNearTheObject(_AdvMgr_* advMng, _int_ xyz)
 	if ( x >= 0 && x < size && y >= 0 && y < size) {
 		if (advMng->map->GetItem(x,y,z)->object_type == 54) {
 			   return b_pack_xyz(x,y,z); } }
-	// ðÿä íèæå àðòà --------------------------------------------------------------------------------------------
+	// Ñ€ÑÐ´ Ð½Ð¸Ð¶Ðµ Ð°Ñ€Ñ‚Ð° --------------------------------------------------------------------------------------------
 	x = xd -1; y = yd +1;
 	if ( x >= 0 && x < size && y >= 0 && y < size) {
 		if (advMng->map->GetItem(x,y,z)->object_type == 54) {
@@ -46,7 +46,7 @@ _int_ isGuardNearTheObject(_AdvMgr_* advMng, _int_ xyz)
 		if (advMng->map->GetItem(x,y,z)->object_type == 54) {
 			   return b_pack_xyz(x,y,z); } }
 
-	// ðÿä âûøå àðòà --------------------------------------------------------------------------------------------  	
+	// Ñ€ÑÐ´ Ð²Ñ‹ÑˆÐµ Ð°Ñ€Ñ‚Ð° --------------------------------------------------------------------------------------------  	
 	x = xd -1; y = yd -1;
 	if ( x >= 0 && x < size && y >= 0 && y < size) {
 		if (advMng->map->GetItem(x,y,z)->object_type == 54) {
@@ -62,19 +62,19 @@ _int_ isGuardNearTheObject(_AdvMgr_* advMng, _int_ xyz)
 		if (advMng->map->GetItem(x,y,z)->object_type == 54) {
 			   return b_pack_xyz(x,y,z); } }
 	// -----------------------------------------------------------------------------------------------------
-	return 0; // ìîíñòðîâ âîêðóã êëåòêè íåò
+	return 0; // Ð¼Ð¾Ð½ÑÑ‚Ñ€Ð¾Ð² Ð²Ð¾ÐºÑ€ÑƒÐ³ ÐºÐ»ÐµÑ‚ÐºÐ¸ Ð½ÐµÑ‚
 }
 
-// ïðè äâèæåíèè ìûøè íà ÊÏ
+// Ð¿Ñ€Ð¸ Ð´Ð²Ð¸Ð¶ÐµÐ½Ð¸Ð¸ Ð¼Ñ‹ÑˆÐ¸ Ð½Ð° ÐšÐŸ
 _int_ __stdcall Y_GetCursorFrameOnAdvMap(HiHook* hook, _AdvMgr_* advMng, _MapItem_* obj)
 { 
 	switch (obj->object_type) {
-		case 5:		// àðòåôàêò
-		case 6:		// ÿùèê ïîíäîðû
-		case 81:	// ó÷åíûé
-		case 93:	// ñâèòîê ñ çàêëèíàíèÿìè
+		case 5:		// Ð°Ñ€Ñ‚ÐµÑ„Ð°ÐºÑ‚
+		case 6:		// ÑÑ‰Ð¸Ðº Ð¿Ð¾Ð½Ð´Ð¾Ñ€Ñ‹
+		case 81:	// ÑƒÑ‡ÐµÐ½Ñ‹Ð¹
+		case 93:	// ÑÐ²Ð¸Ñ‚Ð¾Ðº Ñ Ð·Ð°ÐºÐ»Ð¸Ð½Ð°Ð½Ð¸ÑÐ¼Ð¸
 			if ( isGuardNearTheObject(advMng, advMng->pack_xyz) ) { 
-				return 5; // âîçâðàùàåì áîåâîé êóðñîð
+				return 5; // Ð²Ð¾Ð·Ð²Ñ€Ð°Ñ‰Ð°ÐµÐ¼ Ð±Ð¾ÐµÐ²Ð¾Ð¹ ÐºÑƒÑ€ÑÐ¾Ñ€
 			}	break;
 
 		default: break;
@@ -84,21 +84,21 @@ _int_ __stdcall Y_GetCursorFrameOnAdvMap(HiHook* hook, _AdvMgr_* advMng, _MapIte
 
 void __stdcall Y_Hero_Enter_To_Object(HiHook* hook, _AdvMgr_* advMng, _Hero_* hero, _MapItem_* obj, _int_ xyz, _int_ isPlayer)
 {
-	int xyz_54 = 0; // èíèöèàëèçàöèè ïåðåìåííîé - êîîðäèíàòû îõðàííèêîâ 
+	int xyz_54 = 0; // Ð¸Ð½Ð¸Ñ†Ð¸Ð°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ð¸ Ð¿ÐµÑ€ÐµÐ¼ÐµÐ½Ð½Ð¾Ð¹ - ÐºÐ¾Ð¾Ñ€Ð´Ð¸Ð½Ð°Ñ‚Ñ‹ Ð¾Ñ…Ñ€Ð°Ð½Ð½Ð¸ÐºÐ¾Ð² 
 
 	switch (obj->object_type) {
-		case 5:		// àðòåôàêò
-		case 6:		// ÿùèê ïîíäîðû
-		case 81:	// ó÷åíûé
-		case 93:	// ñâèòîê ñ çàêëèíàíèÿìè
-			xyz_54 = isGuardNearTheObject(advMng, xyz); // ïðîâåðêà ñòðàæè îáúåêòà â ñîñåäíèõ êëåòêàõ
-			if ( xyz_54 ){  // åñëè ñòðàæà åñòü
-				_MapItem_* obj_54 = advMng->map->GetItem(b_unpack_x(xyz_54), b_unpack_y(xyz_54), b_unpack_z(xyz_54)); // ïîëó÷àåì ñòðóêòóðó îáúåêòà "ñòðàæà"
+		case 5:		// Ð°Ñ€Ñ‚ÐµÑ„Ð°ÐºÑ‚
+		case 6:		// ÑÑ‰Ð¸Ðº Ð¿Ð¾Ð½Ð´Ð¾Ñ€Ñ‹
+		case 81:	// ÑƒÑ‡ÐµÐ½Ñ‹Ð¹
+		case 93:	// ÑÐ²Ð¸Ñ‚Ð¾Ðº Ñ Ð·Ð°ÐºÐ»Ð¸Ð½Ð°Ð½Ð¸ÑÐ¼Ð¸
+			xyz_54 = isGuardNearTheObject(advMng, xyz); // Ð¿Ñ€Ð¾Ð²ÐµÑ€ÐºÐ° ÑÑ‚Ñ€Ð°Ð¶Ð¸ Ð¾Ð±ÑŠÐµÐºÑ‚Ð° Ð² ÑÐ¾ÑÐµÐ´Ð½Ð¸Ñ… ÐºÐ»ÐµÑ‚ÐºÐ°Ñ…
+			if ( xyz_54 ){  // ÐµÑÐ»Ð¸ ÑÑ‚Ñ€Ð°Ð¶Ð° ÐµÑÑ‚ÑŒ
+				_MapItem_* obj_54 = advMng->map->GetItem(b_unpack_x(xyz_54), b_unpack_y(xyz_54), b_unpack_z(xyz_54)); // Ð¿Ð¾Ð»ÑƒÑ‡Ð°ÐµÐ¼ ÑÑ‚Ñ€ÑƒÐºÑ‚ÑƒÑ€Ñƒ Ð¾Ð±ÑŠÐµÐºÑ‚Ð° "ÑÑ‚Ñ€Ð°Ð¶Ð°"
 
 				CALL_5(void, __thiscall, hook->GetDefaultFunc(), advMng, hero, obj_54, xyz_54, isPlayer);
 
-				if (hero->owner_id < 0) {    // åñëè ãåðîé óáèò èëè ñáåæàë (ò.å. íîìåð õîçÿèíà ãåðîÿ ñòàë == -1)
-					return; // âûéòè èç ôóíêöèè ÏÎÑÅÙÅÍÈÅ ÎÁÚÅÊÒÀ
+				if (hero->owner_id < 0) {    // ÐµÑÐ»Ð¸ Ð³ÐµÑ€Ð¾Ð¹ ÑƒÐ±Ð¸Ñ‚ Ð¸Ð»Ð¸ ÑÐ±ÐµÐ¶Ð°Ð» (Ñ‚.Ðµ. Ð½Ð¾Ð¼ÐµÑ€ Ñ…Ð¾Ð·ÑÐ¸Ð½Ð° Ð³ÐµÑ€Ð¾Ñ ÑÑ‚Ð°Ð» == -1)
+					return; // Ð²Ñ‹Ð¹Ñ‚Ð¸ Ð¸Ð· Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¸ ÐŸÐžÐ¡Ð•Ð©Ð•ÐÐ˜Ð• ÐžÐ‘ÐªÐ•ÐšÐ¢Ð
 				}
 			}	break;
 
@@ -126,7 +126,7 @@ BOOL APIENTRY DllMain( HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpRese
 			_PI->WriteHiHook(0x40E97F, CALL_, EXTENDED_, THISCALL_, Y_GetCursorFrameOnAdvMap);
 
 			// _PI->WriteHiHook(0x4A8160, SPLICE_, EXTENDED_, THISCALL_, Y_Hero_Enter_To_Object); 
-			// èç-çà âîãà ïðèõîäèòñÿ ñòàâèòü HiHook EXTENDED_ íà 2 âûçîâà ôóíêöèè
+			// Ð¸Ð·-Ð·Ð° Ð²Ð¾Ð³Ð° Ð¿Ñ€Ð¸Ñ…Ð¾Ð´Ð¸Ñ‚ÑÑ ÑÑ‚Ð°Ð²Ð¸Ñ‚ÑŒ HiHook EXTENDED_ Ð½Ð° 2 Ð²Ñ‹Ð·Ð¾Ð²Ð° Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¸
 			 _PI->WriteHiHook(0x4ACA04, CALL_, EXTENDED_, THISCALL_, Y_Hero_Enter_To_Object); 
 			 _PI->WriteHiHook(0x4AA766, CALL_, EXTENDED_, THISCALL_, Y_Hero_Enter_To_Object); 
 
