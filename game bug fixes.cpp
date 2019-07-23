@@ -13,8 +13,8 @@ int __stdcall AI_split_div0(LoHook *h, HookContext *c)
     return EXEC_DEFAULT;
 }
 
-// исправление бага посещения банков в которых дают существ 
-// вылет в диалоге присоедиения монстров
+// РёСЃРїСЂР°РІР»РµРЅРёРµ Р±Р°РіР° РїРѕСЃРµС‰РµРЅРёСЏ Р±Р°РЅРєРѕРІ РІ РєРѕС‚РѕСЂС‹С… РґР°СЋС‚ СЃСѓС‰РµСЃС‚РІ 
+// РІС‹Р»РµС‚ РІ РґРёР°Р»РѕРіРµ РїСЂРёСЃРѕРµРґРёРµРЅРёСЏ РјРѕРЅСЃС‚СЂРѕРІ
 void __stdcall HH_Show_Hero_Info_Dlg(HiHook *h, int this_hero_id, int a1, int a2)
 {
 	CALL_3(void, __thiscall, h->GetDefaultFunc(), this_hero_id, a1, a2);
@@ -93,61 +93,21 @@ int __stdcall faerie_button_RMB(LoHook *h, HookContext *c)
    return EXEC_DEFAULT;
 }
 
-/* // Admiral's hat bug fix + movement fixes
-int __stdcall mpSeaToGround(LoHook *h, HookContext *c)
-{
-    _Hero_* hero = (_Hero_*)c->esi;
-    disguise = (disguiseStruct*)&hero->disguise;
-
-    if(disguise->groundMaxMP != 65535)
-        c->eax = disguise->groundMaxMP;
-    else
-        disguise->groundMaxMP = c->eax;
-    return EXEC_DEFAULT;
-}
-
-int __stdcall mpGroundToSea(LoHook *h, HookContext *c)
-{
-    _Hero_* hero = (_Hero_*)c->esi;
-    disguise = (disguiseStruct*)&hero->disguise;
-    if(disguise->groundMaxMP != 65535)
-        c->ecx = disguise->groundMaxMP;
-    else
-        disguise->groundMaxMP = *(int*)(c->esi + 0x49);
-    return EXEC_DEFAULT;
-}
-
-int __stdcall killedHeroSeaToGround(LoHook *h, HookContext *c)
-{
-    _Hero_* hero = (_Hero_*)c->esi;
-    int currentMaxLandMovement;
-
-    disguise = (disguiseStruct*)&hero->disguise;
-    if(disguise->groundMaxMP != 65535)
-        currentMaxLandMovement = disguise->groundMaxMP;
-    else
-        currentMaxLandMovement = hero->MaxLandMovement();
-    
-    hero->movement_points = hero->movement_points * currentMaxLandMovement / hero->MaxWaterMovement();
-
-    return EXEC_DEFAULT;
-} */ 
-
 // by igrik ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int __stdcall setActStack(LoHook* h, HookContext* c)
 {
 	_BattleStack_* mon = (_BattleStack_*)(int)(c->esi -656);
 
-	// если выстрелов у катапульты или балисты больше нет
-	// то делаем пропуски передачи хода этим машинам
+	// РµСЃР»Рё РІС‹СЃС‚СЂРµР»РѕРІ Сѓ РєР°С‚Р°РїСѓР»СЊС‚С‹ РёР»Рё Р±Р°Р»РёСЃС‚С‹ Р±РѕР»СЊС€Рµ РЅРµС‚
+	// С‚Рѕ РґРµР»Р°РµРј РїСЂРѕРїСѓСЃРєРё РїРµСЂРµРґР°С‡Рё С…РѕРґР° СЌС‚РёРј РјР°С€РёРЅР°Рј
 	if (mon->creature_id == 145 || mon->creature_id == 146) {
 		if ( mon->creature.shots < 1 ) {
 			c->return_address = 0x464DAD;
 			return NO_EXEC_DEFAULT;
 		}	
 	}
-	// если выстрелов у циклопов больше нет
-	// то забираем флаг "катапульта"
+	// РµСЃР»Рё РІС‹СЃС‚СЂРµР»РѕРІ Сѓ С†РёРєР»РѕРїРѕРІ Р±РѕР»СЊС€Рµ РЅРµС‚
+	// С‚Рѕ Р·Р°Р±РёСЂР°РµРј С„Р»Р°Рі "РєР°С‚Р°РїСѓР»СЊС‚Р°"
 	if (mon->creature_id == 94 || mon->creature_id == 95) {
 		if ( mon->creature.shots < 1 ) {
 			if ( mon->creature.flags & 32 ) {
@@ -158,7 +118,7 @@ int __stdcall setActStack(LoHook* h, HookContext* c)
 	return EXEC_DEFAULT;
 } 
 
-// создание инкремента боезапаса при атаке осадных стен "катапульта"
+// СЃРѕР·РґР°РЅРёРµ РёРЅРєСЂРµРјРµРЅС‚Р° Р±РѕРµР·Р°РїР°СЃР° РїСЂРё Р°С‚Р°РєРµ РѕСЃР°РґРЅС‹С… СЃС‚РµРЅ "РєР°С‚Р°РїСѓР»СЊС‚Р°"
 int __stdcall catapultaShoot(LoHook* h, HookContext* c)
 {
 	_BattleStack_* mon = (_BattleStack_*)c->edi;
@@ -167,8 +127,8 @@ int __stdcall catapultaShoot(LoHook* h, HookContext* c)
 	return EXEC_DEFAULT;
 } 
 
-// запрет на второй выстрел, если боезапас закончился
-// для баллисты и стрелков
+// Р·Р°РїСЂРµС‚ РЅР° РІС‚РѕСЂРѕР№ РІС‹СЃС‚СЂРµР», РµСЃР»Рё Р±РѕРµР·Р°РїР°СЃ Р·Р°РєРѕРЅС‡РёР»СЃСЏ
+// РґР»СЏ Р±Р°Р»Р»РёСЃС‚С‹ Рё СЃС‚СЂРµР»РєРѕРІ
 int __stdcall monstreShoot(LoHook* h, HookContext* c)
 {
 	_BattleStack_* mon = (_BattleStack_*)c->esi;
@@ -208,15 +168,15 @@ int __stdcall fixHarpyBinds(LoHook* h, HookContext* c)
 int __stdcall ERM_Fix_EA_E(HiHook* hook, _BattleStack_* stack )
 {
     int ret = 0;
-    _int32_ spell_duration[81]; // для сохранения длительности заклинаний
-    _int32_ spells_power[81];   // для сохранения силы действия заклинания
+    _int32_ spell_duration[81]; // РґР»СЏ СЃРѕС…СЂР°РЅРµРЅРёСЏ РґР»РёС‚РµР»СЊРЅРѕСЃС‚Рё Р·Р°РєР»РёРЅР°РЅРёР№
+    _int32_ spells_power[81];   // РґР»СЏ СЃРѕС…СЂР°РЅРµРЅРёСЏ СЃРёР»С‹ РґРµР№СЃС‚РІРёСЏ Р·Р°РєР»РёРЅР°РЅРёСЏ
 
     if (stack) {
         for (int i=0; i<80; i++) {
             spell_duration[i] = stack->active_spell_duration[i];
             spells_power[i] = stack->active_spells_power[i];
 
-            if (spell_duration[i] > 0 ) // если заклинание наложено на стек, то сбрасываем его эффект
+            if (spell_duration[i] > 0 ) // РµСЃР»Рё Р·Р°РєР»РёРЅР°РЅРёРµ РЅР°Р»РѕР¶РµРЅРѕ РЅР° СЃС‚РµРє, С‚Рѕ СЃР±СЂР°СЃС‹РІР°РµРј РµРіРѕ СЌС„С„РµРєС‚
                 CALL_2(int, __thiscall, 0x444230, stack, i); // ResetSpellFromStack 0x444230
         }
     }
@@ -224,7 +184,7 @@ int __stdcall ERM_Fix_EA_E(HiHook* hook, _BattleStack_* stack )
     ret = CALL_1(int, __cdecl, hook->GetDefaultFunc(), stack);
 
     for (int i=0; i<80; i++) {
-        if (spell_duration[i] > 0) { // если заклинание ранее было наложено, то восстанавливаем его
+        if (spell_duration[i] > 0) { // РµСЃР»Рё Р·Р°РєР»РёРЅР°РЅРёРµ СЂР°РЅРµРµ Р±С‹Р»Рѕ РЅР°Р»РѕР¶РµРЅРѕ, С‚Рѕ РІРѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµРј РµРіРѕ
             CALL_5(int, __thiscall, 0x444610, stack, i, spell_duration[i], spells_power[i], 0); // ApplySpell 0x444610
         }
     }
@@ -232,11 +192,11 @@ int __stdcall ERM_Fix_EA_E(HiHook* hook, _BattleStack_* stack )
     return ret;
 }
 
-// не считать кавалерийский бонус при полете
+// РЅРµ СЃС‡РёС‚Р°С‚СЊ РєР°РІР°Р»РµСЂРёР№СЃРєРёР№ Р±РѕРЅСѓСЃ РїСЂРё РїРѕР»РµС‚Рµ
 _int_ __stdcall Y_AntiKavalierAndFly(LoHook* h, HookContext* c)
 {
-    if ( *(_dword_*)(c->ebx +132) >> 1 & 1 ) { // проверить флаг атакующего на полет
-        c->return_address = 0x4430A3; // обходим расчет кавалерийского бонуса (он всё равно не работает)
+    if ( *(_dword_*)(c->ebx +132) >> 1 & 1 ) { // РїСЂРѕРІРµСЂРёС‚СЊ С„Р»Р°Рі Р°С‚Р°РєСѓСЋС‰РµРіРѕ РЅР° РїРѕР»РµС‚
+        c->return_address = 0x4430A3; // РѕР±С…РѕРґРёРј СЂР°СЃС‡РµС‚ РєР°РІР°Р»РµСЂРёР№СЃРєРѕРіРѕ Р±РѕРЅСѓСЃР° (РѕРЅ РІСЃС‘ СЂР°РІРЅРѕ РЅРµ СЂР°Р±РѕС‚Р°РµС‚)
         return NO_EXEC_DEFAULT;
     }
     return EXEC_DEFAULT;
@@ -268,22 +228,6 @@ int __stdcall Y_SetCanselScholarlySS(LoHook* h, HookContext* c)
 	return NO_EXEC_DEFAULT;
 }
 
-//#define Wog_FOH_Monstr (*(int*)0x27718CC)
-//
-//int __stdcall Y_FixWoG_GetCreatureGrade(HiHook* hook, int mon_id) 
-//{
-//	int ret = CALL_1(int, __fastcall, hook->GetDefaultFunc(), mon_id);
-//
-//	int ret2 = 25;
-//	/* Wog_FOH_Monstr = mon_id;
-//	int ret2 = CALL_1(int, __fastcall, 0x74ECD3, mon_id); // тут будет вылет надо передать ECX*/ 
-//
-//	sprintf(o_TextBuffer, "Ловим хук апгрейда \n ret = %d (%d)", ret, ret2);
-//	b_MsgBox(o_TextBuffer, 1);
-//
-//	return ret;
-//} 
-
 int __stdcall Y_FixWoG_GetCreatureGrade(LoHook* h, HookContext* c)
 {
 	int ID = *(int*)(c->ebp +8);
@@ -306,9 +250,6 @@ int __stdcall Y_FixWoG_GetCreatureGrade(LoHook* h, HookContext* c)
 	
 	if (ID == mon_idGr2 ) { c->ecx = mon_idGr; }
 
-	// sprintf(o_TextBuffer, "Ловим хук апгрейда \n %d = %d (%d) ((%d))", ID, mon_id, mon_idGr, mon_idGr2 );
-	// b_MsgBox(o_TextBuffer, 1);
-	// c->return_address = 0x4E64FF;
 	return EXEC_DEFAULT;
 }
 
@@ -331,59 +272,57 @@ _int_ __stdcall Y_FixRoundCount_WoG(LoHook* h, HookContext* c)
 	return NO_EXEC_DEFAULT;
 }
 
-// исправление созданий WoG'ом корявых пакованых координат
+// РёСЃРїСЂР°РІР»РµРЅРёРµ СЃРѕР·РґР°РЅРёР№ WoG'РѕРј РєРѕСЂСЏРІС‹С… РїР°РєРѕРІР°РЅС‹С… РєРѕРѕСЂРґРёРЅР°С‚
 _dword_ __stdcall Y_WoG_MixedPos_Fix(HiHook* hook, int x, int y, int z)
 {
 	_dword_ xyz = b_pack_xyz(x, y, z);
-	// b_MsgBox("Запаковали", 1);
+	// b_MsgBox("Р—Р°РїР°РєРѕРІР°Р»Рё", 1);
 	return xyz; 
 }
 
-// исправление созданий WoG'ом корявых разпакованных координат
+// РёСЃРїСЂР°РІР»РµРЅРёРµ СЃРѕР·РґР°РЅРёР№ WoG'РѕРј РєРѕСЂСЏРІС‹С… СЂР°Р·РїР°РєРѕРІР°РЅРЅС‹С… РєРѕРѕСЂРґРёРЅР°С‚
 void __stdcall Y_WoG_UnMixedPos_Fix(HiHook* hook, _dword_ x, _dword_ y, _dword_ z, _dword_ xyz)
 {
-	// CALL_4(void, __cdecl, hook->GetDefaultFunc(), x, y, z, xyz);	
 	*(_dword_*)x = b_unpack_x(xyz);
 	*(_dword_*)y = b_unpack_y(xyz);
 	*(_dword_*)z = b_unpack_z(xyz);
-	// sprintf(o_TextBuffer, "%d (%d) \n %d (%d) \n %d (%d) \n\n 0x%X \n\n 0x%X", x, *(_dword_*)x, y, *(_dword_*)y, z, *(_dword_*)z, hook->GetDefaultFunc(), hook->GetReturnAddress() );
-	// b_MsgBox(o_TextBuffer, 1);
+
 	return; 
 }
 
-// корректировка WoG ненависти существ
-// добавляем и существ 8-го уровня
-// и убираем ненависти всех элементалей
+// РєРѕСЂСЂРµРєС‚РёСЂРѕРІРєР° WoG РЅРµРЅР°РІРёСЃС‚Рё СЃСѓС‰РµСЃС‚РІ
+// РґРѕР±Р°РІР»СЏРµРј Рё СЃСѓС‰РµСЃС‚РІ 8-РіРѕ СѓСЂРѕРІРЅСЏ
+// Рё СѓР±РёСЂР°РµРј РЅРµРЅР°РІРёСЃС‚Рё РІСЃРµС… СЌР»РµРјРµРЅС‚Р°Р»РµР№
 _int_ __stdcall Y_SetWogHates(LoHook* h, HookContext* c)
 {
-	int mult = 0; // бонус урона ненависти в процентах
+	int mult = 0; // Р±РѕРЅСѓСЃ СѓСЂРѕРЅР° РЅРµРЅР°РІРёСЃС‚Рё РІ РїСЂРѕС†РµРЅС‚Р°С…
 	int amtype = *(int*)(c->ebp -4);
 	int dmtype = *(int*)(c->ebp -8);
 	 
 	switch(amtype){
-		case 12:  // Ангел
-		case 13:  // Архангел
-		case 150: // Верховный Архангел
+		case 12:  // РђРЅРіРµР»
+		case 13:  // РђСЂС…Р°РЅРіРµР»
+		case 150: // Р’РµСЂС…РѕРІРЅС‹Р№ РђСЂС…Р°РЅРіРµР»
 			if(dmtype == 54 || dmtype == 55 || dmtype == 153) mult = 50; break;
-		case 36:  // Джин
-		case 37:  // Мастар Джин
+		case 36:  // Р”Р¶РёРЅ
+		case 37:  // РњР°СЃС‚Р°СЂ Р”Р¶РёРЅ
 			if(dmtype == 52 || dmtype == 53) mult = 50; break; 
-		case 41:  // Титан
-		case 152: // Громовержец
+		case 41:  // РўРёС‚Р°РЅ
+		case 152: // Р“СЂРѕРјРѕРІРµСЂР¶РµС†
 			if(dmtype == 83 || dmtype == 155) mult = 50; break;
-		case 52:  // Ифрит
-		case 53:  // Ифрит Султан
+		case 52:  // РС„СЂРёС‚
+		case 53:  // РС„СЂРёС‚ РЎСѓР»С‚Р°РЅ
 			if(dmtype == 36 || dmtype == 37) mult = 50; break;
-		case 54:  // Дьявол
-		case 55:  // Архидьявол
-		case 153: // Барон Ада
+		case 54:  // Р”СЊСЏРІРѕР»
+		case 55:  // РђСЂС…РёРґСЊСЏРІРѕР»
+		case 153: // Р‘Р°СЂРѕРЅ РђРґР°
 			if(dmtype == 12 || dmtype == 13 || dmtype == 150) mult = 50; break;
-		case 83:  // Черный Дракон
-		case 155: // Тёмный Дракон
+		case 83:  // Р§РµСЂРЅС‹Р№ Р”СЂР°РєРѕРЅ
+		case 155: // РўС‘РјРЅС‹Р№ Р”СЂР°РєРѕРЅ
 			if(dmtype == 41 || dmtype == 152) mult = 50; break;
 		default: break;
   }
-	// теперь бонус урона нужно занести в EDX
+	// С‚РµРїРµСЂСЊ Р±РѕРЅСѓСЃ СѓСЂРѕРЅР° РЅСѓР¶РЅРѕ Р·Р°РЅРµСЃС‚Рё РІ EDX
 	c->edx = mult;
 	c->return_address = 0x766EEB;
 	return NO_EXEC_DEFAULT;
@@ -420,15 +359,9 @@ int __stdcall Y_BM_ReceNetData(LoHook* h, HookContext* c)
 {
 	int id = *(int*)(c->esi +8);
 	if ( id == 1987 ) {
-		//sprintf(o_TextBuffer, "%d %d", *(int*)(c->esi +8), *(int*)(c->esi +12) );
-		//b_MsgBox(o_TextBuffer, 1);
 		_int32_ netData = c->esi;
 
-		/* int bmStart = (int)o_BattleMgr +21708 -40; // начало стеков
-		for (int i=10; i<14197; i++) {
-			*(int*)(bmStart +i*4) = *(int*)(netData +i*4);
-		} */ 
-		int bmStart = (int)o_BattleMgr +21708; // начало стеков
+		int bmStart = (int)o_BattleMgr +21708; // РЅР°С‡Р°Р»Рѕ СЃС‚РµРєРѕРІ
 		int netDSt = netData +40;
 		for (int i=0; i<42; i++) {
 			for (int k=0; k<1352; k++) { 
@@ -440,10 +373,8 @@ int __stdcall Y_BM_ReceNetData(LoHook* h, HookContext* c)
 
 				*(char*)(bmStart +i*1352 +k) = *(char*)(netDSt +i*1352 +k);
 			}
-			// sprintf(o_TextBuffer, "Стек %d выполнен \n", *(int*)(netData +1100) );
-			// b_MsgBox(o_TextBuffer, 1);
 		}
-		// _BattleMgr_* bm = o_BattleMgr;
+
 		CALL_3(void, __thiscall, 0x464F10, o_BattleMgr, *(int*)(netData +20), *(int*)(netData +24));
 
 		CALL_1(void*, __thiscall, 0x555D00, netData); // 0x555D00 void __thiscall Delete(void *this)
@@ -452,7 +383,7 @@ int __stdcall Y_BM_ReceNetData(LoHook* h, HookContext* c)
 	return EXEC_DEFAULT; 
 }
 
-// корректировка описаний заклинаний в книге (не учитывались бонусы специалистов по заклинаниям)
+// РєРѕСЂСЂРµРєС‚РёСЂРѕРІРєР° РѕРїРёСЃР°РЅРёР№ Р·Р°РєР»РёРЅР°РЅРёР№ РІ РєРЅРёРіРµ (РЅРµ СѓС‡РёС‚С‹РІР°Р»РёСЃСЊ Р±РѕРЅСѓСЃС‹ СЃРїРµС†РёР°Р»РёСЃС‚РѕРІ РїРѕ Р·Р°РєР»РёРЅР°РЅРёСЏРј)
 _int64_ __stdcall Y_DlgSpellBook_FixDecription_SpellPower(HiHook* hook, _Hero_ *hero, int spell, signed int damage, _BattleStack_ *stack)
 {
 	_int64_ power = CALL_4(_int64_, __thiscall, hook->GetDefaultFunc(), hero, spell, damage, stack);
@@ -462,7 +393,7 @@ _int64_ __stdcall Y_DlgSpellBook_FixDecription_SpellPower(HiHook* hook, _Hero_ *
 }
 
 
-// фиксим неотображение Монолитов и Подземных врат в диалоге заклинания Просмотр Земли и Воздуха
+// С„РёРєСЃРёРј РЅРµРѕС‚РѕР±СЂР°Р¶РµРЅРёРµ РњРѕРЅРѕР»РёС‚РѕРІ Рё РџРѕРґР·РµРјРЅС‹С… РІСЂР°С‚ РІ РґРёР°Р»РѕРіРµ Р·Р°РєР»РёРЅР°РЅРёСЏ РџСЂРѕСЃРјРѕС‚СЂ Р—РµРјР»Рё Рё Р’РѕР·РґСѓС…Р°
 _bool_ isVisible_Monoliths;
 _bool_ isVisible_Gates;
 
@@ -470,23 +401,23 @@ int __stdcall Y_Fix_ViewEarthOrAirSpell_Add_Monoliths_Show(LoHook* h, HookContex
 {
 	c->edi = c->ecx;					// mov edi, ecx
 	c->ecx = *(_dword_*)(c->esi +30);	// mov ecx, [esi+1Eh]
-	int obj_id = c->ecx; // номер объекта
+	int obj_id = c->ecx; // РЅРѕРјРµСЂ РѕР±СЉРµРєС‚Р°
 	_byte_ isVisible = *(_byte_*)(c->ebp +8 +3);
 
 	int type = 0;
-	if ( obj_id == 43 || obj_id == 44 || obj_id == 45 ) { // Монолиты
+	if ( obj_id == 43 || obj_id == 44 || obj_id == 45 ) { // РњРѕРЅРѕР»РёС‚С‹
 		if ( isVisible_Monoliths || isVisible ) {
 			type = 3;
 		}
 	}
 
-	if ( obj_id == 103 ) { // Подземные врата
+	if ( obj_id == 103 ) { // РџРѕРґР·РµРјРЅС‹Рµ РІСЂР°С‚Р°
 		if ( isVisible_Gates || isVisible) {
 			type = 4;
 		}
 	}
 
-	if ( type == 3 || type == 4 ) { // выполняем функцию отображения Монолитов или Подземных Врат при касте Просмотра Земли или Воздуха
+	if ( type == 3 || type == 4 ) { // РІС‹РїРѕР»РЅСЏРµРј С„СѓРЅРєС†РёСЋ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ РњРѕРЅРѕР»РёС‚РѕРІ РёР»Рё РџРѕРґР·РµРјРЅС‹С… Р’СЂР°С‚ РїСЂРё РєР°СЃС‚Рµ РџСЂРѕСЃРјРѕС‚СЂР° Р—РµРјР»Рё РёР»Рё Р’РѕР·РґСѓС…Р°
 		CALL_6(_int_, __fastcall, 0x5F7760, *(int*)0x6AAC88, c->esi, type, *(int*)0x6AAC80 + (*(int*)(c->ebp +0x14) * *(int*)0x68C70C), c->edi +8, *(int*)(c->ebp +0x12) );
 	}
 
@@ -502,12 +433,12 @@ int __stdcall Y_Fix_ViewEarthOrAirSpell_Add_Monoliths_Prepare(LoHook* h, HookCon
 	isVisible_Gates = false;
 	isVisible_Monoliths = false;
 
-	if ( spell == 5 ) // Просмотр воздуха
+	if ( spell == 5 ) // РџСЂРѕСЃРјРѕС‚СЂ РІРѕР·РґСѓС…Р°
 	{
-		if ( power >= 2 ) { // показываем Подземные Врата
+		if ( power >= 2 ) { // РїРѕРєР°Р·С‹РІР°РµРј РџРѕРґР·РµРјРЅС‹Рµ Р’СЂР°С‚Р°
 			isVisible_Gates = true;
 		}
-		if ( power >= 3 ) { // показываем Монолиты
+		if ( power >= 3 ) { // РїРѕРєР°Р·С‹РІР°РµРј РњРѕРЅРѕР»РёС‚С‹
 			isVisible_Monoliths = true;
 		}
 	}
@@ -515,10 +446,10 @@ int __stdcall Y_Fix_ViewEarthOrAirSpell_Add_Monoliths_Prepare(LoHook* h, HookCon
 	return EXEC_DEFAULT;
 }
 
-// фикс неправильного отображения величины урона в окне статуса битвы при касте заклинания Армагеддон
+// С„РёРєСЃ РЅРµРїСЂР°РІРёР»СЊРЅРѕРіРѕ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ РІРµР»РёС‡РёРЅС‹ СѓСЂРѕРЅР° РІ РѕРєРЅРµ СЃС‚Р°С‚СѓСЃР° Р±РёС‚РІС‹ РїСЂРё РєР°СЃС‚Рµ Р·Р°РєР»РёРЅР°РЅРёСЏ РђСЂРјР°РіРµРґРґРѕРЅ
 _int_ __stdcall Y_Fix_ReportStatusMsg_CastArmageddonSpell(HiHook* hook, _BattleMgr_ *bm, _int_ damage, _int_ spell, _Hero_ *heroA, _Hero_ *heroD, _BattleStack_ *stack, _int_ a7) 
 {
-	if ( !heroA ) { // в этом месте структура атакующего героя не подаётся. Поэтому мы создаём её сами
+	if ( !heroA ) { // РІ СЌС‚РѕРј РјРµСЃС‚Рµ СЃС‚СЂСѓРєС‚СѓСЂР° Р°С‚Р°РєСѓСЋС‰РµРіРѕ РіРµСЂРѕСЏ РЅРµ РїРѕРґР°С‘С‚СЃСЏ. РџРѕСЌС‚РѕРјСѓ РјС‹ СЃРѕР·РґР°С‘Рј РµС‘ СЃР°РјРё
 		heroA = bm->hero[bm->current_side];
 	}
 
@@ -535,9 +466,9 @@ void startPlugin(Patcher* _P, PatcherInstance* _PI)
 // by RoseKavalier ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	_PI->WriteLoHook(0x42DDA6, AI_split_div0); // Prevent crash when AI attacks "ghost" hero			
-	_PI->WriteByte(0x49E4EC +1, 99); // работающая кнопка Отмена в Арене
+	_PI->WriteByte(0x49E4EC +1, 99); // СЂР°Р±РѕС‚Р°СЋС‰Р°СЏ РєРЅРѕРїРєР° РћС‚РјРµРЅР° РІ РђСЂРµРЅРµ
 
-	// ХЗ  что это (возможно операции со стеками)
+	// РҐР—  С‡С‚Рѕ СЌС‚Рѕ (РІРѕР·РјРѕР¶РЅРѕ РѕРїРµСЂР°С†РёРё СЃРѕ СЃС‚РµРєР°РјРё)
 	_PI->WriteByte(0x49C021, 183);
 	_PI->WriteByte(0x4A763F, 183);
 	_PI->WriteByte(0x4A9423, 183);
@@ -558,7 +489,7 @@ void startPlugin(Patcher* _P, PatcherInstance* _PI)
 	_PI->WriteHexPatch(0x42DA39, "8B 4D E4 90 57 51");
 	_PI->WriteHexPatch(0x42DAD9, "8B 4D E4 90 57 51");
 
-	// исправление бага посещения банков в которых дают существ (вылет в диалоге присоедиенния монстров) © RoseKavalier
+	// РёСЃРїСЂР°РІР»РµРЅРёРµ Р±Р°РіР° РїРѕСЃРµС‰РµРЅРёСЏ Р±Р°РЅРєРѕРІ РІ РєРѕС‚РѕСЂС‹С… РґР°СЋС‚ СЃСѓС‰РµСЃС‚РІ (РІС‹Р»РµС‚ РІ РґРёР°Р»РѕРіРµ РїСЂРёСЃРѕРµРґРёРµРЅРЅРёСЏ РјРѕРЅСЃС‚СЂРѕРІ) В© RoseKavalier
 	_PI->WriteHiHook(0x5D52CA, CALL_, EXTENDED_, THISCALL_, HH_Show_Hero_Info_Dlg); // alternative 2 - should
 
 	////////////////////////// AI BAGs ///////////////////////////////////////
@@ -585,134 +516,129 @@ void startPlugin(Patcher* _P, PatcherInstance* _PI)
 	// Earthquake Bug will no longer kill creatures and end battle
     _PI->WriteLoHook(0x465656, EarthquakeBug);
 
-	// Admiral's hat bug fix + movement fixes
-    // _PI->WriteLoHook(0x4A0CE6, mpGroundToSea);
-    // _PI->WriteLoHook(0x49E334, mpSeaToGround);
-    // _PI->WriteLoHook(0x4DA268, killedHeroSeaToGround);
-
 // by igrik ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	// центрирование изображения по ПКМ в городе на иконке найма войск (ранее уходило сильно влево)
+	// С†РµРЅС‚СЂРёСЂРѕРІР°РЅРёРµ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ РїРѕ РџРљРњ РІ РіРѕСЂРѕРґРµ РЅР° РёРєРѕРЅРєРµ РЅР°Р№РјР° РІРѕР№СЃРє (СЂР°РЅРµРµ СѓС…РѕРґРёР»Рѕ СЃРёР»СЊРЅРѕ РІР»РµРІРѕ)
 	_PI->WriteHexPatch(0x5D47B3, "0F BF 57 18  8B 4F 24 B8  FF FF FF FF  90");
 
-	// исправить координаты кнопки Сказочных Драконов
-	_PI->WriteDword(0x5F3D9F, 235);  // подложка поз.Y
-	_PI->WriteByte(0x5F3DA4, 21);    // подложка поз.X
-	_PI->WriteDword(0x5F3DF5, 235);  // кнопка   поз.Y
-	_PI->WriteByte(0x5F3DFA, 21);    // кнопка   поз.X
+	// РёСЃРїСЂР°РІРёС‚СЊ РєРѕРѕСЂРґРёРЅР°С‚С‹ РєРЅРѕРїРєРё РЎРєР°Р·РѕС‡РЅС‹С… Р”СЂР°РєРѕРЅРѕРІ
+	_PI->WriteDword(0x5F3D9F, 235);  // РїРѕРґР»РѕР¶РєР° РїРѕР·.Y
+	_PI->WriteByte(0x5F3DA4, 21);    // РїРѕРґР»РѕР¶РєР° РїРѕР·.X
+	_PI->WriteDword(0x5F3DF5, 235);  // РєРЅРѕРїРєР°   РїРѕР·.Y
+	_PI->WriteByte(0x5F3DFA, 21);    // РєРЅРѕРїРєР°   РїРѕР·.X
     _PI->WriteLoHook(0x5F5320, faerie_button);
     _PI->WriteLoHook(0x5F4C99, faerie_button_RMB);
 
-	// исправление ошибки ERM в командре IF:N1, теперь командра работает 
-	// со всеми локальными, глобальными и отрицательными переменными z, а не только с z1
+	// РёСЃРїСЂР°РІР»РµРЅРёРµ РѕС€РёР±РєРё ERM РІ РєРѕРјР°РЅРґСЂРµ IF:N1, С‚РµРїРµСЂСЊ РєРѕРјР°РЅРґСЂР° СЂР°Р±РѕС‚Р°РµС‚ 
+	// СЃРѕ РІСЃРµРјРё Р»РѕРєР°Р»СЊРЅС‹РјРё, РіР»РѕР±Р°Р»СЊРЅС‹РјРё Рё РѕС‚СЂРёС†Р°С‚РµР»СЊРЅС‹РјРё РїРµСЂРµРјРµРЅРЅС‹РјРё z, Р° РЅРµ С‚РѕР»СЊРєРѕ СЃ z1
 	_PI->WriteByte(0x749093, 0xB0);
 	_PI->WriteByte(0x74909C, 0xB0);
 	_PI->WriteByte(0x7490B0, 0xB0);
 	_PI->WriteByte(0x7490B6, 0xB0);
 	_PI->WriteByte(0x7490CD, 0xB0);
 
-	// исправление неправильных иконок героев Инферно (Ксерафакс и Ксерон)
+	// РёСЃРїСЂР°РІР»РµРЅРёРµ РЅРµРїСЂР°РІРёР»СЊРЅС‹С… РёРєРѕРЅРѕРє РіРµСЂРѕРµРІ РРЅС„РµСЂРЅРѕ (РљСЃРµСЂР°С„Р°РєСЃ Рё РљСЃРµСЂРѕРЅ)
 	_PI->WriteDword(0x79984C, 63);
 	_PI->WriteDword(0x799850, 57);
 
-	// исправление неправильных кнопок
-	// в диалоге таверны
+	// РёСЃРїСЂР°РІР»РµРЅРёРµ РЅРµРїСЂР°РІРёР»СЊРЅС‹С… РєРЅРѕРїРѕРє
+	// РІ РґРёР°Р»РѕРіРµ С‚Р°РІРµСЂРЅС‹
 	_PI->WriteDword(0x5D7ACA, 0x682A24); // iCN6432.def
-	// в диалоге резделения отрядов
+	// РІ РґРёР°Р»РѕРіРµ СЂРµР·РґРµР»РµРЅРёСЏ РѕС‚СЂСЏРґРѕРІ
 	_PI->WriteDword(0x449A41, 0x682A24); // iCN6432.def
 
-	// исправление бага блока командира, когда защита падала из-за флага "в защите"
+	// РёСЃРїСЂР°РІР»РµРЅРёРµ Р±Р°РіР° Р±Р»РѕРєР° РєРѕРјР°РЅРґРёСЂР°, РєРѕРіРґР° Р·Р°С‰РёС‚Р° РїР°РґР°Р»Р° РёР·-Р·Р° С„Р»Р°РіР° "РІ Р·Р°С‰РёС‚Рµ"
 	_PI->WriteCodePatch(0x76E7D7, "%n", 24); // 15 nop 
 	_PI->WriteCodePatch(0x76E80B, "%n", 13); // 13 nop
 	_PI->WriteHexPatch(0x76E7D7, "8B4D 08 C601 01 C641 02 04");	
 
-	// исправление одного из багов Астрального духа
-	// убираем WoG сообщение, которое вызывает непонятную ошибку
+	// РёСЃРїСЂР°РІР»РµРЅРёРµ РѕРґРЅРѕРіРѕ РёР· Р±Р°РіРѕРІ РђСЃС‚СЂР°Р»СЊРЅРѕРіРѕ РґСѓС…Р°
+	// СѓР±РёСЂР°РµРј WoG СЃРѕРѕР±С‰РµРЅРёРµ, РєРѕС‚РѕСЂРѕРµ РІС‹Р·С‹РІР°РµС‚ РЅРµРїРѕРЅСЏС‚РЅСѓСЋ РѕС€РёР±РєСѓ
 	_PI->WriteHexPatch(0x76D4B3, "EB17");
 
-	// расширяем свитч хинтов колдовства для описаний командиров
-	// и монстров с номером больше 134
+	// СЂР°СЃС€РёСЂСЏРµРј СЃРІРёС‚С‡ С…РёРЅС‚РѕРІ РєРѕР»РґРѕРІСЃС‚РІР° РґР»СЏ РѕРїРёСЃР°РЅРёР№ РєРѕРјР°РЅРґРёСЂРѕРІ
+	// Рё РјРѕРЅСЃС‚СЂРѕРІ СЃ РЅРѕРјРµСЂРѕРј Р±РѕР»СЊС€Рµ 134
 	_PI->WriteHexPatch(0x492A56, "81FF B7000000 90 7747");
 	_PI->WriteDword(0x492A63, *(_int_*)0x44825F);
 
-	// исправление бага палатки, когда на её ходу невозможно убежать или сделать другие действия
+	// РёСЃРїСЂР°РІР»РµРЅРёРµ Р±Р°РіР° РїР°Р»Р°С‚РєРё, РєРѕРіРґР° РЅР° РµС‘ С…РѕРґСѓ РЅРµРІРѕР·РјРѕР¶РЅРѕ СѓР±РµР¶Р°С‚СЊ РёР»Рё СЃРґРµР»Р°С‚СЊ РґСЂСѓРіРёРµ РґРµР№СЃС‚РІРёСЏ
 	_PI->WriteByte(0x75C82C, 0xEB);
-	// возможность заходить в гильдию магов без наличия книги и денег у героя-гостя
+	// РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ Р·Р°С…РѕРґРёС‚СЊ РІ РіРёР»СЊРґРёСЋ РјР°РіРѕРІ Р±РµР· РЅР°Р»РёС‡РёСЏ РєРЅРёРіРё Рё РґРµРЅРµРі Сѓ РіРµСЂРѕСЏ-РіРѕСЃС‚СЏ
 	_PI->WriteHexPatch(0x5CEA83, "EB74");
 	_PI->WriteHexPatch(0x5CEACD, "2800");
 
-	// исправление бага с исчезновением стартового героя при переигрывании
+	// РёСЃРїСЂР°РІР»РµРЅРёРµ Р±Р°РіР° СЃ РёСЃС‡РµР·РЅРѕРІРµРЅРёРµРј СЃС‚Р°СЂС‚РѕРІРѕРіРѕ РіРµСЂРѕСЏ РїСЂРё РїРµСЂРµРёРіСЂС‹РІР°РЅРёРё
 	_PI->WriteByte(0x5029C0, 0xEB);
 
-	// исправления стрельбы при отрицат.боезапасе
-	// при передаче хода стеку
+	// РёСЃРїСЂР°РІР»РµРЅРёСЏ СЃС‚СЂРµР»СЊР±С‹ РїСЂРё РѕС‚СЂРёС†Р°С‚.Р±РѕРµР·Р°РїР°СЃРµ
+	// РїСЂРё РїРµСЂРµРґР°С‡Рµ С…РѕРґР° СЃС‚РµРєСѓ
 	_PI->WriteLoHook(0x464D75, setActStack);
-	// при стрельбе по стенам (катапульта, циклопы)
+	// РїСЂРё СЃС‚СЂРµР»СЊР±Рµ РїРѕ СЃС‚РµРЅР°Рј (РєР°С‚Р°РїСѓР»СЊС‚Р°, С†РёРєР»РѕРїС‹)
 	_PI->WriteLoHook(0x445CF9, catapultaShoot);	
-	// второй выстрел монстрами
+	// РІС‚РѕСЂРѕР№ РІС‹СЃС‚СЂРµР» РјРѕРЅСЃС‚СЂР°РјРё
 	_PI->WriteLoHook(0x43FF92, monstreShoot);	
-	// второй выстрел баллистой
+	// РІС‚РѕСЂРѕР№ РІС‹СЃС‚СЂРµР» Р±Р°Р»Р»РёСЃС‚РѕР№
 	_PI->WriteLoHook(0x43FFF4, monstreShoot);	
 
-	// Решение бага (еще с SoD) исчезновения улучшенного стека при битве с даунгрейдом нейтралов
+	// Р РµС€РµРЅРёРµ Р±Р°РіР° (РµС‰Рµ СЃ SoD) РёСЃС‡РµР·РЅРѕРІРµРЅРёСЏ СѓР»СѓС‡С€РµРЅРЅРѕРіРѕ СЃС‚РµРєР° РїСЂРё Р±РёС‚РІРµ СЃ РґР°СѓРЅРіСЂРµР№РґРѕРј РЅРµР№С‚СЂР°Р»РѕРІ
 	_PI->WriteHiHook(0x4AC5F5, CALL_, EXTENDED_, THISCALL_, Y_FixBagCreatureGredeOfNeutrals);
 
-	// фикс отлета гарпий, когда после удара они связаны корнями дендроидов
+	// С„РёРєСЃ РѕС‚Р»РµС‚Р° РіР°СЂРїРёР№, РєРѕРіРґР° РїРѕСЃР»Рµ СѓРґР°СЂР° РѕРЅРё СЃРІСЏР·Р°РЅС‹ РєРѕСЂРЅСЏРјРё РґРµРЅРґСЂРѕРёРґРѕРІ
     _PI->WriteLoHook(0x47835B, fixHarpyBinds);
 
-	// не считать кавалерийский бонус при полете
+	// РЅРµ СЃС‡РёС‚Р°С‚СЊ РєР°РІР°Р»РµСЂРёР№СЃРєРёР№ Р±РѕРЅСѓСЃ РїСЂРё РїРѕР»РµС‚Рµ
 	_PI->WriteLoHook(0x44307A, Y_AntiKavalierAndFly);
 
-	// Решение бага Вога, когда в бою накладывается опыт через EA:E и атака, защита, уроны, скорость, боезапасы и т.п. заново пересчитываются.
-	// Из-за этого теряются бонусы наложенных заклинаний (например бонус скорости от ускорения)
+	// Р РµС€РµРЅРёРµ Р±Р°РіР° Р’РѕРіР°, РєРѕРіРґР° РІ Р±РѕСЋ РЅР°РєР»Р°РґС‹РІР°РµС‚СЃСЏ РѕРїС‹С‚ С‡РµСЂРµР· EA:E Рё Р°С‚Р°РєР°, Р·Р°С‰РёС‚Р°, СѓСЂРѕРЅС‹, СЃРєРѕСЂРѕСЃС‚СЊ, Р±РѕРµР·Р°РїР°СЃС‹ Рё С‚.Рї. Р·Р°РЅРѕРІРѕ РїРµСЂРµСЃС‡РёС‚С‹РІР°СЋС‚СЃСЏ.
+	// РР·-Р·Р° СЌС‚РѕРіРѕ С‚РµСЂСЏСЋС‚СЃСЏ Р±РѕРЅСѓСЃС‹ РЅР°Р»РѕР¶РµРЅРЅС‹С… Р·Р°РєР»РёРЅР°РЅРёР№ (РЅР°РїСЂРёРјРµСЂ Р±РѕРЅСѓСЃ СЃРєРѕСЂРѕСЃС‚Рё РѕС‚ СѓСЃРєРѕСЂРµРЅРёСЏ)
 	_PI->WriteHiHook(0x726DE4, CALL_, EXTENDED_, CDECL_, ERM_Fix_EA_E);
 
-	// Делаем кнопку отмены в Хижине Ведьмы 
+	// Р”РµР»Р°РµРј РєРЅРѕРїРєСѓ РѕС‚РјРµРЅС‹ РІ РҐРёР¶РёРЅРµ Р’РµРґСЊРјС‹ 
 	_PI->WriteDword(0x4A7E63 +1, 2);
 	_PI->WriteHiHook(0x4A7E8A, CALL_, EXTENDED_, THISCALL_, Y_SetCanselWitchHut);
 
-	// Делаем кнопку отмены у ученого, предлагающего втор.навык
+	// Р”РµР»Р°РµРј РєРЅРѕРїРєСѓ РѕС‚РјРµРЅС‹ Сѓ СѓС‡РµРЅРѕРіРѕ, РїСЂРµРґР»Р°РіР°СЋС‰РµРіРѕ РІС‚РѕСЂ.РЅР°РІС‹Рє
 	_PI->WriteLoHook(0x4A4AFE, Y_SetCanselScholarlySS);	
 
-	// Решаем проблему когда бонусы специалистов не считаются Супер существам
+	// Р РµС€Р°РµРј РїСЂРѕР±Р»РµРјСѓ РєРѕРіРґР° Р±РѕРЅСѓСЃС‹ СЃРїРµС†РёР°Р»РёСЃС‚РѕРІ РЅРµ СЃС‡РёС‚Р°СЋС‚СЃСЏ РЎСѓРїРµСЂ СЃСѓС‰РµСЃС‚РІР°Рј
 	// _PI->WriteHiHook(0x4E64FA, CALL_, EXTENDED_, FASTCALL_, Y_FixWoG_GetCreatureGrade);
 	_PI->WriteLoHook(0x4E64D1, Y_FixWoG_GetCreatureGrade);
 
-	// o_BattleMgr->Round = 1; правка ошибки с номерами раундов SOD.
-	// После тактической фазы первый раунд всегда был = 1
-	// А без тактической фазы первый раунд всегда был = 0
-	// Теперь всегда первый раунд будет = 0
+	// РїСЂР°РІРєР° РѕС€РёР±РєРё СЃ РЅРѕРјРµСЂР°РјРё СЂР°СѓРЅРґРѕРІ SOD.
+	// РџРѕСЃР»Рµ С‚Р°РєС‚РёС‡РµСЃРєРѕР№ С„Р°Р·С‹ РїРµСЂРІС‹Р№ СЂР°СѓРЅРґ РІСЃРµРіРґР° Р±С‹Р» = 1
+	// Рђ Р±РµР· С‚Р°РєС‚РёС‡РµСЃРєРѕР№ С„Р°Р·С‹ РїРµСЂРІС‹Р№ СЂР°СѓРЅРґ РІСЃРµРіРґР° Р±С‹Р» = 0
+	// РўРµРїРµСЂСЊ РІСЃРµРіРґР° РїРµСЂРІС‹Р№ СЂР°СѓРЅРґ Р±СѓРґРµС‚ = 0
 	_PI->WriteLoHook(0x473E73, Y_FixNewRoundCountInTactics);
 	_PI->WriteLoHook(0x474B79, Y_FixNewRoundCountInTactics);
 	_PI->WriteLoHook(0x4758B3, Y_FixNewRoundCountInTactics);
 	_PI->WriteDword(0x75D125, 0);
 	_PI->WriteLoHook(0x760973, Y_FixRoundCount_WoG);
 
-	// исправление созданий WoG'ом корявых пакованых координат
+	// РёСЃРїСЂР°РІР»РµРЅРёРµ СЃРѕР·РґР°РЅРёР№ WoG'РѕРј РєРѕСЂСЏРІС‹С… РїР°РєРѕРІР°РЅС‹С… РєРѕРѕСЂРґРёРЅР°С‚
 	_PI->WriteHiHook(0x711E7F, SPLICE_, EXTENDED_, CDECL_, Y_WoG_MixedPos_Fix);
 	_PI->WriteHiHook(0x711F49, SPLICE_, SAFE_, CDECL_, Y_WoG_UnMixedPos_Fix);
 
-	// корректировка WoG ненависти существ
-	// добавляем и существ 8-го уровня
+	// РєРѕСЂСЂРµРєС‚РёСЂРѕРІРєР° WoG РЅРµРЅР°РІРёСЃС‚Рё СЃСѓС‰РµСЃС‚РІ
+	// РґРѕР±Р°РІР»СЏРµРј Рё СЃСѓС‰РµСЃС‚РІ 8-РіРѕ СѓСЂРѕРІРЅСЏ
 	_PI->WriteLoHook(0x766E4E, Y_SetWogHates);
 
-	// частичное исправление разсихнронизации 
-	// сетевое копирование параметров стеков в битве
+	// С‡Р°СЃС‚РёС‡РЅРѕРµ РёСЃРїСЂР°РІР»РµРЅРёРµ СЂР°Р·СЃРёС…РЅСЂРѕРЅРёР·Р°С†РёРё 
+	// СЃРµС‚РµРІРѕРµ РєРѕРїРёСЂРѕРІР°РЅРёРµ РїР°СЂР°РјРµС‚СЂРѕРІ СЃС‚РµРєРѕРІ РІ Р±РёС‚РІРµ
 	_PI->WriteHiHook(0x464F10, SPLICE_, EXTENDED_, THISCALL_, Y_SelectNewMonsterToAct);
 	_PI->WriteLoHook(0x473D41, Y_BM_ReceNetData);
 
-	// вызовы драконов от артефакта сердце дракона
-	// меняем местами номера гексов, 
-	// чтобы в банках существ не перекрывался стек №3
+	// РІС‹Р·РѕРІС‹ РґСЂР°РєРѕРЅРѕРІ РѕС‚ Р°СЂС‚РµС„Р°РєС‚Р° СЃРµСЂРґС†Рµ РґСЂР°РєРѕРЅР°
+	// РјРµРЅСЏРµРј РјРµСЃС‚Р°РјРё РЅРѕРјРµСЂР° РіРµРєСЃРѕРІ, 
+	// С‡С‚РѕР±С‹ РІ Р±Р°РЅРєР°С… СЃСѓС‰РµСЃС‚РІ РЅРµ РїРµСЂРµРєСЂС‹РІР°Р»СЃСЏ СЃС‚РµРє в„–3
 	_PI->WriteByte(0x767A05 +1, 55); 
 	_PI->WriteByte(0x767A2A +1, 89); 
 
-	// фикс выбора типа атаки при битве ИИ vs человек (человек не мог выбрать тип атаки)
-	// суть в том, что была проверка на флаг V997, а должна быть V998
+	// С„РёРєСЃ РІС‹Р±РѕСЂР° С‚РёРїР° Р°С‚Р°РєРё РїСЂРё Р±РёС‚РІРµ РР vs С‡РµР»РѕРІРµРє (С‡РµР»РѕРІРµРє РЅРµ РјРѕРі РІС‹Р±СЂР°С‚СЊ С‚РёРї Р°С‚Р°РєРё)
+	// СЃСѓС‚СЊ РІ С‚РѕРј, С‡С‚Рѕ Р±С‹Р»Р° РїСЂРѕРІРµСЂРєР° РЅР° С„Р»Р°Рі V997, Р° РґРѕР»Р¶РЅР° Р±С‹С‚СЊ V998
 	_PI->WriteByte(0x762601 +3, 0xC5);
 
-	// Решение проблемы отображения некоторых строк (в русской локализации) в диалоге экспы монстров.
-	// Суть в подмене типа копирования символов со знакового на беззнаковое ( MOVSX -> MOVZX )
+	// Р РµС€РµРЅРёРµ РїСЂРѕР±Р»РµРјС‹ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ РЅРµРєРѕС‚РѕСЂС‹С… СЃС‚СЂРѕРє (РІ СЂСѓСЃСЃРєРѕР№ Р»РѕРєР°Р»РёР·Р°С†РёРё) РІ РґРёР°Р»РѕРіРµ СЌРєСЃРїС‹ РјРѕРЅСЃС‚СЂРѕРІ.
+	// РЎСѓС‚СЊ РІ РїРѕРґРјРµРЅРµ С‚РёРїР° РєРѕРїРёСЂРѕРІР°РЅРёСЏ СЃРёРјРІРѕР»РѕРІ СЃРѕ Р·РЅР°РєРѕРІРѕРіРѕ РЅР° Р±РµР·Р·РЅР°РєРѕРІРѕРµ ( MOVSX -> MOVZX )
 	_PI->WriteByte(0x71F3FC, 0xB6);
 	_PI->WriteByte(0x71F5BA, 0xB6);
 	_PI->WriteByte(0x71F5D3, 0xB6);
@@ -726,14 +652,14 @@ void startPlugin(Patcher* _P, PatcherInstance* _PI)
 	_PI->WriteByte(0x723ACB, 0xB6);
 	_PI->WriteByte(0x723F1C, 0xB6);
 
-	// корректировка описаний заклинаний в книге (не учитывались бонусы специалистов по заклинаниям)
+	// РєРѕСЂСЂРµРєС‚РёСЂРѕРІРєР° РѕРїРёСЃР°РЅРёР№ Р·Р°РєР»РёРЅР°РЅРёР№ РІ РєРЅРёРіРµ (РЅРµ СѓС‡РёС‚С‹РІР°Р»РёСЃСЊ Р±РѕРЅСѓСЃС‹ СЃРїРµС†РёР°Р»РёСЃС‚РѕРІ РїРѕ Р·Р°РєР»РёРЅР°РЅРёСЏРј)
 	_PI->WriteHiHook(0x59BFFD, CALL_, SAFE_, THISCALL_, Y_DlgSpellBook_FixDecription_SpellPower);
 
-	// фиксим неотображение Монолитов и Подземных врат в диалоге заклинания Просмотр Земли и Воздуха		
+	// С„РёРєСЃРёРј РЅРµРѕС‚РѕР±СЂР°Р¶РµРЅРёРµ РњРѕРЅРѕР»РёС‚РѕРІ Рё РџРѕРґР·РµРјРЅС‹С… РІСЂР°С‚ РІ РґРёР°Р»РѕРіРµ Р·Р°РєР»РёРЅР°РЅРёСЏ РџСЂРѕСЃРјРѕС‚СЂ Р—РµРјР»Рё Рё Р’РѕР·РґСѓС…Р°		
 	_PI->WriteLoHook(0x5FC3EC, Y_Fix_ViewEarthOrAirSpell_Add_Monoliths_Prepare);
 	_PI->WriteLoHook(0x5F8545, Y_Fix_ViewEarthOrAirSpell_Add_Monoliths_Show);
 
-	// фикс неправильного отображения величины урона в окне статуса битвы при касте заклинания Армагеддон
+	// С„РёРєСЃ РЅРµРїСЂР°РІРёР»СЊРЅРѕРіРѕ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ РІРµР»РёС‡РёРЅС‹ СѓСЂРѕРЅР° РІ РѕРєРЅРµ СЃС‚Р°С‚СѓСЃР° Р±РёС‚РІС‹ РїСЂРё РєР°СЃС‚Рµ Р·Р°РєР»РёРЅР°РЅРёСЏ РђСЂРјР°РіРµРґРґРѕРЅ
 	_PI->WriteHiHook(0x5A5522, CALL_, EXTENDED_, THISCALL_, Y_Fix_ReportStatusMsg_CastArmageddonSpell);
 }
 
