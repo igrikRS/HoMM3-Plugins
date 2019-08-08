@@ -248,29 +248,32 @@ int __stdcall Y_FixWoG_GetCreatureGrade(LoHook* h, HookContext* c)
 		mon_idGr = CALL_1(int, __fastcall, 0x47AAD0, mon_id);
 	}
 	
-	if (ID == mon_idGr2 ) { c->ecx = mon_idGr; }
-
-	return EXEC_DEFAULT;
-}
-
-_int_ __stdcall Y_FixNewRoundCountInTactics(LoHook* h, HookContext* c)
-{
-	o_BattleMgr->round = -1;
-	return EXEC_DEFAULT;
-}
-#define BACall_Day  (*(_int_*)0x79F0B8)
-#define BACall_Turn  (*(_int_*)0x79F0BC)
-_int_ __stdcall Y_FixRoundCount_WoG(LoHook* h, HookContext* c)
-{
-	BACall_Day = o_BattleMgr->round;
-	if (o_BattleMgr->isTactics) {
-		BACall_Turn--;
-	} else {
-		BACall_Turn = BACall_Day;
+	if (ID == mon_idGr2 ) { 
+		c->ecx = mon_idGr; 
 	}
-	c->return_address = 0x76099A;
-	return NO_EXEC_DEFAULT;
+
+	return EXEC_DEFAULT;
 }
+
+// Исправление отменено по просьбе Berserker'a (08.08.2019) для совместимости с ERA 2.8.6 и выше
+//_int_ __stdcall Y_FixNewRoundCountInTactics(LoHook* h, HookContext* c)
+//{
+//	o_BattleMgr->round = -1;
+//	return EXEC_DEFAULT;
+//}
+//#define BACall_Day  (*(_int_*)0x79F0B8)
+//#define BACall_Turn  (*(_int_*)0x79F0BC)
+//_int_ __stdcall Y_FixRoundCount_WoG(LoHook* h, HookContext* c)
+//{
+//	BACall_Day = o_BattleMgr->round;
+//	if (o_BattleMgr->isTactics) {
+//		BACall_Turn--;
+//	} else {
+//		BACall_Turn = BACall_Day;
+//	}
+//	c->return_address = 0x76099A;
+//	return NO_EXEC_DEFAULT;
+//}
 
 // исправление созданий WoG'ом корявых пакованых координат
 _dword_ __stdcall Y_WoG_MixedPos_Fix(HiHook* hook, int x, int y, int z)
@@ -286,7 +289,6 @@ void __stdcall Y_WoG_UnMixedPos_Fix(HiHook* hook, _dword_ x, _dword_ y, _dword_ 
 	*(_dword_*)x = b_unpack_x(xyz);
 	*(_dword_*)y = b_unpack_y(xyz);
 	*(_dword_*)z = b_unpack_z(xyz);
-
 	return; 
 }
 
@@ -359,6 +361,7 @@ int __stdcall Y_BM_ReceNetData(LoHook* h, HookContext* c)
 {
 	int id = *(int*)(c->esi +8);
 	if ( id == 1987 ) {
+
 		_int32_ netData = c->esi;
 
 		int bmStart = (int)o_BattleMgr +21708; // начало стеков
@@ -374,7 +377,7 @@ int __stdcall Y_BM_ReceNetData(LoHook* h, HookContext* c)
 				*(char*)(bmStart +i*1352 +k) = *(char*)(netDSt +i*1352 +k);
 			}
 		}
-
+		// _BattleMgr_* bm = o_BattleMgr;
 		CALL_3(void, __thiscall, 0x464F10, o_BattleMgr, *(int*)(netData +20), *(int*)(netData +24));
 
 		CALL_1(void*, __thiscall, 0x555D00, netData); // 0x555D00 void __thiscall Delete(void *this)
@@ -601,18 +604,18 @@ void startPlugin(Patcher* _P, PatcherInstance* _PI)
 	_PI->WriteLoHook(0x4A4AFE, Y_SetCanselScholarlySS);	
 
 	// Решаем проблему когда бонусы специалистов не считаются Супер существам
-	// _PI->WriteHiHook(0x4E64FA, CALL_, EXTENDED_, FASTCALL_, Y_FixWoG_GetCreatureGrade);
 	_PI->WriteLoHook(0x4E64D1, Y_FixWoG_GetCreatureGrade);
 
-	// правка ошибки с номерами раундов SOD.
-	// После тактической фазы первый раунд всегда был = 1
-	// А без тактической фазы первый раунд всегда был = 0
-	// Теперь всегда первый раунд будет = 0
-	_PI->WriteLoHook(0x473E73, Y_FixNewRoundCountInTactics);
-	_PI->WriteLoHook(0x474B79, Y_FixNewRoundCountInTactics);
-	_PI->WriteLoHook(0x4758B3, Y_FixNewRoundCountInTactics);
-	_PI->WriteDword(0x75D125, 0);
-	_PI->WriteLoHook(0x760973, Y_FixRoundCount_WoG);
+	// Исправление отменено по просьбе Berserker'a (08.08.2019) для совместимости с ERA 2.8.6 и выше
+	//// o_BattleMgr->Round = 1; правка ошибки с номерами раундов SOD.
+	//// После тактической фазы первый раунд всегда был = 1
+	//// А без тактической фазы первый раунд всегда был = 0
+	//// Теперь всегда первый раунд будет = 0
+	//_PI->WriteLoHook(0x473E73, Y_FixNewRoundCountInTactics);
+	//_PI->WriteLoHook(0x474B79, Y_FixNewRoundCountInTactics);
+	//_PI->WriteLoHook(0x4758B3, Y_FixNewRoundCountInTactics);
+	//_PI->WriteDword(0x75D125, 0);
+	//_PI->WriteLoHook(0x760973, Y_FixRoundCount_WoG);
 
 	// исправление созданий WoG'ом корявых пакованых координат
 	_PI->WriteHiHook(0x711E7F, SPLICE_, EXTENDED_, CDECL_, Y_WoG_MixedPos_Fix);
