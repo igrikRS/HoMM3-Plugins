@@ -188,6 +188,9 @@ int __stdcall ERM_Fix_EA_E(HiHook* hook, _BattleStack_* stack )
         }
     }
 
+	delete[] spell_duration;
+	delete[] spells_power;
+
     return ret;
 }
 
@@ -349,7 +352,10 @@ void __stdcall Y_SelectNewMonsterToAct(HiHook* hook, _BattleMgr_* bm, int side, 
 				}
 
 				_int32_ isGood = CALL_4(_int32_, __fastcall, 0x5549E0, (int)&net, *(int*)(0x697790 +4*bm->current_side), 0, 1); 
-				if ( !isGood ) CALL_1(char, __thiscall, 0x4F3D20, 0);
+				if ( !isGood ) 
+					CALL_1(char, __thiscall, 0x4F3D20, 0);
+
+				delete[] net;
 			}
 		}
 	}
@@ -361,7 +367,7 @@ int __stdcall Y_BM_ReceNetData(LoHook* h, HookContext* c)
 	int id = *(int*)(c->esi +8);
 	if ( id == 1987 ) {
 
-		_int32_ netData = c->esi;
+		_int32_ netData = c->esi; // netData содержит прямой адрес переданного массива net[14197] 
 
 		int bmStart = (int)o_BattleMgr +21708; // начало стеков
 		int netDSt = netData +40;
@@ -379,7 +385,7 @@ int __stdcall Y_BM_ReceNetData(LoHook* h, HookContext* c)
 
 		CALL_3(void, __thiscall, 0x464F10, o_BattleMgr, *(int*)(netData +20), *(int*)(netData +24));
 
-		CALL_1(void*, __thiscall, 0x555D00, netData); // 0x555D00 void __thiscall Delete(void *this)
+		CALL_1(void*, __thiscall, 0x555D00, netData); // деструктор
 	}
 
 	return EXEC_DEFAULT; 
