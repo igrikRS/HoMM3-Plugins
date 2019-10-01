@@ -25,13 +25,13 @@ int WoG_GetResistGolem(int spell_id, int damage, _BattleStack_* stack)
 {
 	int result = 0;
 
-	if (stack->creature_id < 174 && stack->creature_id > 191) 
-	{
-		result = stack->GetResistGolem(spell_id, damage); // SoD
+	if (stack->creature_id >= 174 && stack->creature_id <= 191) 
+	{	// сопротивление командиров NPC::Resist(MR_Type, MR_Dam, MR_Mon);
+		result = CALL_3(int, __cdecl, 0x76D506, stack->creature_id, damage, stack);
 	} 
 	else 
-	{	// сопротивление командиров NPC::Resist(MR_Type, MR_Dam, MR_Mon);		
-		result = CALL_3(int, __cdecl, 0x76D506, stack->creature_id, damage, stack);
+	{	
+		result = stack->GetResistGolem(spell_id, damage); // SoD
 	}
 	// опыт стеков: CrExpBon::GolemResist(stack, result, damage, spell_id);
 	result = CALL_4(int,  __cdecl, 0x71E766, stack, result, damage, spell_id);
@@ -68,11 +68,18 @@ int BattleStack_Get_Killed_From_Damage(_BattleStack_* stack, int damage, int par
 			if (fullHealth <= damage) {
 				killed = stack->count_at_start - stack->count_current;	
 			} else {
-				int resurect_hp = damage - stack->lost_hp -1;
+				int lost_hp = stack->lost_hp;
+
+				// если стек мертвый, его lost_hp не обнулены
+				// поэтому будет считаться неправильно. А мы обнуляем.
+				if ( stack->creature.flags & BCF_DIE)
+					lost_hp = 0;
+
+				int resurect_hp = damage - lost_hp -1;
 				if ( resurect_hp > 0 )
 				{
-					killed = resurect_hp / stack->creature.hit_points +1;
-				}
+					killed = (resurect_hp / stack->creature.hit_points) +1;
+				} 
 			}
 		}
 	}
@@ -172,10 +179,14 @@ int __stdcall Y_Battle_Hint_SpellDescr_Prepare(LoHook* h, HookContext* c)
 			}
 		}
 
-		if ( !(o_Spell[spell].flags & SPF_FRIENDLY_HAS_MASS) ) {
-			int resist = WoG_GetResistGolem(spell, damage, stack);
-			damage = stack->GetResistSpellProtection(spell, resist);
-		}	
+		if ( stack )
+		{
+			if ( !(o_Spell[spell].flags & SPF_FRIENDLY_HAS_MASS) ) 
+			{
+				int resist = WoG_GetResistGolem(spell, damage, stack);
+				damage = stack->GetResistSpellProtection(spell, resist);
+			}	
+		}
 
 		if (str_hint_id == 4 ) 
 		{ // если лечение
