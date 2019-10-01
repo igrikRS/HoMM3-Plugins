@@ -395,7 +395,7 @@ int __stdcall Y_BM_ReceNetData(LoHook* h, HookContext* c)
 _int64_ __stdcall Y_DlgSpellBook_FixDecription_SpellPower(HiHook* hook, _Hero_ *hero, int spell, signed int damage, _BattleStack_ *stack)
 {
 	_int64_ power = CALL_4(_int64_, __thiscall, hook->GetDefaultFunc(), hero, spell, damage, stack);
-	power += (_int64_)hero->GetSpell_Specialisation_Bonuses(spell, 0, (_int_)power);
+	power += (_int64_)hero->GetSpell_Specialisation_PowerBonuses(spell, (_int_)power, 0);
 
 	return power;
 }

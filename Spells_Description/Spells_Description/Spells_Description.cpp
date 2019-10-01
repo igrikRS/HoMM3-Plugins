@@ -59,7 +59,7 @@ int BattleStack_Get_Killed_From_Damage(_BattleStack_* stack, int damage, int par
 						lost += 1;
 				}
 				else lost = fullHealth - damage;
-				killed = stack->count_current - lost;
+				killed = stack->count_current - lost;  
 			} else killed = stack->count_current; 
 		}
 		if (param == 3) // воскрешение и т.п.
@@ -129,9 +129,27 @@ int __stdcall Y_Battle_Hint_SpellDescr_Prepare(LoHook* h, HookContext* c)
 		_BattleHex_* hex = (_BattleHex_*)c->edi;
 		_BattleStack_* stack = hex->GetCreature();
 
-		if ( !(stack->CanUseSpell(spell, bm->current_side, 1, 0) ) ) 
+		if ( !stack ) 
 		{
-			return EXEC_DEFAULT;
+			// если воскрешение, то мы не сможем получить стек через гекс
+			// поэтому пытаемся получить через другие функции
+			if ( str_hint_id == 3 ) 
+			{
+				int hex_id = DwordAt(c->ebp +12);
+				if ( spell == SPL_RESURRECTION )
+					stack = CALL_4(_BattleStack_*, __thiscall, 0x5A3FD0, bm, bm->current_side, hex_id, 0);
+				else stack = CALL_3(_BattleStack_*, __thiscall, 0x5A4260, bm, bm->current_side, hex_id);
+
+			} else return EXEC_DEFAULT; // если всё же не получилось - выход
+		}
+		
+		// если стек НЕ мертв
+		if ( ! ( stack->creature.flags & BCF_DIE)  )
+		{
+			if ( !(stack->CanUseSpell(spell, bm->current_side, 1, 0) ) ) 
+			{
+				return EXEC_DEFAULT;
+			}
 		}
 
 		_Hero_* hero = bm->hero[bm->current_side];
@@ -157,8 +175,7 @@ int __stdcall Y_Battle_Hint_SpellDescr_Prepare(LoHook* h, HookContext* c)
 		if ( !(o_Spell[spell].flags & SPF_FRIENDLY_HAS_MASS) ) {
 			int resist = WoG_GetResistGolem(spell, damage, stack);
 			damage = stack->GetResistSpellProtection(spell, resist);
-		}
-	
+		}	
 
 		if (str_hint_id == 4 ) 
 		{ // если лечение
@@ -173,10 +190,11 @@ int __stdcall Y_Battle_Hint_SpellDescr_Prepare(LoHook* h, HookContext* c)
 		} 
 		else 
 		{
+			killed = BattleStack_Get_Killed_From_Damage(stack, damage, str_hint_id);
+
 			// проверяем язык игры и по ней корректируем номер строки
 			str_hint_id = GetString_Localosation(str_hint_id);
 
-			killed = BattleStack_Get_Killed_From_Damage(stack, damage, str_hint_id);
 			sprintf(o_TextBuffer, spellsHints_TXT->GetString( str_hint_id ), o_Spell[spell].name, (_cstr_)c->eax, damage, killed );
 		}
 
@@ -260,6 +278,8 @@ int __stdcall Y_DlgSpellBook_ModifSpell_Description(LoHook* h, HookContext* c)
 
 		c->Push(damage); // вталкиваем push eax (см. 0x59C002)
 		c->edx = (int)spellsHints_TXT->GetString(string);
+
+		// Пока вырезаем способ ЭРЫ
 		// Era::GetEraVersion();
 		// SetPcharValue(o_TextBuffer, tr("isd.spell_book_damage", {"%d", IntToStr(500}).c_str(), 0x300);
 		// lstrcpy(o_TextBuffer, tr("isd.test", {"damage", IntToStr(500}).c_str());
