@@ -10,8 +10,8 @@ PatcherInstance* _PI;
 struct _TXT_;
 _TXT_* spellsHints_TXT;
 
-// ïîëó÷åíèÿ íîìåðà ñòðîêè ñ òåêñòîì
-// â çàâèñèìîñòè îò ëîêàëèçàöèè èãðû
+// Ð¿Ð¾Ð»ÑƒÑ‡ÐµÐ½Ð¸Ñ Ð½Ð¾Ð¼ÐµÑ€Ð° ÑÑ‚Ñ€Ð¾ÐºÐ¸ Ñ Ñ‚ÐµÐºÑÑ‚Ð¾Ð¼
+// Ð² Ð·Ð°Ð²Ð¸ÑÐ¸Ð¼Ð¾ÑÑ‚Ð¸ Ð¾Ñ‚ Ð»Ð¾ÐºÐ°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ð¸ Ð¸Ð³Ñ€Ñ‹
 int GetString_Localosation(int string_id)
 {
 	if (isRusLangWoG) 
@@ -26,14 +26,14 @@ int WoG_GetResistGolem(int spell_id, int damage, _BattleStack_* stack)
 	int result = 0;
 
 	if (stack->creature_id >= 174 && stack->creature_id <= 191) 
-	{	// ñîïðîòèâëåíèå êîìàíäèðîâ NPC::Resist(MR_Type, MR_Dam, MR_Mon);
+	{	// ÑÐ¾Ð¿Ñ€Ð¾Ñ‚Ð¸Ð²Ð»ÐµÐ½Ð¸Ðµ ÐºÐ¾Ð¼Ð°Ð½Ð´Ð¸Ñ€Ð¾Ð² NPC::Resist(MR_Type, MR_Dam, MR_Mon);
 		result = CALL_3(int, __cdecl, 0x76D506, stack->creature_id, damage, stack);
 	} 
 	else 
 	{	
 		result = stack->GetResistGolem(spell_id, damage); // SoD
 	}
-	// îïûò ñòåêîâ: CrExpBon::GolemResist(stack, result, damage, spell_id);
+	// Ð¾Ð¿Ñ‹Ñ‚ ÑÑ‚ÐµÐºÐ¾Ð²: CrExpBon::GolemResist(stack, result, damage, spell_id);
 	result = CALL_4(int,  __cdecl, 0x71E766, stack, result, damage, spell_id);
 
 	return result;
@@ -48,7 +48,7 @@ int BattleStack_Get_Killed_From_Damage(_BattleStack_* stack, int damage, int par
 		int lost = 0;
 
 		int fullHealth;
-		if ( param == 2 ) // íàíåcåíèå óðîíà
+		if ( param == 2 ) // Ð½Ð°Ð½ÐµcÐµÐ½Ð¸Ðµ ÑƒÑ€Ð¾Ð½Ð°
 		{
 			fullHealth = stack->GetFullHealth(0);
 
@@ -62,7 +62,7 @@ int BattleStack_Get_Killed_From_Damage(_BattleStack_* stack, int damage, int par
 				killed = stack->count_current - lost;  
 			} else killed = stack->count_current; 
 		}
-		if (param == 3) // âîñêðåøåíèå è ò.ï.
+		if (param == 3) // Ð²Ð¾ÑÐºÑ€ÐµÑˆÐµÐ½Ð¸Ðµ Ð¸ Ñ‚.Ð¿.
 		{
 			fullHealth = (stack->count_at_start * stack->creature.hit_points) - stack->GetFullHealth(0);
 			if (fullHealth <= damage) {
@@ -70,8 +70,8 @@ int BattleStack_Get_Killed_From_Damage(_BattleStack_* stack, int damage, int par
 			} else {
 				int lost_hp = stack->lost_hp;
 
-				// åñëè ñòåê ìåðòâûé, åãî lost_hp íå îáíóëåíû
-				// ïîýòîìó áóäåò ñ÷èòàòüñÿ íåïðàâèëüíî. À ìû îáíóëÿåì.
+				// ÐµÑÐ»Ð¸ ÑÑ‚ÐµÐº Ð¼ÐµÑ€Ñ‚Ð²Ñ‹Ð¹, ÐµÐ³Ð¾ lost_hp Ð½Ðµ Ð¾Ð±Ð½ÑƒÐ»ÐµÐ½Ñ‹
+				// Ð¿Ð¾ÑÑ‚Ð¾Ð¼Ñƒ Ð±ÑƒÐ´ÐµÑ‚ ÑÑ‡Ð¸Ñ‚Ð°Ñ‚ÑŒÑÑ Ð½ÐµÐ¿Ñ€Ð°Ð²Ð¸Ð»ÑŒÐ½Ð¾. Ð Ð¼Ñ‹ Ð¾Ð±Ð½ÑƒÐ»ÑÐµÐ¼.
 				if ( stack->creature.flags & BCF_DIE)
 					lost_hp = 0;
 
@@ -92,10 +92,10 @@ int BattleStack_Get_Killed_From_Damage(_BattleStack_* stack, int damage, int par
 int __stdcall Y_Battle_Hint_SpellDescr_Prepare(LoHook* h, HookContext* c)
 {	
 	int spell = DwordAt(c->ebp +8);
-	int str_hint_id = 0; // íîìåð ñòðîêè â òåêñòîâîì ôàéëå (åñëè 0, òî õóê âîîáùå ïðîïóñêàåì)
+	int str_hint_id = 0; // Ð½Ð¾Ð¼ÐµÑ€ ÑÑ‚Ñ€Ð¾ÐºÐ¸ Ð² Ñ‚ÐµÐºÑÑ‚Ð¾Ð²Ð¾Ð¼ Ñ„Ð°Ð¹Ð»Ðµ (ÐµÑÐ»Ð¸ 0, Ñ‚Ð¾ Ñ…ÑƒÐº Ð²Ð¾Ð¾Ð±Ñ‰Ðµ Ð¿Ñ€Ð¾Ð¿ÑƒÑÐºÐ°ÐµÐ¼)
 
-	// ïðîâåðÿåì íóæíî ëè ìîäèôèöèðîâàòü ñòðîêó
-	// â çàâèñèìîñòè îò çàêëèíàíèÿ
+	// Ð¿Ñ€Ð¾Ð²ÐµÑ€ÑÐµÐ¼ Ð½ÑƒÐ¶Ð½Ð¾ Ð»Ð¸ Ð¼Ð¾Ð´Ð¸Ñ„Ð¸Ñ†Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ ÑÑ‚Ñ€Ð¾ÐºÑƒ
+	// Ð² Ð·Ð°Ð²Ð¸ÑÐ¸Ð¼Ð¾ÑÑ‚Ð¸ Ð¾Ñ‚ Ð·Ð°ÐºÐ»Ð¸Ð½Ð°Ð½Ð¸Ñ
 	switch ( spell )
 	{
 	case SPL_MAGIC_ARROW: 
@@ -124,7 +124,7 @@ int __stdcall Y_Battle_Hint_SpellDescr_Prepare(LoHook* h, HookContext* c)
 		break;
 	}
 	
-	// åñëè ñòðîêó õèíòà çàêëèíàíèÿ ìîäèôèöèðóåì
+	// ÐµÑÐ»Ð¸ ÑÑ‚Ñ€Ð¾ÐºÑƒ Ñ…Ð¸Ð½Ñ‚Ð° Ð·Ð°ÐºÐ»Ð¸Ð½Ð°Ð½Ð¸Ñ Ð¼Ð¾Ð´Ð¸Ñ„Ð¸Ñ†Ð¸Ñ€ÑƒÐµÐ¼
 	if (str_hint_id) 
 	{
 		int damage = 0;
@@ -138,8 +138,8 @@ int __stdcall Y_Battle_Hint_SpellDescr_Prepare(LoHook* h, HookContext* c)
 
 		if ( !stack ) 
 		{
-			// åñëè âîñêðåøåíèå, òî ìû íå ñìîæåì ïîëó÷èòü ñòåê ÷åðåç ãåêñ
-			// ïîýòîìó ïûòàåìñÿ ïîëó÷èòü ÷åðåç äðóãèå ôóíêöèè
+			// ÐµÑÐ»Ð¸ Ð²Ð¾ÑÐºÑ€ÐµÑˆÐµÐ½Ð¸Ðµ, Ñ‚Ð¾ Ð¼Ñ‹ Ð½Ðµ ÑÐ¼Ð¾Ð¶ÐµÐ¼ Ð¿Ð¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ ÑÑ‚ÐµÐº Ñ‡ÐµÑ€ÐµÐ· Ð³ÐµÐºÑ
+			// Ð¿Ð¾ÑÑ‚Ð¾Ð¼Ñƒ Ð¿Ñ‹Ñ‚Ð°ÐµÐ¼ÑÑ Ð¿Ð¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ñ‡ÐµÑ€ÐµÐ· Ð´Ñ€ÑƒÐ³Ð¸Ðµ Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¸
 			if ( str_hint_id == 3 ) 
 			{
 				int hex_id = DwordAt(c->ebp +12);
@@ -147,10 +147,10 @@ int __stdcall Y_Battle_Hint_SpellDescr_Prepare(LoHook* h, HookContext* c)
 					stack = CALL_4(_BattleStack_*, __thiscall, 0x5A3FD0, bm, bm->current_side, hex_id, 0);
 				else stack = CALL_3(_BattleStack_*, __thiscall, 0x5A4260, bm, bm->current_side, hex_id);
 
-			} else return EXEC_DEFAULT; // åñëè âñ¸ æå íå ïîëó÷èëîñü - âûõîä
+			} else return EXEC_DEFAULT; // ÐµÑÐ»Ð¸ Ð²ÑÑ‘ Ð¶Ðµ Ð½Ðµ Ð¿Ð¾Ð»ÑƒÑ‡Ð¸Ð»Ð¾ÑÑŒ - Ð²Ñ‹Ñ…Ð¾Ð´
 		}
 		
-		// åñëè ñòåê ÍÅ ìåðòâ
+		// ÐµÑÐ»Ð¸ ÑÑ‚ÐµÐº ÐÐ• Ð¼ÐµÑ€Ñ‚Ð²
 		if ( ! ( stack->creature.flags & BCF_DIE)  )
 		{
 			if ( !(stack->CanUseSpell(spell, bm->current_side, 1, 0) ) ) 
@@ -189,12 +189,12 @@ int __stdcall Y_Battle_Hint_SpellDescr_Prepare(LoHook* h, HookContext* c)
 		}
 
 		if (str_hint_id == 4 ) 
-		{ // åñëè ëå÷åíèå
+		{ // ÐµÑÐ»Ð¸ Ð»ÐµÑ‡ÐµÐ½Ð¸Ðµ
 			if (stack->lost_hp < damage) 
 			{
-				damage = stack->lost_hp; // òî÷íîå êîë-âî ñêîëüêî âûëå÷èò hp
+				damage = stack->lost_hp; // Ñ‚Ð¾Ñ‡Ð½Ð¾Ðµ ÐºÐ¾Ð»-Ð²Ð¾ ÑÐºÐ¾Ð»ÑŒÐºÐ¾ Ð²Ñ‹Ð»ÐµÑ‡Ð¸Ñ‚ hp
 			}
-			// ïðîâåðÿåì ÿçûê èãðû è ïî íåé êîððåêòèðóåì íîìåð ñòðîêè
+			// Ð¿Ñ€Ð¾Ð²ÐµÑ€ÑÐµÐ¼ ÑÐ·Ñ‹Ðº Ð¸Ð³Ñ€Ñ‹ Ð¸ Ð¿Ð¾ Ð½ÐµÐ¹ ÐºÐ¾Ñ€Ñ€ÐµÐºÑ‚Ð¸Ñ€ÑƒÐµÐ¼ Ð½Ð¾Ð¼ÐµÑ€ ÑÑ‚Ñ€Ð¾ÐºÐ¸
 			str_hint_id = GetString_Localosation(str_hint_id);
 
 			sprintf(o_TextBuffer, spellsHints_TXT->GetString( str_hint_id ), (_cstr_)c->eax, damage );
@@ -203,7 +203,7 @@ int __stdcall Y_Battle_Hint_SpellDescr_Prepare(LoHook* h, HookContext* c)
 		{
 			killed = BattleStack_Get_Killed_From_Damage(stack, damage, str_hint_id);
 
-			// ïðîâåðÿåì ÿçûê èãðû è ïî íåé êîððåêòèðóåì íîìåð ñòðîêè
+			// Ð¿Ñ€Ð¾Ð²ÐµÑ€ÑÐµÐ¼ ÑÐ·Ñ‹Ðº Ð¸Ð³Ñ€Ñ‹ Ð¸ Ð¿Ð¾ Ð½ÐµÐ¹ ÐºÐ¾Ñ€Ñ€ÐµÐºÑ‚Ð¸Ñ€ÑƒÐµÐ¼ Ð½Ð¾Ð¼ÐµÑ€ ÑÑ‚Ñ€Ð¾ÐºÐ¸
 			str_hint_id = GetString_Localosation(str_hint_id);
 
 			sprintf(o_TextBuffer, spellsHints_TXT->GetString( str_hint_id ), o_Spell[spell].name, (_cstr_)c->eax, damage, killed );
@@ -284,13 +284,13 @@ int __stdcall Y_DlgSpellBook_ModifSpell_Description(LoHook* h, HookContext* c)
 
 	if (string != 0)
 	{
-		// ïðîâåðÿåì ÿçûê èãðû è ïî íåé êîððåêòèðóåì íîìåð ñòðîêè
+		// Ð¿Ñ€Ð¾Ð²ÐµÑ€ÑÐµÐ¼ ÑÐ·Ñ‹Ðº Ð¸Ð³Ñ€Ñ‹ Ð¸ Ð¿Ð¾ Ð½ÐµÐ¹ ÐºÐ¾Ñ€Ñ€ÐµÐºÑ‚Ð¸Ñ€ÑƒÐµÐ¼ Ð½Ð¾Ð¼ÐµÑ€ ÑÑ‚Ñ€Ð¾ÐºÐ¸
 		string = GetString_Localosation(string);
 
-		c->Push(damage); // âòàëêèâàåì push eax (ñì. 0x59C002)
+		c->Push(damage); // Ð²Ñ‚Ð°Ð»ÐºÐ¸Ð²Ð°ÐµÐ¼ push eax (ÑÐ¼. 0x59C002)
 		c->edx = (int)spellsHints_TXT->GetString(string);
 
-		// Ïîêà âûðåçàåì ñïîñîá ÝÐÛ
+		// ÐŸÐ¾ÐºÐ° Ð²Ñ‹Ñ€ÐµÐ·Ð°ÐµÐ¼ ÑÐ¿Ð¾ÑÐ¾Ð± Ð­Ð Ð«
 		// Era::GetEraVersion();
 		// SetPcharValue(o_TextBuffer, tr("isd.spell_book_damage", {"%d", IntToStr(500}).c_str(), 0x300);
 		// lstrcpy(o_TextBuffer, tr("isd.test", {"damage", IntToStr(500}).c_str());
@@ -313,16 +313,16 @@ int __stdcall Y_LoadAllTXTinGames(LoHook* h, HookContext* c)
 
 void StartPlugin()
 {
-	// ñîçäàåì çàãðóçêó íåîáõîäèìûõ òåêòîâèêîâ
+	// ÑÐ¾Ð·Ð´Ð°ÐµÐ¼ Ð·Ð°Ð³Ñ€ÑƒÐ·ÐºÑƒ Ð½ÐµÐ¾Ð±Ñ…Ð¾Ð´Ð¸Ð¼Ñ‹Ñ… Ñ‚ÐµÐºÑ‚Ð¾Ð²Ð¸ÐºÐ¾Ð²
 	_PI->WriteLoHook(0x4EDD65, Y_LoadAllTXTinGames);
 
 	_PI->WriteLoHook(0x5A8B90, Y_Battle_Hint_SpellDescr_Prepare);
-	_PI->WriteByte(0x5A8C31, 6); // ìîäèô.ñâèò÷ SPL_FIREBALL
-	_PI->WriteByte(0x5A8C32, 6); // ìîäèô.ñâèò÷ SPL_INFERNO
-	_PI->WriteByte(0x5A8C33, 6); // ìîäèô.ñâèò÷ SPL_METEOR_SHOWER
+	_PI->WriteByte(0x5A8C31, 6); // Ð¼Ð¾Ð´Ð¸Ñ„.ÑÐ²Ð¸Ñ‚Ñ‡ SPL_FIREBALL
+	_PI->WriteByte(0x5A8C32, 6); // Ð¼Ð¾Ð´Ð¸Ñ„.ÑÐ²Ð¸Ñ‚Ñ‡ SPL_INFERNO
+	_PI->WriteByte(0x5A8C33, 6); // Ð¼Ð¾Ð´Ð¸Ñ„.ÑÐ²Ð¸Ñ‚Ñ‡ SPL_METEOR_SHOWER
 
-	// ìîäèôèêàöèÿ óêàçàíèÿ ñèëû íåêîòîðûõ çàêëèíàíèé â êíèãå
-	_PI->WriteCodePatch(0x59BFBE, "%n", 12); // óáèðàåì ïðîâåðêó íà ôëàã çàêëèíàíèÿ (ïîòîì ïðîâåðÿåì ñàìè)
+	// Ð¼Ð¾Ð´Ð¸Ñ„Ð¸ÐºÐ°Ñ†Ð¸Ñ ÑƒÐºÐ°Ð·Ð°Ð½Ð¸Ñ ÑÐ¸Ð»Ñ‹ Ð½ÐµÐºÐ¾Ñ‚Ð¾Ñ€Ñ‹Ñ… Ð·Ð°ÐºÐ»Ð¸Ð½Ð°Ð½Ð¸Ð¹ Ð² ÐºÐ½Ð¸Ð³Ðµ
+	_PI->WriteCodePatch(0x59BFBE, "%n", 12); // ÑƒÐ±Ð¸Ñ€Ð°ÐµÐ¼ Ð¿Ñ€Ð¾Ð²ÐµÑ€ÐºÑƒ Ð½Ð° Ñ„Ð»Ð°Ð³ Ð·Ð°ÐºÐ»Ð¸Ð½Ð°Ð½Ð¸Ñ (Ð¿Ð¾Ñ‚Ð¾Ð¼ Ð¿Ñ€Ð¾Ð²ÐµÑ€ÑÐµÐ¼ ÑÐ°Ð¼Ð¸)
 	_PI->WriteLoHook(0x59BFE7, Y_DlgSpellBook_ModifSpell_Description);
 
 	return;
