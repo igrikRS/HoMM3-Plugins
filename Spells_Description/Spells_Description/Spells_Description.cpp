@@ -8,7 +8,7 @@ Patcher* _P;
 PatcherInstance* _PI;
 
 struct _TXT_;
-_TXT_* spellsHints_TXT;
+_TXT_* Spells_Description_TXT;
 
 // получения номера строки с текстом
 // в зависимости от локализации игры
@@ -197,7 +197,7 @@ int __stdcall Y_Battle_Hint_SpellDescr_Prepare(LoHook* h, HookContext* c)
 			// проверяем язык игры и по ней корректируем номер строки
 			str_hint_id = GetString_Localosation(str_hint_id);
 
-			sprintf(o_TextBuffer, spellsHints_TXT->GetString( str_hint_id ), (_cstr_)c->eax, damage );
+			sprintf(o_TextBuffer, Spells_Description_TXT->GetString( str_hint_id ), (_cstr_)c->eax, damage );
 		} 
 		else 
 		{
@@ -206,7 +206,7 @@ int __stdcall Y_Battle_Hint_SpellDescr_Prepare(LoHook* h, HookContext* c)
 			// проверяем язык игры и по ней корректируем номер строки
 			str_hint_id = GetString_Localosation(str_hint_id);
 
-			sprintf(o_TextBuffer, spellsHints_TXT->GetString( str_hint_id ), o_Spell[spell].name, (_cstr_)c->eax, damage, killed );
+			sprintf(o_TextBuffer, Spells_Description_TXT->GetString( str_hint_id ), o_Spell[spell].name, (_cstr_)c->eax, damage, killed );
 		}
 
 
@@ -219,7 +219,7 @@ int __stdcall Y_Battle_Hint_SpellDescr_Prepare(LoHook* h, HookContext* c)
 
 int __stdcall Y_DlgSpellBook_ModifSpell_Description(LoHook* h, HookContext* c)
 {
-	int string = 0;
+	int string = 0; // номер строки в текстовом файле (0 - не модифицировать)
 
 	int spell_pow = c->eax;
 	int spell_lvl = DwordAt(c->ebp -16);
@@ -282,16 +282,16 @@ int __stdcall Y_DlgSpellBook_ModifSpell_Description(LoHook* h, HookContext* c)
 		break;
 	}
 
-	if (string != 0)
+	// если строку модифицировали
+	if ( string )
 	{
 		// проверяем язык игры и по ней корректируем номер строки
 		string = GetString_Localosation(string);
 
 		c->Push(damage); // вталкиваем push eax (см. 0x59C002)
-		c->edx = (int)spellsHints_TXT->GetString(string);
+		c->edx = (int)Spells_Description_TXT->GetString(string);
 
 		// Пока вырезаем способ ЭРЫ
-		// Era::GetEraVersion();
 		// SetPcharValue(o_TextBuffer, tr("isd.spell_book_damage", {"%d", IntToStr(500}).c_str(), 0x300);
 		// lstrcpy(o_TextBuffer, tr("isd.test", {"damage", IntToStr(500}).c_str());
 		c->return_address = 0x59C011;
@@ -306,7 +306,7 @@ int __stdcall Y_DlgSpellBook_ModifSpell_Description(LoHook* h, HookContext* c)
 
 int __stdcall Y_LoadAllTXTinGames(LoHook* h, HookContext* c)
 {
-	spellsHints_TXT = _TXT_::Load( "spellsHints.txt" );
+	Spells_Description_TXT = _TXT_::Load( "Spells_Description.txt" );
 	return EXEC_DEFAULT;
 }
 
