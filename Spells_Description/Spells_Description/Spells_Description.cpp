@@ -271,15 +271,14 @@ int __stdcall Y_DlgSpellBook_ModifSpell_Description(LoHook* h, HookContext* c)
 	case SPL_FIRE_ELEMENTAL: 
 	case SPL_EARTH_ELEMENTAL:
 	case SPL_WATER_ELEMENTAL:
-	case SPL_AIR_ELEMENTAL:			
-		string = 12;
-		damage *= (int)(hero->power);
+	case SPL_AIR_ELEMENTAL:	
 
-		if ( GetWoGOptionsStatus(726) ) // специальная проверка на ReMagic
+		// специальная проверка на ReMagic
+		if ( !GetWoGOptionsStatus(726) ) 
 		{
-			string = 0;
+			string = 12;
+			damage *= (int)(hero->power);
 		}
-
 		break;
 
 	default: 
