@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "..\..\..\include\homm3.h"
 
-//#include "..\..\..\include\era.h"
-//using namespace Era;
-
 Patcher* _P;
 PatcherInstance* _PI;
 
@@ -15,7 +12,7 @@ _TXT_* Spells_Description_TXT;
 int GetString_Localosation(int string_id)
 {
 	if (isRusLangWoG) 
-		string_id += 14;
+		string_id += 15;
 
 	return string_id;
 }
@@ -296,9 +293,6 @@ int __stdcall Y_DlgSpellBook_ModifSpell_Description(LoHook* h, HookContext* c)
 		c->Push(damage); // вталкиваем push eax (см. 0x59C002)
 		c->edx = (int)Spells_Description_TXT->GetString(string);
 
-		// Пока вырезаем способ ЭРЫ
-		// SetPcharValue(o_TextBuffer, tr("isd.spell_book_damage", {"%d", IntToStr(500}).c_str(), 0x300);
-		// lstrcpy(o_TextBuffer, tr("isd.test", {"damage", IntToStr(500}).c_str());
 		c->return_address = 0x59C011;
 	}
 	else 
@@ -306,6 +300,46 @@ int __stdcall Y_DlgSpellBook_ModifSpell_Description(LoHook* h, HookContext* c)
 		c->return_address = 0x59C084;
 	}
 	
+	return NO_EXEC_DEFAULT;
+}
+
+// показ кол-ва воскрешаемых существ Архангелами и Пит-Лордами
+int __stdcall Y_Battle_Hint_Prepare_ResurrectArchangel(LoHook* h, HookContext* c)
+{
+	// получаем активную строну и целевой гекс
+	int gex_id = c->eax;
+	int side = c->esi;	
+	
+	// получаем структуры активного и целевого стека
+	_BattleStack_* stack_active = (_BattleStack_*)c->ebx;
+	_BattleStack_* stack_target = o_BattleMgr->Get_Resurrect_BattleStack(side, gex_id, 1);
+
+	// подготавливаем переменные: кол-во воскрешаемых и их название
+	char* mon_name = GetCreatureName(stack_target->creature_id, stack_target->count_current);
+	int count = stack_active->Get_Resurrect_Count(stack_target);
+
+	// в зависимости от адреса возврата понимаем какой из двух хуков срабатал
+	// и от этого выбираем тип строки из двух возможных 
+	int str_id = 13;
+	if ( c->return_address != 4794996 )  // dec: (0x492A6E +6)
+		str_id = 14;
+
+	// собираем текст подсказки
+	sprintf(o_TextBuffer, Spells_Description_TXT->GetString(GetString_Localosation(str_id)), count, mon_name);
+
+	// пропускаем стандартный код игры
+	c->return_address = 0x492E3B;
+	return NO_EXEC_DEFAULT;
+}
+
+// фиксим оригинальную функцию игры: ИИ теперь знает о существовании существа с id = 150
+int __stdcall Y_Fix_Funk_Get_Resurrect_Count(LoHook* h, HookContext* c)
+{
+	int mon_id = c->eax;
+	if ( mon_id == 13 || mon_id == 150 ) 
+		 c->return_address = 0x44705F;
+	else c->return_address = 0x447098;
+
 	return NO_EXEC_DEFAULT;
 }
 
@@ -330,6 +364,11 @@ void StartPlugin()
 	_PI->WriteCodePatch(0x59BFBE, "%n", 12); // убираем проверку на флаг заклинания (потом проверяем сами)
 	_PI->WriteLoHook(0x59BFE7, Y_DlgSpellBook_ModifSpell_Description);
 
+	// показ кол-ва воскрешаемых существ Архангелами и Пит-Лордами
+	_PI->WriteLoHook(0x492A6E, Y_Battle_Hint_Prepare_ResurrectArchangel);
+	_PI->WriteLoHook(0x492AF6, Y_Battle_Hint_Prepare_ResurrectArchangel);
+	_PI->WriteLoHook(0x44705A, Y_Fix_Funk_Get_Resurrect_Count);
+
 	return;
 }
 
@@ -347,8 +386,6 @@ BOOL APIENTRY DllMain ( HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpRes
 
 			_P = GetPatcher();
 			_PI = _P->CreateInstance("Spells_Description");
-
-			// Era::ConnectEra();
 
 			StartPlugin();
 			

@@ -47,7 +47,7 @@ _Dlg_* __stdcall Y_Dlg_BattleOptions_Create(HiHook* hook, _Dlg_* dlg)
 {
 	dlg = CALL_1(_Dlg_*, __thiscall, hook->GetDefaultFunc(), dlg);
 
-	dlg->AddItem(_DlgStaticPcx8_::Create(25, 222, 250, "SYSBS.pcx" ));
+	// dlg->AddItem(_DlgStaticPcx8_::Create(25, 222, 250, "SYSBS.pcx" ));
 
 	for (int i = 0; i < 10; i++)
 	{
