@@ -1271,6 +1271,8 @@ int __stdcall New_Dlg_IF_G_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 
 int New_Dlg_IF_G(int num_str, int htxt, int state, int txt, int chRAD)
 {
+	o_PauseVideo();
+
 	if (num_str > 12) 
 		num_str = 12; 
 
@@ -1312,6 +1314,9 @@ int New_Dlg_IF_G(int num_str, int htxt, int state, int txt, int chRAD)
 	dlg->Run();
 	dlg->Destroy(TRUE);
 	b_MouseMgr_SetCursor(cursor_f, cursor_t);
+
+	o_ContinueVideo();
+
 	return 1;
 }
 
