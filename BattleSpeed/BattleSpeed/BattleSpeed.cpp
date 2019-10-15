@@ -7,7 +7,7 @@ PatcherInstance* _PI;
 #define BATTON_ID 240
 
 // константы боевых скоростей
-const float battleSpeedCoef[10] = { 1.00f, 0.60f, 0.40f, 0.20f, 0.10f, 0.08f, 0.06f, 0.040f, 0.020f, 0.010f };
+const float battleSpeedCoef[10] = { 1.00f, 0.61f, 0.43f, 0.21f, 0.090f, 0.075f, 0.060f, 0.045f, 0.030f, 0.010f };
 
 int __stdcall Y_Dlg_BattleOptions_Proc(HiHook* hook, _EventMsg_* msg)
 {
@@ -47,7 +47,7 @@ _Dlg_* __stdcall Y_Dlg_BattleOptions_Create(HiHook* hook, _Dlg_* dlg)
 {
 	dlg = CALL_1(_Dlg_*, __thiscall, hook->GetDefaultFunc(), dlg);
 
-	// dlg->AddItem(_DlgStaticPcx8_::Create(25, 222, 250, "SYSBS.pcx" ));
+	dlg->AddItem(_DlgStaticPcx8_::Create(25, 222, 250, "BattleSpeed.pcx" ));
 
 	for (int i = 0; i < 10; i++)
 	{
