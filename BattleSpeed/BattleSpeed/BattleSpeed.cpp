@@ -6,7 +6,7 @@ PatcherInstance* _PI;
 #define BattleSpeed (*(_int_*)0x69883C)
 #define BATTON_ID 240
 
-// константы боевых скоростей
+// РєРѕРЅСЃС‚Р°РЅС‚С‹ Р±РѕРµРІС‹С… СЃРєРѕСЂРѕСЃС‚РµР№
 const float battleSpeedCoef[10] = { 1.00f, 0.61f, 0.43f, 0.21f, 0.090f, 0.075f, 0.060f, 0.045f, 0.030f, 0.010f };
 
 int __stdcall Y_Dlg_BattleOptions_Proc(HiHook* hook, _EventMsg_* msg)
@@ -19,7 +19,7 @@ int __stdcall Y_Dlg_BattleOptions_Proc(HiHook* hook, _EventMsg_* msg)
 		{
 			if (msg->item_id >= BATTON_ID && msg->item_id <= (BATTON_ID +9) )
 			{
-				// описания скорости кнопок (подгоняем под стандарные 3 описания)
+				// РѕРїРёСЃР°РЅРёСЏ СЃРєРѕСЂРѕСЃС‚Рё РєРЅРѕРїРѕРє (РїРѕРґРіРѕРЅСЏРµРј РїРѕРґ СЃС‚Р°РЅРґР°СЂРЅС‹Рµ 3 РѕРїРёСЃР°РЅРёСЏ)
 				msg->item_id = ( (msg->item_id - BATTON_ID -1) / 3 +230 );
 			}
 		}
@@ -52,7 +52,7 @@ _Dlg_* __stdcall Y_Dlg_BattleOptions_Create(HiHook* hook, _Dlg_* dlg)
 	for (int i = 0; i < 10; i++)
 	{
 		dlg->AddItem(_DlgStaticDef_::Create(29 + 19*i, 225, 18, 36, BATTON_ID +i, "SYSLB.DEF", i, 0, 0));
-		((_DlgStaticDef_*)dlg->GetItem(BATTON_ID + i))->Hide_ButStayEnable();  // сразу же скрываем кнопки (но они работают)
+		((_DlgStaticDef_*)dlg->GetItem(BATTON_ID + i))->Hide_ButStayEnable();  // СЃСЂР°Р·Сѓ Р¶Рµ СЃРєСЂС‹РІР°РµРј РєРЅРѕРїРєРё (РЅРѕ РѕРЅРё СЂР°Р±РѕС‚Р°СЋС‚)
 	}
 	((_DlgStaticDef_*)dlg->GetItem(BATTON_ID + BattleSpeed))->Show_ButStayEnable();
 
@@ -82,58 +82,14 @@ void StartPlugin()
 	_PI->WriteDword(0x5A7FE2 +3, pBSpeed); // BattleStack_CastSpellEarthquake
 	_PI->WriteDword(0x5A8148 +3, pBSpeed); // BattleStack_CastSpellEarthquake
 
-	////// диалог системных опций (id 240 - 249)
-	////_PI->WriteDword(0x46F07A +1, bttn_id);		// (начало цикла)
-	////_PI->WriteDword(0x46F096 +2, bttn_id +9);		// (конец цикла)
-	////_PI->WriteDword(0x46F0A9 +2, bttn_id);		// передать команду элементу
-
-	//// колбек системных опций 1
-	//_PI->WriteDword(0x46F3EF +1, BATTON_ID);		// (начало цикла)
-	//_PI->WriteDword(0x46F40B +2, BATTON_ID +9);	// (конец цикла)
-	//_PI->WriteDword(0x46F41D +1, BATTON_ID);		// передать команду элементу
-	//								   
-	// // колбек системных опций 2
-	//_PI->WriteDword(0x46F76E +1, -BATTON_ID);
-	//_PI->WriteDword(0x46F778 +1, BATTON_ID);
-	//_PI->WriteDword(0x46F7A7 +2, BATTON_ID);
-
-	// пропускаем создание кнопок в диалоге системных опций битвы
+	// РїСЂРѕРїСѓСЃРєР°РµРј СЃРѕР·РґР°РЅРёРµ РєРЅРѕРїРѕРє РІ РґРёР°Р»РѕРіРµ СЃРёСЃС‚РµРјРЅС‹С… РѕРїС†РёР№ Р±РёС‚РІС‹
 	_PI->WriteHexPatch(0x46E1F0, "E9 F7000000"); // JMP 0046E2EC
 	_PI->WriteHexPatch(0x46F07A, "EB 44"); // JMP SHORT 0046F0C0
 
-	// добавление новых кнопок в диалог системных опций
+	// РґРѕР±Р°РІР»РµРЅРёРµ РЅРѕРІС‹С… РєРЅРѕРїРѕРє РІ РґРёР°Р»РѕРі СЃРёСЃС‚РµРјРЅС‹С… РѕРїС†РёР№
 	_PI->WriteHiHook(0x46DF00, SPLICE_, EXTENDED_, THISCALL_, Y_Dlg_BattleOptions_Create);
 	_PI->WriteHiHook(0x46F300, SPLICE_, EXTENDED_, THISCALL_, Y_Dlg_BattleOptions_Proc);
 
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////
-
-int __stdcall Y_DlgMainMenu_Proc(HiHook* hook, _EventMsg_* msg)
-{
-	if ( msg->type == MT_KEYDOWN) 
-	{
-		if ( msg->subtype == HK_F6 ) 
-		{
-			o_PauseVideo();
-			_Dlg_* dlg = (_Dlg_*)o_New(104);
-			CALL_1(int, __thiscall, 0x46DF00, dlg);
-			CALL_1(int, __thiscall, 0x46F2D0, dlg);
-			CALL_1(int, __thiscall, 0x46F250, dlg);
-
-			o_WndMgr->result_dlg_item_id = -1;
-			o_ContinueVideo();
-		}
-
-		//if ( msg->subtype == HK_F6 ) // тестовая кнопка
-		//{
-		//	int HD_Version = _P->VarValue<_dword_>("HD.Version.Dword");
-		//	sprintf(o_TextBuffer, "HD_Version = %d", HD_Version );
-		//	b_MsgBox(o_TextBuffer, 1);
-		//}
-	}
-	return CALL_1(int, __thiscall, hook->GetDefaultFunc(), msg);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -151,11 +107,6 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 
 			_P = GetPatcher();
 			_PI = _P->CreateInstance("BattleSpeed");
-
-			//системное меню в главном меню
-			_PI->WriteHiHook(0x4FBDA0, SPLICE_, EXTENDED_, THISCALL_, Y_DlgMainMenu_Proc);
-			_PI->WriteHiHook(0x4D5B50, SPLICE_, EXTENDED_, THISCALL_, Y_DlgMainMenu_Proc);
-			_PI->WriteHiHook(0x456FD0, SPLICE_, EXTENDED_, THISCALL_, Y_DlgMainMenu_Proc);
 
 			StartPlugin();
 		}

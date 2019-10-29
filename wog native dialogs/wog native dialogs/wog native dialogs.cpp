@@ -2543,12 +2543,14 @@ _int_ __stdcall Y_BATTLE_Proc(HiHook* hook, _BattleMgr_* bm, _EventMsg_* msg)
 {
 	if ( msg->type == MT_KEYDOWN ) {
 		if ( msg->subtype == HK_Q )	{
-			if ( b_MsgBox( WogNDlg_TXT->GetString(27), MBX_OKCANCEL) ) {
-				QuickBattle_SAVE = o_QuickBattle;
-				isNeedRestore = 1;
-				o_QuickBattle = 1;
-				return 1;
-			} 
+			if ( (bm->isNotAI[0] && !bm->isNotAI[1]) || (!bm->isNotAI[0] && bm->isNotAI[1]) ) {
+				if ( b_MsgBox( WogNDlg_TXT->GetString(27), MBX_OKCANCEL) ) {
+					QuickBattle_SAVE = o_QuickBattle;
+					isNeedRestore = 1;
+					o_QuickBattle = 1;
+					return 1;
+				} 
+			}
 		}
 	}
 	return CALL_2(_int_, __thiscall, hook->GetDefaultFunc(), bm, msg);

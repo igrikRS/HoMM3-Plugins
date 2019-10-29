@@ -482,6 +482,46 @@ int __stdcall Fix_WoG_GetCreatureGrade_Town(LoHook* h, HookContext* c)
 	return EXEC_DEFAULT;
 } 
 
+//////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////            ЗАПРЕТЫ ЗАКЛИНАНИЙ             ////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+// запрет выдачи заклинаний у артефактов, если они запрещены через UN:J0/spell_id/1;
+int __stdcall Y_ArtGive_Spell(HiHook* hook, int spells_array, unsigned int spell_id, char enable) 
+{
+	if (enable && o_GameMgr->disabled_spells[spell_id]) {
+		return 0;
+	}
+
+	return CALL_3(int, __thiscall, hook->GetDefaultFunc(), spells_array, spell_id, enable);
+}
+
+// заполняем таблицы запретов заклинаний при при загрузке карты, если они запрещены через UN:J0/spell_id/1;
+int __stdcall Y_ArtGive_LoadSpells(HiHook* hook, int spells_array, char enable) 
+{
+	int spell_id = *(int*)(spells_array +4);
+
+	o_GameMgr->disabled_shrines[spell_id] = enable;
+	o_GameMgr->disabled_spells[spell_id] = enable;
+
+	return CALL_2(int, __thiscall, hook->GetDefaultFunc(), spells_array, enable);
+}
+
+// запрет выдачи заклинаний у томов магии и шляпы школяра, если они запрещены через UN:J0/spell_id/1;
+int __stdcall Y_ArtGive_AllSpells(HiHook* hook, int spells_array, char enable) 
+{
+	int spell_id = *(int*)(spells_array +4);
+
+	if (enable && o_GameMgr->disabled_spells[spell_id]) {
+		return 0;
+	}
+
+	return CALL_2(int, __thiscall, hook->GetDefaultFunc(), spells_array, enable);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 
 
@@ -697,6 +737,20 @@ void startPlugin(Patcher* _P, PatcherInstance* _PI)
 	// Решение бага ERM: триггер MA:U#/-2 приводил к тому, что любое существо при установке такой команды улучшалось в копейщика
 	_PI->WriteDword(0x724A9F, -2);  _PI->WriteLoHook(0x724AC5, Fix_WoG_GetCreatureGrade_Expo);
 	_PI->WriteDword(0x74ED27, -2);  _PI->WriteLoHook(0x74ED5C, Fix_WoG_GetCreatureGrade_Town);
+
+	// запрет выдачи заклинаний у артефактов
+	_PI->WriteHiHook(0x4D9763, CALL_, EXTENDED_, THISCALL_, Y_ArtGive_Spell);
+	_PI->WriteHiHook(0x4D9786, CALL_, EXTENDED_, THISCALL_, Y_ArtGive_Spell);
+	_PI->WriteHiHook(0x4D9798, CALL_, EXTENDED_, THISCALL_, Y_ArtGive_Spell);
+	// заполняем таблицу при загрузке карты
+	_PI->WriteHiHook(0x4C2445, CALL_, EXTENDED_, THISCALL_, Y_ArtGive_LoadSpells);
+	// запрет выдачи заклинаний у томов магии и шляпы школяра
+	_PI->WriteHiHook(0x4D961F, CALL_, EXTENDED_, THISCALL_, Y_ArtGive_AllSpells);
+	_PI->WriteHiHook(0x4D9673, CALL_, EXTENDED_, THISCALL_, Y_ArtGive_AllSpells);
+	_PI->WriteHiHook(0x4D9673, CALL_, EXTENDED_, THISCALL_, Y_ArtGive_AllSpells);
+	_PI->WriteHiHook(0x4D9720, CALL_, EXTENDED_, THISCALL_, Y_ArtGive_AllSpells);
+	//_PI->WriteHiHook(0x4D9673, CALL_, EXTENDED_, THISCALL_, Y_ArtGive_AllSpells);
+
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
