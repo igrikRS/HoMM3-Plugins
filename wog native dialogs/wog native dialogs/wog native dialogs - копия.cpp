@@ -22,9 +22,6 @@ _bool_ isHD = false;
 _int_ HD_Version;
 #define hdv(type, name) _P->VarValue<type>((_cstr_)(name))
 
-// переменная, для чистого WND
-//#define DOP_FUNK_TO_ERA
-
 struct _TXT_;
 _TXT_* txtresWOG;
 _TXT_* WogNDlg_TXT;
@@ -2195,7 +2192,6 @@ int __stdcall get_Fight_Value_Hook(LoHook* h, HookContext* c)
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifdef DOP_FUNK_TO_ERA
 // окно обмена героями в городе по клавише E 
 bool inTownDlg;
 
@@ -2324,7 +2320,6 @@ int __stdcall Y_Battle_SetHintAttackGetDamage(LoHook* h, HookContext* c)
 	damHi = c->esi;
 	return EXEC_DEFAULT;
 } 
-#endif DOP_FUNK_TO_ERA
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////// создание кнопки командира ////////////////////////////////////////////////////////
@@ -2394,8 +2389,6 @@ void __stdcall Y_NewScenarioDlg_Create(HiHook* hook, _NewScenarioDlg_* this_, in
 
 // #############################################################################################
 // ################################## HD 5 funk start ##########################################
-
-#ifdef DOP_FUNK_TO_ERA
 
 _dword_ time_click_MsgBox, dlgHeroLvlUp_heroID;   
 
@@ -2573,7 +2566,22 @@ int __stdcall Y_EndBattle(LoHook* h, HookContext* c)
 	return EXEC_DEFAULT;
 } 
 
+
+
 // ############################# HD 5 funk end #################################################
+// #############################################################################################
+
+int __stdcall Y_Dlg_MainMenu_Create(HiHook* hook, _Dlg_* dlg) 
+{
+	int ret = CALL_1(int, __thiscall, hook->GetDefaultFunc(), dlg);
+
+	ERA_version = Era::GetEraVersion();
+	sprintf(o_TextBuffer, "HoMM3 ERA %s", ERA_version );
+	dlg->AddItem(_DlgStaticText_::Create(4, 576, 200, 20, o_TextBuffer, "medfont2.fnt", 7, 545, ALIGN_H_LEFT | ALIGN_V_BOTTOM, 0)); 
+
+	return ret;
+}
+
 // #############################################################################################
 
 void StartHD5Functions()
@@ -2599,20 +2607,7 @@ void StartHD5Functions()
 	_PI->WriteHiHook(0x473F55, CALL_, EXTENDED_, THISCALL_, Y_BATTLE_Proc);
 	_PI->WriteLoHook(0x476DA5, Y_EndBattle);
 }
-#endif DOP_FUNK_TO_ERA
 
-// #############################################################################################
-
-int __stdcall Y_Dlg_MainMenu_Create(HiHook* hook, _Dlg_* dlg) 
-{
-	int ret = CALL_1(int, __thiscall, hook->GetDefaultFunc(), dlg);
-
-	ERA_version = Era::GetEraVersion();
-	sprintf(o_TextBuffer, "HoMM3 ERA %s", ERA_version );
-	dlg->AddItem(_DlgStaticText_::Create(4, 576, 200, 20, o_TextBuffer, "medfont2.fnt", 7, 545, ALIGN_H_LEFT | ALIGN_V_BOTTOM, 0)); 
-
-	return ret;
-}
 
 // #############################################################################################
 // #############################################################################################
@@ -2626,6 +2621,11 @@ int __stdcall Y_LoadAllTXTinGames(LoHook* h, HookContext* c)
 //-----------------------------------------------------------------------
 int __stdcall Y_Hook_MainLoop(LoHook* h, HookContext* c)
 {	
+	// загружаем необходимый текстовый файл (русский или английский)
+	/* if (isRusLang) 
+		WogNDlg_TXT = _TXT_::Load( "WogNDlg_Rus.txt" );
+	else WogNDlg_TXT = _TXT_::Load( "WogNDlg_Eng.txt" ); */ 
+
 	// загружаем необходимые русскоязычные игровые шрифты
 	bigfont2->Load("bigfont2.fnt"); //_Fnt_* bigfont2;
 	medfont2->Load("medfont2.fnt");	//_Fnt_* medfont2;
@@ -2641,7 +2641,6 @@ int __stdcall Y_Hook_MainLoop(LoHook* h, HookContext* c)
 	// диалог WoG Опций
 	 _PI->WriteHiHook(0x779213, CALL_, EXTENDED_, THISCALL_, Dlg_WoG_Options_Show);
 
-#ifdef DOP_FUNK_TO_ERA
 	// показ предполагаемого количества убитых монстров при атаке и стрельбе (подмена строк)
 	_PI->WriteDword(0x4925FD +1, (int)&WogNDlg_TXT );	_PI->WriteDword(0x492605 +2, 88); // рукопашная (подмена строк)
 	_PI->WriteDword(0x492825 +2, (int)&WogNDlg_TXT );	_PI->WriteDword(0x492837 +2, 92); // стрелять (подмена строк)
@@ -2651,7 +2650,6 @@ int __stdcall Y_Hook_MainLoop(LoHook* h, HookContext* c)
 	_PI->WriteLoHook(0x4925FD, Y_Battle_SetHintAttackWillKilled); // рукопашная
 	_PI->WriteLoHook(0x492825, Y_Battle_SetHintAttackWillKilled); // стрелять
 	_PI->WriteLoHook(0x49279C, Y_Battle_SetHintAttackWillKilled); // последний выстрел
-#endif DOP_FUNK_TO_ERA
 
 	bigfont2 = _Fnt_::Load("bigfont2.fnt");
 	medfont2 = _Fnt_::Load("medfont2.fnt");
@@ -2688,12 +2686,10 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 			// подтягиваем ERA
 			Era::ConnectEra();
 
-#ifdef DOP_FUNK_TO_ERA
-				HD_Version = _P->VarValue<_dword_>("HD.Version.Dword");
+			HD_Version = _P->VarValue<_dword_>("HD.Version.Dword");
 				if ( HD_Version == 0 || HD_Version > 5000000 ) { // версия HD 5.000.RC0
 					StartHD5Functions();
-				}	
-#endif DOP_FUNK_TO_ERA	
+				}			
 
 			// создаем загрузку необходимых тектовиков
 			_PI->WriteLoHook(0x4EDD65, Y_LoadAllTXTinGames);
@@ -2751,7 +2747,6 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 			_PI->WriteDword(0x5F4892, 234);			// поз.Y
 			_PI->WriteByte(0x5F4897, 22);			// поз.X 
 
-#ifdef DOP_FUNK_TO_ERA
 			// обмен героями в замке ко клавише E
 			_PI->WriteHiHook(0x5D3640, SPLICE_, EXTENDED_, THISCALL_, Y_DlgTown_Proc);
 			_PI->WriteLoHook(0x4AAC1B, Y_Dlg_HeroesMeet);
@@ -2766,7 +2761,6 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 			_PI->WriteLoHook(0x42758F, get_AIValue_And_NPC_Error);
 			_PI->WriteLoHook(0x42CA6B, get_AIValue_And_NPC_Error);
 			_PI->WriteLoHook(0x52846A, get_AIValue_And_NPC_Error);	
-#endif DOP_FUNK_TO_ERA
 
 			// диалог сброса артефактов на землю
 			_PI->WriteHiHook(0x7548BC, SPLICE_, EXTENDED_, THISCALL_, Y_WoGDlg_ChooseArt);
