@@ -188,9 +188,6 @@ int __stdcall ERM_Fix_EA_E(HiHook* hook, _BattleStack_* stack )
         }
     }
 
-	delete[] spell_duration;
-	delete[] spells_power;
-
     return ret;
 }
 
@@ -489,8 +486,12 @@ int __stdcall Fix_WoG_GetCreatureGrade_Town(LoHook* h, HookContext* c)
 // запрет выдачи заклинаний у артефактов, если они запрещены через UN:J0/spell_id/1;
 int __stdcall Y_ArtGive_Spell(HiHook* hook, int spells_array, unsigned int spell_id, char enable) 
 {
-	if (enable && o_GameMgr->disabled_spells[spell_id]) {
-		return 0;
+	if (enable && o_GameMgr->disabled_spells[spell_id]) 
+	{
+		if ( spell_id != SPL_TITANS_LIGHTNING_BOLT )
+		{
+			return 0;
+		}
 	}
 
 	return CALL_3(int, __thiscall, hook->GetDefaultFunc(), spells_array, spell_id, enable);
@@ -504,6 +505,7 @@ int __stdcall Y_ArtGive_LoadSpells(HiHook* hook, int spells_array, char enable)
 	o_GameMgr->disabled_shrines[spell_id] = enable;
 	o_GameMgr->disabled_spells[spell_id] = enable;
 
+
 	return CALL_2(int, __thiscall, hook->GetDefaultFunc(), spells_array, enable);
 }
 
@@ -512,7 +514,8 @@ int __stdcall Y_ArtGive_AllSpells(HiHook* hook, int spells_array, char enable)
 {
 	int spell_id = *(int*)(spells_array +4);
 
-	if (enable && o_GameMgr->disabled_spells[spell_id]) {
+	if (enable && o_GameMgr->disabled_spells[spell_id]) 
+	{
 		return 0;
 	}
 
