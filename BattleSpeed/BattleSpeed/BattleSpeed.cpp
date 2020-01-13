@@ -35,6 +35,7 @@ int __stdcall Y_Dlg_BattleOptions_Proc(HiHook* hook, _EventMsg_* msg)
 				BattleSpeed = ID - BATTON_ID;
 				((_DlgStaticDef_*)dlg->GetItem(BATTON_ID + BattleSpeed))->Show_ButStayEnable();
 
+				dlg->Field<byte>(0x4C) = 1; // в диалоге нужно сохранить параметры
 				dlg->Redraw();
 			}
 		}
@@ -81,6 +82,8 @@ void StartPlugin()
 	_PI->WriteDword(0x5A6813 +3, pBSpeed); // BattleStack_0x5A6670
 	_PI->WriteDword(0x5A7FE2 +3, pBSpeed); // BattleStack_CastSpellEarthquake
 	_PI->WriteDword(0x5A8148 +3, pBSpeed); // BattleStack_CastSpellEarthquake
+
+	_PI->WriteByte(0x50B556 +2, 9); // NormalizeRegistry ( if ( BattleSpeed < 0 || BattleSpeed > 2->9 ))
 
 	// пропускаем создание кнопок в диалоге системных опций битвы
 	_PI->WriteHexPatch(0x46E1F0, "E9 F7000000"); // JMP 0046E2EC
