@@ -30,9 +30,6 @@ struct _TXT_;
 _TXT_* txtresWOG;
 _TXT_* WogNDlg_TXT;
 
-//_Fnt_* bigfont2;
-//_Fnt_* medfont2;
-//_Fnt_* smalfont2;
 char* n_medfont2 = "medfont2.fnt";
 char* n_smallfont2 = "smalfont2.fnt";
 char* n_bigfont2 = "bigfont2.fnt";
@@ -2106,16 +2103,13 @@ _Sphinx1_* o_Sphinx1 = 0;
 
 _bool_ Dlg_CustomReq_Ban = false;
 
-bool IsSupportedFormatImage(char* image_name) // image_name
+bool IsSupportedFormatImage(char* image_name) 
 {
 	bool ret = false;
 	char im_name[256];
 	MemCopy(im_name, image_name, 256);		
 	int len = strlen(im_name);
 	im_name[len] = 0;
-
-	//sprintf(o_TextBuffer, "im_name: %s \n \n len: %d", im_name, len );
-	//b_MsgBox(o_TextBuffer, 1);
 
 	// bmp 
 	if ( im_name[len-4] == '.' && im_name[len-3] == 'b' && im_name[len-2] == 'm' && im_name[len-1] == 'p' )
@@ -2218,13 +2212,10 @@ int __stdcall New_Dlg_CustomReq_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 
 int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 {
-
-	// _Fnt_* medfont2 = o_Medfont_Fnt;
 	// высчитываем размеры диалога
 	int x = 540;
-	int y = 900;
+	int y = 0;
 	int yy = 120;
-	int dy = 0;
 	int lines = 0;
 	
 	int lines1 = 0;
@@ -2307,13 +2298,7 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 			
 			char* pPath = *(char**)(ptr_pic1 +4*i);
 			char* pHint = *(char**)(ptr_pic1 +4*i +16);
-
-			// b_YellowFrame_Create(dlg, start_x, 24+h_text1, 100, 100, 10+i, ON, o_Pal_Y);	
-			//if (pHint){
-			//	// перенести сюда
-			//	dlg->GetItem(10+i)->short_tip_text = pHint;
-			//}
-			// первая загрузка (для получения размера картинок)			
+		
 			char* short_name = GetShortFileName_Y(pPath);
 			if (IsSupportedFormatImage(short_name) )
 			{
@@ -2495,7 +2480,7 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 		}
 	}
 
-	// если возвращается 0, то нужно вызвать стандартный воговский диалог (есть avi или gif)
+	// если возвращается 10, то нужно вызвать стандартный воговский диалог (есть avi или gif)
 	return Sphinx->SelItm;
 }
 
