@@ -10,6 +10,7 @@
 #include "..\..\..\include\WogClasses.h"
 
 #include "..\..\..\include\era.h"
+
 // using namespace Era;
 const char* ERA_version;
 
@@ -32,6 +33,9 @@ _TXT_* WogNDlg_TXT;
 //_Fnt_* bigfont2;
 //_Fnt_* medfont2;
 //_Fnt_* smalfont2;
+char* n_medfont2 = "medfont2.fnt";
+char* n_smallfont2 = "smalfont2.fnt";
+char* n_bigfont2 = "bigfont2.fnt";
 
 #define o_HD_X (*(_int_*)0x401448)
 #define o_HD_Y (*(_int_*)0x40144F)
@@ -309,91 +313,91 @@ _int_ __stdcall Y_Dlg_NPC_Show(HiHook* hook, _DlgNPC_* dlgNPC)
 	if ( !(dlgNPC->Flags & 8) || !(dlgNPC->Flags & 1) ) dlg->GetItem(3)->SetEnabled(0); 
 
 	// (id = 6) подсказка на дефе (пустышка, но по ней ПКМ определяет id и выдает окно биографии)
-	dlg->AddItem(_DlgStaticText_::Create(20, 70, 100, 130, "", "medfont2.fnt", 1, 6, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));  
+	dlg->AddItem(_DlgStaticText_::Create(20, 70, 100, 130, "", n_medfont2, 1, 6, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));  
 
 	// (id = 10) подсказка в статус баре	
-	dlg->AddItem(NPC_StatBar = _DlgStaticTextPcx8ed_::Create(8, dlg->height -18 -8, dlg->width - 16, 18, "", "smalfont2.fnt", "AdRollvr.pcx", 1, 10, ALIGN_H_CENTER | ALIGN_V_CENTER) ); // HD_TStat.pcx
+	dlg->AddItem(NPC_StatBar = _DlgStaticTextPcx8ed_::Create(8, dlg->height -18 -8, dlg->width - 16, 18, "", n_smallfont2, "AdRollvr.pcx", 1, 10, ALIGN_H_CENTER | ALIGN_V_CENTER) ); // HD_TStat.pcx
 
 	if ( !(dlgNPC->Flags & 1) ){ // текстовые вставки " МЕРТВ!!! "  (id = 8, 9)
-		dlg->AddItem(_DlgStaticText_::Create(131, 18, 370, medfontHI, txtresWOG->GetString(66), "medfont2.fnt", 27, 8, ALIGN_H_LEFT  | ALIGN_V_CENTER, 0)); 
-		dlg->AddItem(_DlgStaticText_::Create(131, 18, 370, medfontHI, txtresWOG->GetString(66), "medfont2.fnt", 27, 9, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));	
+		dlg->AddItem(_DlgStaticText_::Create(131, 18, 370, medfontHI, txtresWOG->GetString(66), n_medfont2, 27, 8, ALIGN_H_LEFT  | ALIGN_V_CENTER, 0)); 
+		dlg->AddItem(_DlgStaticText_::Create(131, 18, 370, medfontHI, txtresWOG->GetString(66), n_medfont2, 27, 9, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));	
 	}
 	// (id = 11) имя командира 
-	dlg->AddItem(_DlgStaticText_::Create(131, 18, 370, medfontHI, dlgNPC->Name, "medfont2.fnt", 7, 11, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(131, 18, 370, medfontHI, dlgNPC->Name, n_medfont2, 7, 11, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
 
 	// (id = 12, 13) уровень текст и число 
-	dlg->AddItem(_DlgStaticText_::Create(22, 46, 96, medfontHI, txtresWOG->GetString(67), "medfont2.fnt", 7, 12, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(22, 46, 96, medfontHI, txtresWOG->GetString(67), n_medfont2, 7, 12, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
 	sprintf(o_TextBuffer, "%d", dlgNPC->Level);
-	dlg->AddItem(_DlgStaticText_::Create(22, 46, 96, medfontHI, o_TextBuffer, "medfont2.fnt", 1, 13, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(22, 46, 96, medfontHI, o_TextBuffer, n_medfont2, 1, 13, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0)); 
 
 	// (id = 14, 15) класс командира текст 
-	dlg->AddItem(_DlgStaticText_::Create(16, 205, 104, medfontHI, txtresWOG->GetString(65), "medfont2.fnt", 7, 14, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
-	dlg->AddItem(_DlgStaticText_::Create(16, 220, 104, medfontHI, dlgNPC->Type, "medfont2.fnt", 1, 15, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(16, 205, 104, medfontHI, txtresWOG->GetString(65), n_medfont2, 7, 14, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(16, 220, 104, medfontHI, dlgNPC->Type, n_medfont2, 1, 15, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 
 	// (id = 16, 17) имя героя хозяина 
-	dlg->AddItem(_DlgStaticText_::Create(128, 46, 192, medfontHI, txtresWOG->GetString(68), "medfont2.fnt", 7, 16, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
-	dlg->AddItem(_DlgStaticText_::Create(128, 46, 192, medfontHI, dlgNPC->HeroName, "medfont2.fnt", 1, 17, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(128, 46, 192, medfontHI, txtresWOG->GetString(68), n_medfont2, 7, 16, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(128, 46, 192, medfontHI, dlgNPC->HeroName, n_medfont2, 1, 17, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0)); 
 
 	// (id = 18, 19) текущий опыт 
-	dlg->AddItem(_DlgStaticText_::Create(330, 46, 284, medfontHI, txtresWOG->GetString(71), "medfont2.fnt", 7, 18, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(330, 46, 284, medfontHI, txtresWOG->GetString(71), n_medfont2, 7, 18, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
 	sprintf(o_TextBuffer, "%d", dlgNPC->CurExp);
-	dlg->AddItem(_DlgStaticText_::Create(330, 46, 284, medfontHI, o_TextBuffer, "medfont2.fnt", 1, 19, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(330, 46, 284, medfontHI, o_TextBuffer, n_medfont2, 1, 19, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 
 	// (id = 20, 21) следующий уровень
-	dlg->AddItem(_DlgStaticText_::Create(330, 68, 284, medfontHI, txtresWOG->GetString(72), "medfont2.fnt", 7, 20, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(330, 68, 284, medfontHI, txtresWOG->GetString(72), n_medfont2, 7, 20, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
 	sprintf(o_TextBuffer, "%d", dlgNPC->NextExp);
-	dlg->AddItem(_DlgStaticText_::Create(330, 68, 284, medfontHI, o_TextBuffer, "medfont2.fnt", 1, 21, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(330, 68, 284, medfontHI, o_TextBuffer, n_medfont2, 1, 21, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0)); 
 
 	// (id = 22) Навыки_класса_текст 
-	dlg->AddItem(_DlgStaticText_::Create(377, 90, 192, medfontHI, txtresWOG->GetString(77), "medfont2.fnt", 7, 22, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(377, 90, 192, medfontHI, txtresWOG->GetString(77), n_medfont2, 7, 22, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
 	// (id = 23) Артефакты_текст 
-	dlg->AddItem(_DlgStaticText_::Create(377, 159, 192, medfontHI, txtresWOG->GetString(78), "medfont2.fnt", 7, 23, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(377, 159, 192, medfontHI, txtresWOG->GetString(78), n_medfont2, 7, 23, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
 	// (id = 24) Основные_навыки_текст 
-	dlg->AddItem(_DlgStaticText_::Create(133, 246, 366, medfontHI, txtresWOG->GetString(69), "medfont2.fnt", 7, 24, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(133, 246, 366, medfontHI, txtresWOG->GetString(69), n_medfont2, 7, 24, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
 	// (id = 25) Вторичные_навыки_текст 
-	dlg->AddItem(_DlgStaticText_::Create(133, 343, 366, medfontHI, txtresWOG->GetString(70), "medfont2.fnt", 7, 25, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(133, 343, 366, medfontHI, txtresWOG->GetString(70), n_medfont2, 7, 25, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
 
 	///////////////////////////////////////////////////////////
 
 	// (id = 30, 31) Атака 
 	sprintf(o_TextBuffer, "%d (%d)", dlgNPC->pAT, dlgNPC->hAT);
-	dlg->AddItem(_DlgStaticText_::Create(128, 69, 192, medfontHI, o_TextBuffer, "medfont2.fnt", 1, 30, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0)); 
-	dlg->AddItem(_DlgStaticText_::Create(128, 69, 192, medfontHI, txtresWOG->GetString(54), "medfont2.fnt", 7, 31, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(128, 69, 192, medfontHI, o_TextBuffer, n_medfont2, 1, 30, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(128, 69, 192, medfontHI, txtresWOG->GetString(54), n_medfont2, 7, 31, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
 
 	// (id = 32, 33) Защита 
 	sprintf(o_TextBuffer, "%d (%d)", dlgNPC->pDF, dlgNPC->hDF);
-	dlg->AddItem(_DlgStaticText_::Create(128, 91, 192, medfontHI, o_TextBuffer, "medfont2.fnt", 1, 32, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));  
-	dlg->AddItem(_DlgStaticText_::Create(128, 91, 192, medfontHI, txtresWOG->GetString(55), "medfont2.fnt", 7, 33, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(128, 91, 192, medfontHI, o_TextBuffer, n_medfont2, 1, 32, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));  
+	dlg->AddItem(_DlgStaticText_::Create(128, 91, 192, medfontHI, txtresWOG->GetString(55), n_medfont2, 7, 33, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
 
 	// (id = 34, 35) Здоровье 
 	sprintf(o_TextBuffer, "%d", dlgNPC->pHP);
-	dlg->AddItem(_DlgStaticText_::Create(128, 113, 192, medfontHI, o_TextBuffer, "medfont2.fnt", 1, 34, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));  
-	dlg->AddItem(_DlgStaticText_::Create(128, 113, 192, medfontHI, txtresWOG->GetString(56), "medfont2.fnt", 7, 35, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(128, 113, 192, medfontHI, o_TextBuffer, n_medfont2, 1, 34, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));  
+	dlg->AddItem(_DlgStaticText_::Create(128, 113, 192, medfontHI, txtresWOG->GetString(56), n_medfont2, 7, 35, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
 
 	// (id = 36, 37) Урон 
 	sprintf(o_TextBuffer, "%d - %d", dlgNPC->pDML, dlgNPC->pDMH);
-	dlg->AddItem(_DlgStaticText_::Create(128, 135, 192, medfontHI, o_TextBuffer, "medfont2.fnt", 1, 36, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));   
-	dlg->AddItem(_DlgStaticText_::Create(128, 135, 192, medfontHI, txtresWOG->GetString(58), "medfont2.fnt", 7, 37, ALIGN_H_LEFT | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(128, 135, 192, medfontHI, o_TextBuffer, n_medfont2, 1, 36, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));   
+	dlg->AddItem(_DlgStaticText_::Create(128, 135, 192, medfontHI, txtresWOG->GetString(58), n_medfont2, 7, 37, ALIGN_H_LEFT | ALIGN_V_CENTER, 0));
 
 	// (id = 38, 39) Сила магии 
 	sprintf(o_TextBuffer, "%d", dlgNPC->pMP);
-	dlg->AddItem(_DlgStaticText_::Create(128, 157, 192, medfontHI, o_TextBuffer, "medfont2.fnt", 1, 38, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));   
-	dlg->AddItem(_DlgStaticText_::Create(128, 157, 192, medfontHI, txtresWOG->GetString(59), "medfont2.fnt", 7, 39, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(128, 157, 192, medfontHI, o_TextBuffer, n_medfont2, 1, 38, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));   
+	dlg->AddItem(_DlgStaticText_::Create(128, 157, 192, medfontHI, txtresWOG->GetString(59), n_medfont2, 7, 39, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
 
 	// (id = 40, 41) Сопротивление 
 	sprintf(o_TextBuffer, "%d%%", dlgNPC->pMR);
-	dlg->AddItem(_DlgStaticText_::Create(128, 179, 192, medfontHI, o_TextBuffer, "medfont2.fnt", 1, 40, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));  
-	dlg->AddItem(_DlgStaticText_::Create(128, 179, 192, medfontHI, txtresWOG->GetString(60), "medfont2.fnt", 7, 41, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(128, 179, 192, medfontHI, o_TextBuffer, n_medfont2, 1, 40, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));  
+	dlg->AddItem(_DlgStaticText_::Create(128, 179, 192, medfontHI, txtresWOG->GetString(60), n_medfont2, 7, 41, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
 
 	// (id = 42, 43) Боезапас 
 	sprintf(o_TextBuffer, "%d", dlgNPC->pShots);
-	dlg->AddItem(_DlgStaticText_::Create(128, 201, 192, medfontHI, o_TextBuffer, "medfont2.fnt", 1, 42, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));   
-	dlg->AddItem(_DlgStaticText_::Create(129, 201, 192, medfontHI, txtresWOG->GetString(61), "medfont2.fnt", 7, 43, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(128, 201, 192, medfontHI, o_TextBuffer, n_medfont2, 1, 42, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));   
+	dlg->AddItem(_DlgStaticText_::Create(129, 201, 192, medfontHI, txtresWOG->GetString(61), n_medfont2, 7, 43, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
 
 	// (id = 44, 45) Скорость 
 	sprintf(o_TextBuffer, "%d", dlgNPC->pSP);
-	dlg->AddItem(_DlgStaticText_::Create(128, 223, 192, medfontHI, o_TextBuffer, "medfont2.fnt", 1, 44, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));    
-	dlg->AddItem(_DlgStaticText_::Create(128, 223, 192, medfontHI, txtresWOG->GetString(57), "medfont2.fnt", 7, 45, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(128, 223, 192, medfontHI, o_TextBuffer, n_medfont2, 1, 44, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));    
+	dlg->AddItem(_DlgStaticText_::Create(128, 223, 192, medfontHI, txtresWOG->GetString(57), n_medfont2, 7, 45, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
 
 	///////////////////////////////////////////////////////////
 
@@ -427,7 +431,7 @@ _int_ __stdcall Y_Dlg_NPC_Show(HiHook* hook, _DlgNPC_* dlgNPC)
 
 	if ( dlgNPC->Request == 2 ) { // при повышении уровня c выбором картинок
 		// (id = 66) подсказка выберите навыки для повышения 
-		dlg->AddItem(_DlgStaticText_::Create(133, 422, 366, medfontHI, txtresWOG->GetString(73), "medfont2.fnt", 7, 66, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
+		dlg->AddItem(_DlgStaticText_::Create(133, 422, 366, medfontHI, txtresWOG->GetString(73), n_medfont2, 7, 66, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
 		dlg->AddItem(_DlgStaticDef_::Create(40, 445, 70, 70, 67, "Dlg_NPC2.def", (int)dlgNPC->NextActive[0], 0, 18));
 		dlgNPC->DlgLeft = 1;
 		for (int i = 1; i < 6; ++i ){ 
@@ -504,53 +508,53 @@ int New_Dlg_ExpaMon_Case8(int style)
 
 	dlg->AddItem(_DlgStaticDef_::Create(dlg->width/2 -41, 26, 2, "PSKILL.def", 4, 0, 0x12)); 
 
-	dlg->AddItem(_DlgStaticText_::Create(20, 126, dlg->width -40, 20, WogNDlg_TXT->GetString(2), "bigfont2.fnt", 10, 5, ALIGN_H_CENTER | ALIGN_V_TOP, 0));
+	dlg->AddItem(_DlgStaticText_::Create(20, 126, dlg->width -40, 20, WogNDlg_TXT->GetString(2), n_bigfont2, 10, 5, ALIGN_H_CENTER | ALIGN_V_TOP, 0));
 
 	for (int i = 0; i < 11; i++){
-		dlg->AddItem(_DlgStaticText_::Create(24, 150 +i*20, dlg->width -48, 20, WogNDlg_TXT->GetString(3 +i), "medfont2.fnt", 7, 10+i, ALIGN_H_LEFT | ALIGN_V_CENTER, 0));	
+		dlg->AddItem(_DlgStaticText_::Create(24, 150 +i*20, dlg->width -48, 20, WogNDlg_TXT->GetString(3 +i), n_medfont2, 7, 10+i, ALIGN_H_LEFT | ALIGN_V_CENTER, 0));	
 	}
 
-	dlg->AddItem(_DlgStaticText_::Create(24, 150, dlg->width -48, 20, o_pCreatureInfo[o_Mon].name_single, "medfont2.fnt", 1, 22, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(24, 150, dlg->width -48, 20, o_pCreatureInfo[o_Mon].name_single, n_medfont2, 1, 22, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 	
 
 	int runk = CALL_2(_int_, __cdecl, 0x727F20, 1000, o_Expo); 
 	sprintf(o_TextBuffer, "%s (%d)", Get_ITxtExp(2+runk), runk);
-	dlg->AddItem(_DlgStaticText_::Create(24, 170, dlg->width -48, 20, o_TextBuffer, "medfont2.fnt", 1, 23, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(24, 170, dlg->width -48, 20, o_TextBuffer, n_medfont2, 1, 23, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 
 
 	sprintf(o_TextBuffer, "%d", o_Expo); 
-	dlg->AddItem(_DlgStaticText_::Create(24, 190, dlg->width -48, 20, o_TextBuffer, "medfont2.fnt", 1, 24, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(24, 190, dlg->width -48, 20, o_TextBuffer, n_medfont2, 1, 24, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 
 
 	sprintf(o_TextBuffer, "%d", CALL_3(_int_, __cdecl, 0x727FB0, 1000, runk +1, 0) - o_Expo); 
-	dlg->AddItem(_DlgStaticText_::Create(24, 210, dlg->width -48, 20, o_TextBuffer, "medfont2.fnt", 1, 25, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(24, 210, dlg->width -48, 20, o_TextBuffer, n_medfont2, 1, 25, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 
 
 	int t1 = CALL_1(_int_, __cdecl, 0x7283D0, 1000); 
 	int t2 = CALL_1(_int_, __cdecl, 0x727E20, 1000) * t1 / 100;
 	sprintf(o_TextBuffer, "%d%% (%d)", t1, t2);
-	dlg->AddItem(_DlgStaticText_::Create(24, 230, dlg->width -48, 20, o_TextBuffer, "medfont2.fnt", 1, 26, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(24, 230, dlg->width -48, 20, o_TextBuffer, n_medfont2, 1, 26, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 
 
 	sprintf(o_TextBuffer, "%d", o_Num); 
-	dlg->AddItem(_DlgStaticText_::Create(24, 250, dlg->width -48, 20, o_TextBuffer, "medfont2.fnt", 1, 27, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(24, 250, dlg->width -48, 20, o_TextBuffer, n_medfont2, 1, 27, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 
 
 	t1 = CALL_3(_int_, __cdecl, 0x727FB0, 1000, runk, 0);
 	t2 = 999999;
 	if( t1 ){ t2 = o_Num * o_Expo / t1 - o_Num; }	
 	sprintf(o_TextBuffer, "%d", t2); 
-	dlg->AddItem(_DlgStaticText_::Create(24, 270, dlg->width -48, 20, o_TextBuffer, "medfont2.fnt", 1, 28, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(24, 270, dlg->width -48, 20, o_TextBuffer, n_medfont2, 1, 28, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 
 	sprintf(o_TextBuffer, "%hf", CALL_1(double, __cdecl, 0x727C00, 1000)); 
-	dlg->AddItem(_DlgStaticText_::Create(24, 290, dlg->width -48, 20, o_TextBuffer, "medfont2.fnt", 1, 29, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(24, 290, dlg->width -48, 20, o_TextBuffer, n_medfont2, 1, 29, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 
 	sprintf(o_TextBuffer, "%hf", CALL_1(double, __cdecl, 0x727E00, 1000)); 
-	dlg->AddItem(_DlgStaticText_::Create(24, 310, dlg->width -48, 20, o_TextBuffer, "medfont2.fnt", 1, 30, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(24, 310, dlg->width -48, 20, o_TextBuffer, n_medfont2, 1, 30, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 
 	t1 = CALL_1(_int_, __cdecl, 0x7283B0, 1000);
 	sprintf(o_TextBuffer, "%d", t1); 
-	dlg->AddItem(_DlgStaticText_::Create(24, 330, dlg->width -48, 20, o_TextBuffer, "medfont2.fnt", 1, 31, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(24, 330, dlg->width -48, 20, o_TextBuffer, n_medfont2, 1, 31, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 
 	t2 = CALL_3(_int_, __cdecl, 0x727FB0, 1000, 10, 0);
 	int t3 = 999999; 
@@ -559,7 +563,7 @@ int New_Dlg_ExpaMon_Case8(int style)
 		t3 = t4 / t2 - o_Num;
 	}
 	sprintf(o_TextBuffer, "%d", t3); 
-	dlg->AddItem(_DlgStaticText_::Create(24, 350, dlg->width -48, 20, o_TextBuffer, "medfont2.fnt", 1, 32, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(24, 350, dlg->width -48, 20, o_TextBuffer, n_medfont2, 1, 32, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 
 
 	if (style == 1){
@@ -613,7 +617,7 @@ int New_Dlg_ExpaMon_BannerDlg()
 	CALL_2(void*, __thiscall, 0x50D7B0, o_MouseMgr, 0);
 
 	sprintf(o_TextBuffer, "%s", Get_ITxtExp(340));
-    dlg->AddItem(_DlgStaticText_::Create(18, 30, 424, 30, o_TextBuffer, "bigfont2.fnt", 7, 3, ALIGN_H_CENTER | ALIGN_V_TOP, 0));
+    dlg->AddItem(_DlgStaticText_::Create(18, 30, 424, 30, o_TextBuffer, n_bigfont2, 7, 3, ALIGN_H_CENTER | ALIGN_V_TOP, 0));
 	
 	int dy = 27;	
 
@@ -622,7 +626,7 @@ int New_Dlg_ExpaMon_BannerDlg()
 		dlg->GetItem(10+i)->SendCommand(5, 4);
 		
 		sprintf(o_TextBuffer, "%s", Get_ITxtExp(341 +i));
-		dlg->AddItem(_DlgStaticText_::Create(44, 66+i*dy, 394, 16, o_TextBuffer, "smalfont2.fnt", 1, 20+i, ALIGN_H_LEFT | ALIGN_V_CENTER, 0));
+		dlg->AddItem(_DlgStaticText_::Create(44, 66+i*dy, 394, 16, o_TextBuffer, n_smallfont2, 1, 20+i, ALIGN_H_LEFT | ALIGN_V_CENTER, 0));
 
 		dlg->AddItem(_DlgButton_::Create(22, 66+i*dy, 420, 18, 30+i, "radiobttn.def", 0, 1, 0, 0, 0));
 	} 
@@ -818,22 +822,22 @@ int New_Dlg_ExpaMon(signed int Mon, signed int  Num, int Expo, _ptr_ CRExpo)
 	}
 
 	// Подсказка (id = 2)
-	dlg->AddItem(_DlgStaticText_::Create(8, dlg->height -26, dlg->width -34, 18, "", "smalfont2.fnt", 1, 2, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(8, dlg->height -26, dlg->width -34, 18, "", n_smallfont2, 1, 2, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 
 	// заголовок диалога (id = 3)
 	sprintf(o_TextBuffer, "%s", *(int*)o_Dlg_ExpaMon);
-    dlg->AddItem(_DlgStaticText_::Create(150, 14, 500, 30, o_TextBuffer, "bigfont2.fnt", 7, 3, ALIGN_H_CENTER | ALIGN_V_TOP, 0));
+    dlg->AddItem(_DlgStaticText_::Create(150, 14, 500, 30, o_TextBuffer, n_bigfont2, 7, 3, ALIGN_H_CENTER | ALIGN_V_TOP, 0));
 
 	// нижнее описание монстра красным (id = 4)
 	sprintf(o_TextBuffer, "%s", *(int*)(o_Dlg_ExpaMon +4));
-    dlg->AddItem(_DlgStaticText_::Create(18, dlg->height - 76, dlg->width -200, 44, o_TextBuffer, /* "verd10b.fnt"*/ "medfont2.fnt" , 27, 4, ALIGN_H_LEFT | ALIGN_V_CENTER, 0));
+    dlg->AddItem(_DlgStaticText_::Create(18, dlg->height - 76, dlg->width -200, 44, o_TextBuffer, /* "verd10b.fnt"*/ n_medfont2 , 27, 4, ALIGN_H_LEFT | ALIGN_V_CENTER, 0));
 
 	// картинка и рамка монстра (id = 5, 6)
 	dlg->AddItem(_DlgStaticDef_::Create(18, 35, 5, "twcrport.def", Mon +2, 0, 0x12)); 
 	dlg->AddItem(_DlgStaticDef_::Create(18, 35, 6, "twcrport.def", 1, 0, 0x12));  
 
 	// название артефакта и рамка для него (id = 7,8)
-    dlg->AddItem(_DlgStaticText_::Create(18, 100, 60, 15, o_GENRLTXT_TXT->GetString(616), "medfont2.fnt", 1, 7, ALIGN_H_CENTER | ALIGN_V_TOP, 0));
+    dlg->AddItem(_DlgStaticText_::Create(18, 100, 60, 15, o_GENRLTXT_TXT->GetString(616), n_medfont2, 1, 7, ALIGN_H_CENTER | ALIGN_V_TOP, 0));
 	dlg->AddItem(_DlgStaticDef_::Create(22, 116, 8, "DlgExpMon.def", 159, 0, 0x12)); 
 	
 	// артефакт и цифры его кол-ва (id = 9)
@@ -854,13 +858,13 @@ int New_Dlg_ExpaMon(signed int Mon, signed int  Num, int Expo, _ptr_ CRExpo)
 	for (int i = 0; i <= 10; i++){
 	dlg->AddItem(_DlgStaticText_::Create(168 +56*i, 34, 58, 16, 
 		CALL_3 (char*, __cdecl, 0x77710B, 1+i, 1, 0x847D88), 
-		"smalfont2.fnt", 7, 10, ALIGN_H_LEFT | ALIGN_V_TOP, 0));
+		n_smallfont2, 7, 10, ALIGN_H_LEFT | ALIGN_V_TOP, 0));
 	}
 	// элементы заполнения колонок (первый столбик) id = 11...(26)
 	int y0 = 50;	int yy = 16;
 	for (int i = 0; i < (str_txt+dop_str); i++){
 		sprintf(o_TextBuffer, "%s", *(int*)(*(int*)(o_Dlg_ExpaMon +36)+4*i));
-		dlg->AddItem(_DlgStaticText_::Create(80, y0 + yy*i, 80, 16, o_TextBuffer, "smalfont2.fnt", 7, 11+i, ALIGN_H_LEFT | ALIGN_V_TOP, 0));
+		dlg->AddItem(_DlgStaticText_::Create(80, y0 + yy*i, 80, 16, o_TextBuffer, n_smallfont2, 7, 11+i, ALIGN_H_LEFT | ALIGN_V_TOP, 0));
 	}
 	int x0 = 168;	int xx = 56;
 	char text[16];
@@ -877,7 +881,7 @@ int New_Dlg_ExpaMon(signed int Mon, signed int  Num, int Expo, _ptr_ CRExpo)
 					k = 7;
 				}
 			} 
-			dlg->AddItem(_DlgStaticText_::Create(x0 + xx*j, y0 + yy*i, 54, 16, text, "smalfont2.fnt", 1, 30+i, ALIGN_H_LEFT | ALIGN_V_TOP, 0));
+			dlg->AddItem(_DlgStaticText_::Create(x0 + xx*j, y0 + yy*i, 54, 16, text, n_smallfont2, 1, 30+i, ALIGN_H_LEFT | ALIGN_V_TOP, 0));
 		}
 	}
 	// нижние картинки с дефами (id 50 ... )
@@ -889,7 +893,7 @@ int New_Dlg_ExpaMon(signed int Mon, signed int  Num, int Expo, _ptr_ CRExpo)
 		for (int i = 0; i < (dop_str); i++){
 			dlg->AddItem(_DlgStaticDef_::Create(xd, yd, 50+i*2, "DlgExpMon.def", *(int*)(*(int*)(o_Dlg_ExpaMon +20)+4*i), 0, 0x12)); 
 			sprintf(o_TextBuffer, "%s", *(int*)(*(int*)(o_Dlg_ExpaMon +16)+4*i));
-			dlg->AddItem(_DlgStaticText_::Create(xd+54, yd, 330, 50, o_TextBuffer, "smalfont2.fnt", 7, 51+i*2, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
+			dlg->AddItem(_DlgStaticText_::Create(xd+54, yd, 330, 50, o_TextBuffer, n_smallfont2, 7, 51+i*2, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
 			if (xd == 18)
 				xd = 400;
 			else xd = 18;
@@ -1285,6 +1289,8 @@ int New_Dlg_IF_G(int num_str, int htxt, int state, int txt, int chRAD)
 	_CustomDlg_* dlg = _CustomDlg_::Create(-1, -1, x, y, DF_SCREENSHOT | DF_SHADOW, New_Dlg_IF_G_Proc);
 	Set_DlgBackground_RK(dlg, 0, o_GameMgr->GetMeID());
 
+	int save_WOG_DisableMouse = WOG_DisableMouse;
+	WOG_DisableMouse = 0; // отключаем блок изменения кадров курсора
 	// запоминаем кадр курсора мыши
 	int cursor_t = o_MouseMgr->Field<_int_>(+0x4C);
 	int cursor_f = o_MouseMgr->Field<_int_>(+0x50);
@@ -1297,7 +1303,7 @@ int New_Dlg_IF_G(int num_str, int htxt, int state, int txt, int chRAD)
 
 	// Титульный текст
 	sprintf(o_TextBuffer, "%s", htxt);
-	dlg->AddItem(_DlgStaticText_::Create(20, 20, dlg->width -40, 46, o_TextBuffer, "medfont2.fnt", 1, 3, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(20, 20, dlg->width -40, 46, o_TextBuffer, n_medfont2, 1, 3, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 
 	int on_bttn = 0;
 	for (int i = 0; i < num_str; i++){
@@ -1305,7 +1311,7 @@ int New_Dlg_IF_G(int num_str, int htxt, int state, int txt, int chRAD)
 		dlg->GetItem(22+i)->SendCommand(5, 4);
 		
 		sprintf(o_TextBuffer, "{%s}", *(int*)(txt +4*i));
-		dlg->AddItem(_DlgStaticText_::Create(44, 70+i*dy, dlg->width -66, 16, o_TextBuffer, "smalfont2.fnt", 1, 10+i, ALIGN_H_LEFT | ALIGN_V_CENTER, 0));
+		dlg->AddItem(_DlgStaticText_::Create(44, 70+i*dy, dlg->width -66, 16, o_TextBuffer, n_smallfont2, 1, 10+i, ALIGN_H_LEFT | ALIGN_V_CENTER, 0));
 		on_bttn = *(int*)(state +4*i);
 		dlg->AddItem(_DlgButton_::Create(22, 70+i*dy, dlg->width -44, 18, 34+i, chRAD ? "radiobttn.def" : "checkbox.def", on_bttn ? 2 : 0, on_bttn ? 3 : 1, 0, 0, 0));
 	} 
@@ -1316,7 +1322,10 @@ int New_Dlg_IF_G(int num_str, int htxt, int state, int txt, int chRAD)
 
 	dlg->Run();
 	dlg->Destroy(TRUE);
+
+	// восстанавливаем кадр мыши
 	b_MouseMgr_SetCursor(cursor_f, cursor_t);
+	WOG_DisableMouse = save_WOG_DisableMouse;
 
 	o_ContinueVideo();
 
@@ -1354,14 +1363,14 @@ int __stdcall Dlg_ChooseMonAttack(HiHook* hook, int a1, int a2, int a3)
 
 	// Титульный текст
 	sprintf(o_TextBuffer, "%s", *(int*)0x282E6F4);
-	dlg->AddItem(_DlgStaticText_::Create(20, 20, dlg->width -40, 46, o_TextBuffer, "medfont2.fnt", 1, 3, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(20, 20, dlg->width -40, 46, o_TextBuffer, n_medfont2, 1, 3, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 
 	for (int i = 0; i < count; i++){
 		dlg->AddItem(CALL_8 (_DlgItem_*, __thiscall, 0x44FE00, o_New(56), 18, 66+dy*i, dlg->width -36, 24, 4+i, *(int*)(*(int*)0x6AAD18 + 118), 1024));
 		dlg->GetItem(4+i)->SendCommand(5, 4);
 			
 		sprintf(o_TextBuffer, "{%s}", *(int*)(*(int*)0x282E6FC +4*i));
-		dlg->AddItem(_DlgStaticText_::Create(44, 70+dy*i, dlg->width -66, 16, o_TextBuffer, "smalfont2.fnt", 1, 7+i, ALIGN_H_LEFT | ALIGN_V_CENTER, 0));
+		dlg->AddItem(_DlgStaticText_::Create(44, 70+dy*i, dlg->width -66, 16, o_TextBuffer, n_smallfont2, 1, 7+i, ALIGN_H_LEFT | ALIGN_V_CENTER, 0));
 
 		dlg->AddItem(_DlgButton_::Create(22, 70+dy*i, dlg->width -44, 18, 10+i, "radiobttn.def", 0, 3, 0, 0, 0));
 	}
@@ -1471,7 +1480,7 @@ int Create_WoGDlgSetup_ElemOnPage(_CustomDlg_* dlg, int page, _DlgSetup_* ds)
 		id = 1000*(page+1) +(j*200);
 
 		// титульный текст группы
-		dlg->AddItem(_DlgStaticText_::Create(x, y, 267 +wx, 19, ds->Pages[page]->ItemList[j]->Name, "medfont2.fnt", 2, 800+page*10+j, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+		dlg->AddItem(_DlgStaticText_::Create(x, y, 267 +wx, 19, ds->Pages[page]->ItemList[j]->Name, n_medfont2, 2, 800+page*10+j, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 
 		// рамка
 		int hy = ds->Pages[page]->ItemList[j]->ItemCount * dy +3;  
@@ -1480,7 +1489,7 @@ int Create_WoGDlgSetup_ElemOnPage(_CustomDlg_* dlg, int page, _DlgSetup_* ds)
 		// кнопки группы
 		for (int i=0; i<ds->Pages[page]->ItemList[j]->ItemCount; i++) {
 			sprintf(o_TextBuffer, "%s", ds->Pages[page]->ItemList[j]->ItemName[i]);
-			dlg->AddItem(_DlgStaticText_::Create(x+25, y+22 +dy*i, 238 +wx, 16, o_TextBuffer, "smalfont2.fnt", 
+			dlg->AddItem(_DlgStaticText_::Create(x+25, y+22 +dy*i, 238 +wx, 16, o_TextBuffer, n_smallfont2, 
 				(ds->Pages[page]->ItemList[j]->ItemState[i] >= 2) ? 1 : 2, id +i, ALIGN_H_LEFT | ALIGN_V_CENTER, 0));
 
 			itState = ds->Pages[page]->ItemList[j]->ItemState[i];
@@ -1494,7 +1503,7 @@ int Create_WoGDlgSetup_ElemOnPage(_CustomDlg_* dlg, int page, _DlgSetup_* ds)
 				defState, (itState < 2) ? (defState+1) : defState, 0, 0, 0)); 
 			 /* dlg->AddItem(_DlgTextButton_::Create(x+3, y+22 +dy*i, 262 +wx, 16, id+i+100, 
 				 (ds->Pages[page]->ItemList[j]->Type == 2) ? "radiobttn.def" : "checkbox.def", 
-				 ds->Pages[page]->ItemList[j]->ItemName[i], "smalfont2.fnt", 
+				 ds->Pages[page]->ItemList[j]->ItemName[i], n_smallfont2, 
 				 ds->Pages[page]->ItemList[j]->ItemState[i]*2, 
 				 (ds->Pages[page]->ItemList[j]->ItemState[i] == 2) ? 4 : ds->Pages[page]->ItemList[j]->ItemState[i]*2+1, 0, 0, 0x4, 2)); */ 
 
@@ -1735,15 +1744,15 @@ void __stdcall Dlg_WoG_Options_Show(HiHook* hook, int a1)
 	_CustomDlg_* dlg = _CustomDlg_::Create(o_HD_X/2 -400, o_HD_Y/2 -300, 800, 600, DF_SCREENSHOT , Dlg_WoG_Options_Proc);
 	Set_DlgBackground_RK(dlg, 1, o_GameMgr->GetMeID());
 	
-	statbarWoGOptions = _DlgStaticTextPcx8ed_::Create(7, dlg->height -26, dlg->width -14, 18, "", "smalfont2.fnt", "WoGOptions.pcx", 1, 2, ALIGN_H_CENTER | ALIGN_V_CENTER); 
+	statbarWoGOptions = _DlgStaticTextPcx8ed_::Create(7, dlg->height -26, dlg->width -14, 18, "", n_smallfont2, "WoGOptions.pcx", 1, 2, ALIGN_H_CENTER | ALIGN_V_CENTER); 
 	dlg->AddItem(statbarWoGOptions); // подсказка в статус баре	
 
-	dlg->AddItem(_DlgStaticText_::Create(214, 20, 370, 20, ds->Name, "bigfont2.fnt", 1, 3, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); // id = 3
-	dlg->AddItem(_DlgStaticText_::Create(230, 50, 538, 468, ds->Intro, "bigfont2.fnt", 2, 4, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(214, 20, 370, 20, ds->Name, n_bigfont2, 1, 3, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); // id = 3
+	dlg->AddItem(_DlgStaticText_::Create(230, 50, 538, 468, ds->Intro, n_bigfont2, 2, 4, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 
 	for (int i=0; i<8; i++) {
 		if (ds->Pages[i]->Enabled) {
-			dlg->AddItem(_DlgStaticText_::Create(23, 49 +60*i, 192, 49, ds->Pages[i]->Name, "smalfont2.fnt", 1, 41 +i, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));	// id = 41...48
+			dlg->AddItem(_DlgStaticText_::Create(23, 49 +60*i, 192, 49, ds->Pages[i]->Name, n_smallfont2, 1, 41 +i, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));	// id = 41...48
 			
 			Create_WoGDlgSetup_ElemOnPage(dlg, i, ds); // функция построения элементов диалога текущей в цикле страницы
 			ShowHide_WoGDlgSetup_ElemOnPage(dlg, i, ds, 0); // скрываем все элементы на странице
@@ -1817,7 +1826,7 @@ int __stdcall Dlg_ChooseCastleReBuild(HiHook* hook, int a1, int a2)
 	_CustomDlg_* dlg = _CustomDlg_::Create(-1, -1, x, y, DF_SCREENSHOT | DF_SHADOW, Dlg_ChooseCastleReBuild_Proc);
 	Set_DlgBackground_RK(dlg, 0, o_GameMgr->GetMeID());
 
-	dlg->AddItem(_DlgStaticText_::Create(20, 20, x-40, 60, txtresWOG->GetString(22) , "medfont2.fnt", 1, 4, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(20, 20, x-40, 60, txtresWOG->GetString(22) , n_medfont2, 1, 4, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 
 	for (int i = 0; i < 9; i++){
 		dlg->AddItem(CALL_8 (_DlgItem_*, __thiscall, 0x44FE00, o_New(56), 18 +dx*(i%3), 78 +dy*(i/3), 62, 68, 20+i, *(int*)(*(int*)0x6AAD18 + 118), 1024));
@@ -1938,9 +1947,9 @@ int __stdcall Y_WoGDlg_ChooseArt(HiHook* hook, int a1, _Hero_* hero, int Remove)
 	dlg->custom_data[1] = (_dword_)hero;
 	
 	sprintf(o_TextBuffer, "%s", CALL_3(char*, __cdecl, 0x77710B, 222, 0, (int)0x7C8E3C) );
-	dlg->AddItem(_DlgStaticText_::Create(24, 20, dlg->width -48, 44, o_TextBuffer, "medfont2.fnt", 1, 1, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(24, 20, dlg->width -48, 44, o_TextBuffer, n_medfont2, 1, 1, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 
-	dlg->AddItem(_DlgStaticText_::Create(8, dlg->height -26, dlg->width -16, 18, "", "smalfont2.fnt", 1, 2, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(8, dlg->height -26, dlg->width -16, 18, "", n_smallfont2, 1, 2, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 
 	int i = 0;
 	for (int j = 0; j < 8; j++) {
@@ -2056,7 +2065,7 @@ int __stdcall Y_WoGCurseDlg_Show(LoHook* h, HookContext* c)
 	_CustomDlg_* dlg = _CustomDlg_::Create(-1, -1, x, y, DF_SCREENSHOT | DF_SHADOW, Y_WoGCurseDlg_Proc);
 	Set_DlgBackground_RK(dlg, 0, o_GameMgr->GetMeID());
 
-	dlg->AddItem(_DlgStaticText_::Create(8, y -62, x -102, 48, "", "smalfont2.fnt", 1, 2, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(8, y -62, x -102, 48, "", n_smallfont2, 1, 2, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 
 	dlg->AddItem(CALL_8 (_DlgItem_*, __thiscall, 0x44FE00, o_New(56), 18, y-64, x-36, 1, 3, *(int*)(*(int*)0x6AAD18 + 118), 1024));
 	dlg->GetItem(3)->SendCommand(5, 4);
@@ -2091,7 +2100,451 @@ int __stdcall Y_WoGCurseDlg_Show(LoHook* h, HookContext* c)
 } 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////// Диалог IF:D/E /////////////////////////////////////////////////////////
+
+_Sphinx1_* o_Sphinx1 = 0;
+
+_bool_ Dlg_CustomReq_Ban = false;
+
+bool IsSupportedFormatImage(char* image_name) // image_name
+{
+	bool ret = false;
+	char im_name[256];
+	MemCopy(im_name, image_name, 256);		
+	int len = strlen(im_name);
+	im_name[len] = 0;
+
+	//sprintf(o_TextBuffer, "im_name: %s \n \n len: %d", im_name, len );
+	//b_MsgBox(o_TextBuffer, 1);
+
+	// bmp 
+	if ( im_name[len-4] == '.' && im_name[len-3] == 'b' && im_name[len-2] == 'm' && im_name[len-1] == 'p' )
+		ret = true;
+	if ( im_name[len-4] == '.' && im_name[len-3] == 'B' && im_name[len-2] == 'M' && im_name[len-1] == 'P' )
+		ret = true;
+	// pcx 
+	if ( im_name[len-4] == '.' && im_name[len-3] == 'p' && im_name[len-2] == 'c' && im_name[len-1] == 'x' )
+		ret = true;
+	if ( im_name[len-4] == '.' && im_name[len-3] == 'P' && im_name[len-2] == 'C' && im_name[len-1] == 'X' )
+		ret = true;
+	// jpg 
+	if ( im_name[len-4] == '.' && im_name[len-3] == 'j' && im_name[len-2] == 'p' && im_name[len-1] == 'g' )
+		ret = true;
+	if ( im_name[len-4] == '.' && im_name[len-3] == 'J' && im_name[len-2] == 'P' && im_name[len-1] == 'G' )
+		ret = true;
+	// jpeg 
+	if ( im_name[len-5] == '.' && im_name[len-4] == 'j' && im_name[len-3] == 'p' && im_name[len-2] == 'e' && im_name[len-1] == 'g' )
+		ret = true;
+	if ( im_name[len-5] == '.' && im_name[len-4] == 'J' && im_name[len-3] == 'P' && im_name[len-2] == 'E' && im_name[len-1] == 'G' )
+		ret = true;
+	// png 
+	if ( im_name[len-4] == '.' && im_name[len-3] == 'p' && im_name[len-2] == 'n' && im_name[len-1] == 'g' )
+		ret = true;
+	if ( im_name[len-4] == '.' && im_name[len-3] == 'P' && im_name[len-2] == 'N' && im_name[len-1] == 'G' )
+		ret = true;
+
+	return ret;
+}
+
+
+int __stdcall New_Dlg_CustomReq_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
+{
+	int r = dlg->DefProc(msg);
+
+	// if (_DlgTextEdit_* edit != 0)
+	if ( dlg->custom_data[0] != 0) {
+		dlg->SetFocuseToItem(256);
+		dlg->custom_data[0] = 0;
+	}
+
+	if (msg->type == MT_MOUSEOVER) // ведение мыши
+	{
+		_DlgStaticTextPcx8ed_* statBar = (_DlgStaticTextPcx8ed_*)dlg->GetItem(115);
+		_DlgItem_* it = dlg->FindItem(msg->x_abs, msg->y_abs);
+		char* text = o_NullString;
+		if (it)	
+		{
+			if ( it->short_tip_text ) 
+				text = it->short_tip_text;
+
+			statBar->SetText(text);
+			statBar->Draw();
+			statBar->RedrawScreen();
+
+		}
+	} // type == MT_MOUSEOVER 
+
+	if (msg->type == MT_MOUSEBUTTON)
+	{
+		if (msg->subtype == MST_LBUTTONCLICK) // ЛКМ при отжатии
+		{
+			if (msg->item_id >= 15 && msg->item_id <= 18) 
+			{
+				dlg->GetItem(25)->SendCommand(6, 4);
+				dlg->GetItem(26)->SendCommand(6, 4); 
+				dlg->GetItem(27)->SendCommand(6, 4);
+				dlg->GetItem(28)->SendCommand(6, 4);
+
+				((_DlgStaticTextPcx8ed_*)dlg->GetItem(19))->font = (int)smalfont2;
+				((_DlgStaticTextPcx8ed_*)dlg->GetItem(20))->font = (int)smalfont2;
+				((_DlgStaticTextPcx8ed_*)dlg->GetItem(21))->font = (int)smalfont2;
+				((_DlgStaticTextPcx8ed_*)dlg->GetItem(22))->font = (int)smalfont2;
+
+				((_DlgStaticTextPcx8ed_*)dlg->GetItem(19))->color = 1;
+				((_DlgStaticTextPcx8ed_*)dlg->GetItem(20))->color = 1;
+				((_DlgStaticTextPcx8ed_*)dlg->GetItem(21))->color = 1;
+				((_DlgStaticTextPcx8ed_*)dlg->GetItem(22))->color = 1;
+
+				dlg->GetItem(msg->item_id +10)->SendCommand(5, 4);
+				((_DlgStaticTextPcx8ed_*)dlg->GetItem(msg->item_id +4))->font = (int)medfont2;
+				((_DlgStaticTextPcx8ed_*)dlg->GetItem(msg->item_id +4))->color = 7;
+				o_Sphinx1->SelItm = msg->item_id -14;
+
+				dlg->GetItem(DIID_OK)->SetEnabled(1);
+				dlg->Redraw();
+			}
+		} // subtype == MST_LBUTTONCLICK
+
+		//if (msg->subtype == MST_LBUTTONDOWN)  // ЛКМ при нажатии
+		//{		//} // subtype == MST_LBUTTONDOWN
+	} // type == MT_MOUSEBUTTON
+
+	// dlg->Redraw();
+
+	return r;
+}
+
+
+
+int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
+{
+
+	// _Fnt_* medfont2 = o_Medfont_Fnt;
+	// высчитываем размеры диалога
+	int x = 540;
+	int y = 900;
+	int yy = 120;
+	int dy = 0;
+	int lines = 0;
+	
+	int lines1 = 0;
+	int h_text1 = 0;
+	int h_text2 = 0;
+	int h_text3 = 0;
+	int h_pic = 0;
+	
+	if (Sphinx->Text1) {
+		lines1 = medfont2->GetLinesCountInText(Sphinx->Text1, x -40);
+		h_text1 = lines1 *16 +15;
+		yy += h_text1 ;
+	}
+	int cansel_show = Sphinx->ShowCancel;
+	if (Sphinx->Text2) {
+		h_text2 = 16;
+		yy += h_text2 +26; // 26 выделяем высоту на поле ввода текста
+	} else cansel_show = 0;
+
+	if (Sphinx->Text3 ) {
+		h_text3 = 16;
+		yy += h_text3;
+	}
+
+	if (Sphinx->Text2 && Sphinx->Text3 ) {
+		yy -= h_text3;
+	}
+
+	if (Sphinx->Pic1Path || Sphinx->Pic2Path) {
+		h_pic = 100;
+		yy += h_pic;
+	}
+
+	int count_bttns = 0;
+	if (Sphinx->Text3) {
+		if (Sphinx->Chk1Text) { yy += 27; count_bttns++; }
+		if (Sphinx->Chk2Text) { yy += 27; count_bttns++; }
+		if (Sphinx->Chk3Text) { yy += 27; count_bttns++; }
+		if (Sphinx->Chk4Text) { yy += 27; count_bttns++; }
+	}
+
+	if (count_bttns > 1) {
+		cansel_show = Sphinx->ShowCancel;
+		if (Sphinx->Text2) {
+			yy -= 32;
+		}
+	}
+
+	// проверка на выход за границы экрана 600px по вертикали
+	if (yy > 580) {
+		h_text1 -= yy - 580;
+		yy = 580;
+	}
+
+	y = yy;
+
+	_CustomDlg_* dlg = _CustomDlg_::Create(-1, -1, x, y, DF_SCREENSHOT | DF_SHADOW, New_Dlg_CustomReq_Proc);
+	Set_DlgBackground_RK(dlg, 1, o_GameMgr->GetMeID());
+
+	_DlgStaticText_* Text1 = 0;
+	if (Sphinx->Text1) {
+		dlg->AddItem(Text1 = _DlgStaticText_::Create(24, 20, dlg->width -48, h_text1, Sphinx->Text1, n_medfont2, 1, 4, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+	}
+
+
+	int ptr_pic1 = (int)&Sphinx->Pic1Path;
+	int count_pics = 0; // считаем кол-во изображений
+	for (int i = 0; i < 4; i++) {
+		if ( *(char**)(ptr_pic1 +4*i) )
+			count_pics++;
+	}
+
+	char* pic_name = o_NullString;
+	// строим изображения id 10-14
+	if (count_pics) {
+		for (int i = 0; i < count_pics; i++) {
+			int delta = x/(count_pics+1);
+			int start_x = (delta-50) + (delta*i);
+			int start_y = 24+h_text1;
+			
+			char* pPath = *(char**)(ptr_pic1 +4*i);
+			char* pHint = *(char**)(ptr_pic1 +4*i +16);
+
+			// b_YellowFrame_Create(dlg, start_x, 24+h_text1, 100, 100, 10+i, ON, o_Pal_Y);	
+			//if (pHint){
+			//	// перенести сюда
+			//	dlg->GetItem(10+i)->short_tip_text = pHint;
+			//}
+			// первая загрузка (для получения размера картинок)			
+			char* short_name = GetShortFileName_Y(pPath);
+			if (IsSupportedFormatImage(short_name) )
+			{
+				// грузим картинку через era.dll->LoadImageAsPcx16()
+				_Pcx16_* o_Pic = (_Pcx16_*)Era::LoadImageAsPcx16(pPath, short_name, 0, 0, 100, 100, 3); 
+				
+				int pic_x = 0;
+				int pic_y = 0;
+				if (o_Pic) 
+				{
+					// проверяем размеры загруженной картинки
+					// и при выходе за границы 100х100
+					pic_x = o_Pic->width;
+					pic_y = o_Pic->height;
+					if ( pic_x > 100 || pic_y > 100 ) {
+						if (pic_x >= pic_y) {
+							pic_y = pic_y *100 / pic_x;
+							pic_x = 100;						
+						} else {
+							pic_x = pic_x *100 / pic_y;
+							pic_y = 100;
+						}
+					}
+					// вычисляем привязку изображений (верхний левый угол)
+					start_x += (50 - pic_x/2);
+					start_y += (50 - pic_y/2);
+
+					dlg->AddItem(_DlgStaticPcx16_::Create(start_x, start_y, pic_x, pic_y, 10+i, o_Pic->name, 2048));
+					// dlg->GetItem(10+i)->full_tip_text = pPath; // ПКМ на картинке
+					if (pHint)
+					{
+						dlg->GetItem(10+i)->full_tip_text = o_NullString;
+						dlg->GetItem(10+i)->short_tip_text = pHint;
+					}
+				}
+			} 
+			else 
+			{
+				dlg->AddItem(_DlgStaticText_::Create(start_x, 24+h_text1, 100, 100, pPath, n_smallfont2, 1, 50+i, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+				b_YellowFrame_Create(dlg, start_x, 24+h_text1, 100, 100, 10+i, ON, o_Pal_Y);
+				dlg->GetItem(10+i)->full_tip_text = pPath; // ПКМ на картинке
+				if (pHint){
+					dlg->GetItem(10+i)->short_tip_text = pHint;
+				}
+
+				// в диалоге неподдерживаемая картинка gif/avi, поэтому выходим из нашего диалога
+				// и передадим управление воговскому из zvslib.dll который их может обработать
+				i = 4; // счетчик цикла в максимум
+				Sphinx->SelItm = 10;
+				dlg->Destroy(TRUE);
+				return Sphinx->SelItm; // 10 = значит нужно грузить стандартный диалог
+			} // end else IsSupportedFormatImage()
+		} // end for()
+	} // end if (count_pics)
+
+	if (Sphinx->Text2) {
+		dlg->AddItem(_DlgStaticText_::Create(24, 30+h_text1+h_pic, dlg->width -48, h_text2, Sphinx->Text2, n_medfont2, 7, 5, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+	}
+
+	if (Sphinx->Text3) {
+		dlg->AddItem(_DlgStaticText_::Create(24, 30+h_text1+h_pic, dlg->width -48, h_text3, Sphinx->Text3, n_medfont2, 7, 6, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+	}
+
+	if (Sphinx->Text2 && Sphinx->Text3)
+	{
+		dlg->GetItem(5)->x = 36;
+		dlg->GetItem(5)->width = x/2 -48;
+
+		// смещаем вправо Text3
+		dlg->GetItem(6)->x = x/2 +12;
+		dlg->GetItem(6)->width = x/2 -48;
+	}
+
+	_DlgTextEdit_* edit_text = 0;
+	dlg->custom_data[0] = 0; // всегда (но для единичного раза установка будет 1)
+	if (Sphinx->Text2) {
+		// создаём кнопки id 15-18
+		dlg->custom_data[0] = 1;  // один раз установить фокус на ввод текста
+		int editText_y = (dlg->GetItem(5)->y) + h_text2 +11;
+		int editText_x = dlg->GetItem(5)->x;
+		int editText_width = dlg->GetItem(5)->width;
+
+		// поле ввода текста
+		if (editText_width > 250) {
+			editText_width = 220;
+			editText_x = x/2 -110;
+		}
+		b_YellowFrame_Create(dlg, editText_x, editText_y -1, editText_width +1, 20, 8, ON, o_Pal_Grey);
+		// b_YellowFrame_Create(dlg, editText_x -2, editText_y -2, editText_width +4, 22, 8, ON, o_Pal_Y);
+
+		dlg->AddItem(edit_text = _DlgTextEdit_::Create(editText_x+2, editText_y, editText_width-2, 18, 30, o_NullString, n_medfont2, 1, ALIGN_H_LEFT | ALIGN_V_CENTER, "WoGTextEdit.pcx", 256, 4, 0, 0));
+		dlg->GetItem(256)->full_tip_text = o_NullString;
+		dlg->GetItem(256)->short_tip_text = Sphinx->Text2;
+	}
+
+	if (Sphinx->Text3) {
+		// создаём кнопки id 15-18 (19-22)
+		int bttn_y = (dlg->GetItem(6)->y) + h_text3 +10;
+		int bttn_x = dlg->GetItem(6)->x;
+		int bttn_width = dlg->GetItem(6)->width;
+
+		if (Sphinx->Chk1Text) {
+			dlg->AddItem(_DlgStaticTextPcx8ed_::Create(bttn_x+1, bttn_y+1, bttn_width-2, 20, Sphinx->Chk1Text, n_smallfont2, "AdRollvr.pcx", 1, 19, ALIGN_H_CENTER | ALIGN_V_CENTER) );
+			b_YellowFrame_Create(dlg, bttn_x-1, bttn_y-1, bttn_width+2, 23, 25, OFF, o_Pal_Y);
+			b_YellowFrame_Create(dlg, bttn_x, bttn_y, bttn_width, 21, 15, ON, o_Pal_Grey);
+			dlg->GetItem(15)->full_tip_text = o_NullString;
+			dlg->GetItem(15)->short_tip_text = Sphinx->Chk1Hint;
+			bttn_y += 25;			
+		}
+
+		if (Sphinx->Chk2Text) {
+			dlg->AddItem(_DlgStaticTextPcx8ed_::Create(bttn_x+1, bttn_y+1, bttn_width-2, 20, Sphinx->Chk2Text, n_smallfont2, "AdRollvr.pcx", 1, 20, ALIGN_H_CENTER | ALIGN_V_CENTER) );
+			b_YellowFrame_Create(dlg, bttn_x-1, bttn_y-1, bttn_width+2, 23, 26, OFF, o_Pal_Y);
+			b_YellowFrame_Create(dlg, bttn_x, bttn_y, bttn_width, 21, 16, ON, o_Pal_Grey);
+			dlg->GetItem(16)->full_tip_text = o_NullString;
+			dlg->GetItem(16)->short_tip_text = Sphinx->Chk2Hint;
+			bttn_y += 25;			
+		}
+
+		if (Sphinx->Chk3Text) {
+			dlg->AddItem(_DlgStaticTextPcx8ed_::Create(bttn_x+1, bttn_y+1, bttn_width-2, 20, Sphinx->Chk3Text, n_smallfont2, "AdRollvr.pcx", 1, 21, ALIGN_H_CENTER | ALIGN_V_CENTER) );
+			b_YellowFrame_Create(dlg, bttn_x-1, bttn_y-1, bttn_width+2, 23, 27, OFF, o_Pal_Y);
+			b_YellowFrame_Create(dlg, bttn_x, bttn_y, bttn_width, 21, 17, ON, o_Pal_Grey);
+			dlg->GetItem(17)->full_tip_text = o_NullString;
+			dlg->GetItem(17)->short_tip_text = Sphinx->Chk3Hint;
+			bttn_y += 25;			
+		}
+
+		if (Sphinx->Chk4Text) {
+			dlg->AddItem(_DlgStaticTextPcx8ed_::Create(bttn_x+1, bttn_y+1, bttn_width-2, 20, Sphinx->Chk4Text, n_smallfont2, "AdRollvr.pcx", 1, 22, ALIGN_H_CENTER | ALIGN_V_CENTER) );
+			b_YellowFrame_Create(dlg, bttn_x-1, bttn_y-1, bttn_width+2, 23, 28, OFF, o_Pal_Y);
+			b_YellowFrame_Create(dlg, bttn_x, bttn_y, bttn_width, 21, 18, ON, o_Pal_Grey);
+			dlg->GetItem(18)->full_tip_text = o_NullString;
+			dlg->GetItem(18)->short_tip_text = Sphinx->Chk4Hint;
+			bttn_y += 25;
+		}
+	}
+
+	int x_center = x / 2; // вычисляем середину ширины диалога
+
+	if ( cansel_show )
+	{
+		dlg->AddItem(_DlgStaticPcx8_::Create(x_center +16, dlg->height -74, 0, "Box64x30.pcx"));
+		dlg->AddItem(_DlgButton_::Create(x_center +17, dlg->height -73, 64, 30, DIID_CANCEL, "iCancel.def", 0, 1, 1, 1, 2)); 
+		dlg->GetItem(DIID_CANCEL)->full_tip_text = o_NullString;
+		dlg->GetItem(DIID_CANCEL)->short_tip_text = txtresWOG->GetString(12);
+		x_center -= 47; // для правильного смещения кнопки ОК
+	} 
+	dlg->AddItem(_DlgStaticPcx8_::Create(x_center -33, dlg->height -74, 0, "Box64x30.pcx"));
+	dlg->AddItem(_DlgButton_::Create(x_center -32, dlg->height -73, 64, 30, DIID_OK, "iOkay.def", 0, 1, 1, 28, 2));
+	dlg->GetItem(DIID_OK)->full_tip_text = o_NullString;
+	dlg->GetItem(DIID_OK)->short_tip_text = txtresWOG->GetString(11);
+	Sphinx->ShowCancel = cansel_show;
+
+	if ( count_bttns > 0) {	
+		dlg->GetItem(DIID_OK)->SetEnabled(0); 
+	}
+
+	// (id = 115) подсказка в статус баре	
+	dlg->AddItem(_DlgStaticTextPcx8ed_::Create(8, dlg->height -18 -8, dlg->width - 16, 18, o_NullString, n_smallfont2, "AdRollvr.pcx", 1, 115, ALIGN_H_CENTER | ALIGN_V_CENTER) ); // HD_TStat.pcx
+
+
+	Sphinx->SelItm = 0;
+	dlg->Run();
+
+	// если был создан диалог с вводом текста: возвращаем введенный текст
+	if ( edit_text ) { 		
+		Sphinx->Text4 = edit_text->text;
+	}
+
+	dlg->Destroy(TRUE);
+
+	if (o_WndMgr->result_dlg_item_id == DIID_CANCEL){ 
+		Sphinx->SelItm = -1; 
+	}
+	if (o_WndMgr->result_dlg_item_id == DIID_OK) { 
+		if (!Sphinx->SelItm) {
+			Sphinx->SelItm = 5;	
+		}
+	}
+
+	// если возвращается 0, то нужно вызвать стандартный воговский диалог (есть avi или gif)
+	return Sphinx->SelItm;
+}
+
+int __stdcall Y_Dlg_CustomReq(LoHook* h, HookContext* c)
+{	
+	Dlg_CustomReq_Ban++;
+	if (Dlg_CustomReq_Ban == 1) 
+	{
+		o_PauseVideo();
+
+		int save_WOG_DisableMouse = WOG_DisableMouse;
+		WOG_DisableMouse = 0; // отключаем блок изменения кадров курсора
+		// запоминаем кадр курсора мыши
+		int cursor_t = o_MouseMgr->Field<_int_>(+0x4C);
+		int cursor_f = o_MouseMgr->Field<_int_>(+0x50);
+		b_MouseMgr_SetCursor(0,0);
+		CALL_2(void*, __thiscall, 0x50D7B0, o_MouseMgr, 0);
+
+		_Sphinx1_* Sphinx = (_Sphinx1_*)(c->ebp -0x260);
+		o_Sphinx1 = Sphinx; // делаем глобальное сохранение адреса класса, чтобы потом при необходимости иметь прямой доступ
+
+		int result = New_Dlg_CustomReq(Sphinx);
+
+		b_MouseMgr_SetCursor(cursor_f, cursor_t);
+		WOG_DisableMouse = save_WOG_DisableMouse;
+
+		if (result == 10) 
+		{ // в диалоге gif/avi = грузим стандартный воговский диалог
+			CALL_0(void, __stdcall, 0x771978); //  WoG_BeforeDialog()  
+			int soundEffect = CALL_0(int, __cdecl, 0x71666C) > 4;
+			int v5 = CALL_0(int, __cdecl, 0x771116); // int __cdecl Service_GetForegroundWindow()
+			result = CALL_4(int, __cdecl, *(int*)0x2878F1C, v5, (int)Sphinx, /* ".\\Data\\ZVS\\LIB1.RES"*/ (char*)0x7A4DC8, soundEffect);
+			int v6 = CALL_0(int, __cdecl, 0x771116); // int __cdecl Service_GetForegroundWindow()
+			// CALL_1(int, __cdecl, *(int*)0x7850F0, v6); // WOG_SetFocus()
+			CALL_0(void, __stdcall, 0x77186A);  // WOG_AfterDialog()
+		}
+
+		o_ContinueVideo();
+		Dlg_CustomReq_Ban = 0;
+	} 
+
+	c->return_address = 0x772CF2;
+	return NO_EXEC_DEFAULT;
+} 
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////// Хуки //////////////////////////////////////////////////////////////////
+
 _int_ __stdcall New_Dlg_ExpaMon_Lo(LoHook* h, HookContext* c)
 {
 	New_Dlg_ExpaMon(o_Mon, o_Num, o_Expo, o_CrExpo);
@@ -2389,7 +2842,7 @@ int __stdcall Y_NewScenarioDlg_Proc(HiHook* hook, _CustomDlg_* this_, _EventMsg_
 void __stdcall Y_NewScenarioDlg_Create(HiHook* hook, _NewScenarioDlg_* this_, int type)
 {
 	CALL_2(void, __thiscall, hook->GetDefaultFunc(), this_, type);
-	this_->AddItem(_DlgTextButton_::Create(622, 105, 4444, "GSPBUT2.DEF", WogNDlg_TXT->GetString(26), "smalfont2.fnt", 0, 1, 0, 0, 1));
+	this_->AddItem(_DlgTextButton_::Create(622, 105, 4444, "GSPBUT2.DEF", WogNDlg_TXT->GetString(26), n_smallfont2, 0, 1, 0, 0, 1));
 }
 
 // #############################################################################################
@@ -2609,7 +3062,7 @@ int __stdcall Y_Dlg_MainMenu_Create(HiHook* hook, _Dlg_* dlg)
 
 	ERA_version = Era::GetEraVersion();
 	sprintf(o_TextBuffer, "HoMM3 ERA %s", ERA_version );
-	dlg->AddItem(_DlgStaticText_::Create(4, 576, 200, 20, o_TextBuffer, "medfont2.fnt", 7, 545, ALIGN_H_LEFT | ALIGN_V_BOTTOM, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(4, 576, 200, 20, o_TextBuffer, n_medfont2, 7, 545, ALIGN_H_LEFT | ALIGN_V_BOTTOM, 0)); 
 
 	return ret;
 }
@@ -2627,9 +3080,9 @@ int __stdcall Y_LoadAllTXTinGames(LoHook* h, HookContext* c)
 int __stdcall Y_Hook_MainLoop(LoHook* h, HookContext* c)
 {	
 	// загружаем необходимые русскоязычные игровые шрифты
-	bigfont2->Load("bigfont2.fnt"); //_Fnt_* bigfont2;
-	medfont2->Load("medfont2.fnt");	//_Fnt_* medfont2;
-	smalfont2->Load("smalfont2.fnt");	//_Fnt_* smalfont2;
+	bigfont2->Load(n_bigfont2); //_Fnt_* bigfont2;
+	medfont2->Load(n_medfont2);	//_Fnt_* medfont2;
+	smalfont2->Load(n_smallfont2);	//_Fnt_* smalfont2;
 
 	// создание кнопки WoG Options
 	_PI->WriteDword((0x779100 + 3), 640);
@@ -2653,9 +3106,9 @@ int __stdcall Y_Hook_MainLoop(LoHook* h, HookContext* c)
 	_PI->WriteLoHook(0x49279C, Y_Battle_SetHintAttackWillKilled); // последний выстрел
 #endif DOP_FUNK_TO_ERA
 
-	bigfont2 = _Fnt_::Load("bigfont2.fnt");
-	medfont2 = _Fnt_::Load("medfont2.fnt");
-	smalfont2 = _Fnt_::Load("smalfont2.fnt");
+	bigfont2 = _Fnt_::Load(n_bigfont2);
+	medfont2 = _Fnt_::Load(n_medfont2);
+	smalfont2 = _Fnt_::Load(n_smallfont2);
 
 	return EXEC_DEFAULT;
 } 
@@ -2774,6 +3227,11 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 			// Диалог проклятий и благословлений
 			_PI->WriteByte(0x754F6A +1, 0x14);
 			_PI->WriteLoHook(0x754E64, Y_WoGCurseDlg_Show);	
+
+			// Диалог IF:D/E
+			_PI->WriteCodePatch(0x772A6C, "%n", 5); // call    WoG_BeforeDialog()
+			_PI->WriteCodePatch(0x772D39, "%n", 5); // call    WOG_AfterDialog()		
+			_PI->WriteLoHook(0x772CBD, Y_Dlg_CustomReq);
 
 // =================================================================================	
 			// char* oVersionERA = "{Game Version:}\n\nHoMM3 ERA 2.7.7 \n (with Wog Native Dialogs)";
