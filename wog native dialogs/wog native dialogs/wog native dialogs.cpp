@@ -2174,20 +2174,20 @@ int __stdcall New_Dlg_CustomReq_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 		{
 			if (msg->item_id >= 15 && msg->item_id <= 18) 
 			{
-				dlg->GetItem(25)->SendCommand(6, 4);
-				dlg->GetItem(26)->SendCommand(6, 4); 
-				dlg->GetItem(27)->SendCommand(6, 4);
-				dlg->GetItem(28)->SendCommand(6, 4);
+				_DlgItem_* item;
+				_DlgStaticTextPcx8ed_* itemText;
+				for (int i = 0; i < 4; i++) 
+				{
+					item = dlg->GetItem(25+i);					
+					if (item) {	item->SendCommand(6, 4); }
 
-				((_DlgStaticTextPcx8ed_*)dlg->GetItem(19))->font = (int)smalfont2;
-				((_DlgStaticTextPcx8ed_*)dlg->GetItem(20))->font = (int)smalfont2;
-				((_DlgStaticTextPcx8ed_*)dlg->GetItem(21))->font = (int)smalfont2;
-				((_DlgStaticTextPcx8ed_*)dlg->GetItem(22))->font = (int)smalfont2;
-
-				((_DlgStaticTextPcx8ed_*)dlg->GetItem(19))->color = 1;
-				((_DlgStaticTextPcx8ed_*)dlg->GetItem(20))->color = 1;
-				((_DlgStaticTextPcx8ed_*)dlg->GetItem(21))->color = 1;
-				((_DlgStaticTextPcx8ed_*)dlg->GetItem(22))->color = 1;
+					itemText = (_DlgStaticTextPcx8ed_*)dlg->GetItem(19+i);
+					if (itemText)
+					{
+						itemText->font = (int)smalfont2;
+						itemText->color = 1;
+					}
+				}
 
 				dlg->GetItem(msg->item_id +10)->SendCommand(5, 4);
 				((_DlgStaticTextPcx8ed_*)dlg->GetItem(msg->item_id +4))->font = (int)medfont2;
@@ -2259,7 +2259,7 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 
 	if (count_bttns > 1) {
 		cansel_show = Sphinx->ShowCancel;
-		if (Sphinx->Text2) {
+		if (Sphinx->Text2) { 
 			yy -= 32;
 		}
 	}
@@ -2291,9 +2291,10 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 	char* pic_name = o_NullString;
 	// строим изображения id 10-14
 	if (count_pics) {
+		int max_width_pic = 400 / count_pics;
 		for (int i = 0; i < count_pics; i++) {
 			int delta = x/(count_pics+1);
-			int start_x = (delta-50) + (delta*i);
+			int start_x = (delta - (max_width_pic/2) ) + (delta*i);
 			int start_y = 24+h_text1;
 			
 			char* pPath = *(char**)(ptr_pic1 +4*i);
@@ -2303,7 +2304,7 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 			if (IsSupportedFormatImage(short_name) )
 			{
 				// грузим картинку через era.dll->LoadImageAsPcx16()
-				_Pcx16_* o_Pic = (_Pcx16_*)Era::LoadImageAsPcx16(pPath, short_name, 0, 0, 100, 100, 3); 
+				_Pcx16_* o_Pic = (_Pcx16_*)Era::LoadImageAsPcx16(pPath, short_name, 0, 0, max_width_pic, 100, 3); 
 				
 				int pic_x = 0;
 				int pic_y = 0;
@@ -2313,17 +2314,9 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 					// и при выходе за границы 100х100
 					pic_x = o_Pic->width;
 					pic_y = o_Pic->height;
-					if ( pic_x > 100 || pic_y > 100 ) {
-						if (pic_x >= pic_y) {
-							pic_y = pic_y *100 / pic_x;
-							pic_x = 100;						
-						} else {
-							pic_x = pic_x *100 / pic_y;
-							pic_y = 100;
-						}
-					}
-					// вычисляем привязку изображений (верхний левый угол)
-					start_x += (50 - pic_x/2);
+
+					// вычисляем привязку изображений (координаты верхнего левого угла картинки)
+					start_x += ( (max_width_pic/2) - pic_x/2);
 					start_y += (50 - pic_y/2);
 
 					dlg->AddItem(_DlgStaticPcx16_::Create(start_x, start_y, pic_x, pic_y, 10+i, o_Pic->name, 2048));
@@ -2526,6 +2519,64 @@ int __stdcall Y_Dlg_CustomReq(LoHook* h, HookContext* c)
 	return NO_EXEC_DEFAULT;
 } 
 
+
+// диалог вопросов Сфинкса
+int __stdcall Y_WoGDlg_SphinxReq(HiHook* hook, int Num) 
+{
+	_Sphinx1_ Sphinx;
+	Sphinx.SelItm = -1;
+	Sphinx.Text1 = CALL_3(char*, __cdecl, 0x77710B, Num, 0, 0x289BFF0); 
+	Sphinx.Text2 = CALL_3(char*, __cdecl, 0x77710B, 122, 0, 0x7C8E3C); 
+	Sphinx.Text3 = 0;
+	*(_byte_*)0x28AAB88 = 57; // Answer[0]='9';
+	*(_byte_*)0x28AAB89 = 57; // Answer[1]='9';
+	*(_byte_*)0x28AAB8A = 57; // Answer[2]='9';
+	*(_byte_*)0x28AAB8B = 57; // Answer[3]='9';
+	*(_byte_*)0x28AAB8C = 0;  // Answer[4]=0;
+
+	Sphinx.Text4 = (char*)0x28AAB88;
+	Sphinx.Pic1Path = 0;
+	Sphinx.Pic2Path = 0;
+	Sphinx.Pic3Path = 0;
+	Sphinx.Pic4Path = 0;
+	Sphinx.Pic1Hint = 0;
+	Sphinx.Pic2Hint = 0;
+	Sphinx.Pic3Hint = 0;
+	Sphinx.Pic4Hint = 0;
+	Sphinx.Chk1Text = 0;
+	Sphinx.Chk2Text = 0;
+	Sphinx.Chk3Text = 0;
+	Sphinx.Chk4Text = 0;
+	Sphinx.Chk1Hint = 0;
+	Sphinx.Chk2Hint = 0;
+	Sphinx.Chk3Hint = 0;
+	Sphinx.Chk4Hint = 0;
+	Sphinx.ShowCancel = 0;
+
+	// делаем глоб.ссылку на Sphinx
+	o_Sphinx1 = (_Sphinx1_*)&Sphinx;
+
+	// запоминаем кадр курсора мыши
+	int save_WOG_DisableMouse = WOG_DisableMouse;
+	WOG_DisableMouse = 0; // разблокировали
+	int cursor_t = o_MouseMgr->Field<_int_>(+0x4C);
+	int cursor_f = o_MouseMgr->Field<_int_>(+0x50);
+	b_MouseMgr_SetCursor(0,0);
+	CALL_2(void*, __thiscall, 0x50D7B0, o_MouseMgr, 0);
+
+	New_Dlg_CustomReq(o_Sphinx1); // диалог
+
+	// возвращаем курсор
+	b_MouseMgr_SetCursor(cursor_f, cursor_t);
+	WOG_DisableMouse = save_WOG_DisableMouse;
+
+	CALL_3(void, __cdecl, 0x710B9B, 0x28AAB88, 512, Sphinx.Text4); // WoG_StrCopy(Answer, int 512, Sphinx.Text4)
+	return CALL_2(int, __cdecl, 0x772DFD, 0x28AAB88, CALL_3(char*, __cdecl, 0x77710B, Num, 1, 0x289BFF0));
+
+	// оригинальная функция
+	// return CALL_1(int, __cdecl, hook->GetDefaultFunc(), Num);
+}
+ 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////// Хуки //////////////////////////////////////////////////////////////////
@@ -3217,6 +3268,9 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 			_PI->WriteCodePatch(0x772A6C, "%n", 5); // call    WoG_BeforeDialog()
 			_PI->WriteCodePatch(0x772D39, "%n", 5); // call    WOG_AfterDialog()		
 			_PI->WriteLoHook(0x772CBD, Y_Dlg_CustomReq);
+
+			// диалог сфинкса
+			_PI->WriteHiHook(0x772E48, SPLICE_, EXTENDED_, CDECL_, Y_WoGDlg_SphinxReq);
 
 // =================================================================================	
 			// char* oVersionERA = "{Game Version:}\n\nHoMM3 ERA 2.7.7 \n (with Wog Native Dialogs)";
