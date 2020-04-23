@@ -345,7 +345,7 @@ int __stdcall Y_Fix_Funk_Get_Resurrect_Count(LoHook* h, HookContext* c)
 
 int __stdcall Y_LoadAllTXTinGames(LoHook* h, HookContext* c)
 {
-	Spells_Description_TXT = _TXT_::Load( "Spells_Description.txt" );
+	Spells_Description_TXT = _TXT_::Load( "SpDescr.txt" );
 	return EXEC_DEFAULT;
 }
 

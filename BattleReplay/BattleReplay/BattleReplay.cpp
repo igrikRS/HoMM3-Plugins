@@ -216,6 +216,12 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 			_PI->WriteHexPatch(0x75AEB0, "E8 AB22D5FF 90 90");	// CALL 0x4AD160 (BATTLE) + 2NOPs
 			_PI->WriteHiHook(0x75AEB0, CALL_, SAFE_, THISCALL_, Y_ReplayBattle);
 
+			// Есть баг: Астральный дух возвращает существ перед первой переигровкой
+			// исправить так: JMP в 0x76C632 -> 0x76C72B
+			// а пропущенный код выполнить (придется писать ручками) после всех переигровок
+			// АЛЬТЕРНАТИВНОЕ РЕШЕНИЕ (как по мне - лучше)
+			// hihook на функцию 0x76C616 c полным пропуском оной во время переигровок
+
 
         }
         break;

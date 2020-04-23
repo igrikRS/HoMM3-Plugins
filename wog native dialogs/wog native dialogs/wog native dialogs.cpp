@@ -24,7 +24,8 @@ _int_ HD_Version;
 #define hdv(type, name) _P->VarValue<type>((_cstr_)(name))
 
 // переменная, для чистого WND
-//#define DOP_FUNK_TO_ERA
+// для Берса ее коментирую
+#define DOP_FUNK_TO_ERA
 
 struct _TXT_;
 _TXT_* txtresWOG;
@@ -1282,7 +1283,7 @@ int New_Dlg_IF_G(int num_str, int htxt, int state, int txt, int chRAD)
 
 	int x = 435;
 	int dy = 27;
-	int y = 124 + dy *num_str; 
+	int y = 134 + dy *num_str; 
 	_CustomDlg_* dlg = _CustomDlg_::Create(-1, -1, x, y, DF_SCREENSHOT | DF_SHADOW, New_Dlg_IF_G_Proc);
 	Set_DlgBackground_RK(dlg, 0, o_GameMgr->GetMeID());
 
@@ -1300,17 +1301,17 @@ int New_Dlg_IF_G(int num_str, int htxt, int state, int txt, int chRAD)
 
 	// Титульный текст
 	sprintf(o_TextBuffer, "%s", htxt);
-	dlg->AddItem(_DlgStaticText_::Create(20, 20, dlg->width -40, 46, o_TextBuffer, n_medfont2, 1, 3, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(20, 20, dlg->width -40, 56, o_TextBuffer, n_medfont2, 1, 3, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 
 	int on_bttn = 0;
 	for (int i = 0; i < num_str; i++){
-		dlg->AddItem(CALL_8 (_DlgItem_*, __thiscall, 0x44FE00, o_New(56), 18, 66+i*dy, dlg->width -36, 24, 22+i, *(int*)(*(int*)0x6AAD18 + 118), 1024));
+		dlg->AddItem(CALL_8 (_DlgItem_*, __thiscall, 0x44FE00, o_New(56), 18, 76+i*dy, dlg->width -36, 24, 22+i, *(int*)(*(int*)0x6AAD18 + 118), 1024));
 		dlg->GetItem(22+i)->SendCommand(5, 4);
 		
 		sprintf(o_TextBuffer, "{%s}", *(int*)(txt +4*i));
-		dlg->AddItem(_DlgStaticText_::Create(44, 70+i*dy, dlg->width -66, 16, o_TextBuffer, n_smallfont2, 1, 10+i, ALIGN_H_LEFT | ALIGN_V_CENTER, 0));
+		dlg->AddItem(_DlgStaticText_::Create(44, 80+i*dy, dlg->width -66, 16, o_TextBuffer, n_smallfont2, 1, 10+i, ALIGN_H_LEFT | ALIGN_V_CENTER, 0));
 		on_bttn = *(int*)(state +4*i);
-		dlg->AddItem(_DlgButton_::Create(22, 70+i*dy, dlg->width -44, 18, 34+i, chRAD ? "radiobttn.def" : "checkbox.def", on_bttn ? 2 : 0, on_bttn ? 3 : 1, 0, 0, 0));
+		dlg->AddItem(_DlgButton_::Create(22, 80+i*dy, dlg->width -44, 18, 34+i, chRAD ? "radiobttn.def" : "checkbox.def", on_bttn ? 2 : 0, on_bttn ? 3 : 1, 0, 0, 0));
 	} 
 
 	dlg->field_48 = chRAD;
@@ -1348,8 +1349,13 @@ int __stdcall Dlg_ChooseMonAttack(HiHook* hook, int a1, int a2, int a3)
 {
 	int count = *(int*)0x282E6F8;
 
-	int x = 360;	int dy = 27;	int y = 83 +dy*count;
-	_CustomDlg_* dlg = _CustomDlg_::Create(-1, -1, x, y, DF_SCREENSHOT | DF_SHADOW, Dlg_ChooseMonAttack_Proc);
+	int x = 300;	int dy = 27;	int y = 83 +dy*count;
+
+	// делаем отображение в правом нижнем углу битвы
+	int dlg_x = (o_HD_X >> 1) +385 -x;
+	int dlg_y = (o_HD_Y >> 1) +230 -y;
+
+	_CustomDlg_* dlg = _CustomDlg_::Create(dlg_x, dlg_y, x, y, DF_SCREENSHOT | DF_SHADOW, Dlg_ChooseMonAttack_Proc);
 	Set_DlgBackground_RK(dlg, 0, o_GameMgr->GetMeID());
 
 	// запоминаем кадр курсора мыши
@@ -1585,7 +1591,8 @@ int __stdcall Dlg_WoG_Options_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 			if (it->id == 6) { text_bar = txtresWOG->GetString(87); }
 			if (it->id == 7) { text_bar = txtresWOG->GetString(83); }
 			if (it->id == 8) { text_bar = txtresWOG->GetString(88); }
-			if (it->id == 9) { text_bar = txtresWOG->GetString(82); }			
+			if (it->id == 9) { text_bar = txtresWOG->GetString(82); }
+			if (it->id == 10) { text_bar = txtresWOG->GetString(84); }
 			if (it->id == DIID_OK) { text_bar = txtresWOG->GetString(85); } 
 
 			if (it->id != apdFont && apdFont != 0) {
@@ -1624,10 +1631,10 @@ int __stdcall Dlg_WoG_Options_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 					for (int i=0; i<8; i++) {
 						ShowHide_WoGDlgSetup_ElemOnPage(dlg, i, ds, 0);
 					} 					
-					int id = msg->item_id -41;
+					int id = msg->item_id -41;					
 					ShowHide_WoGDlgSetup_ElemOnPage(dlg, id, ds, 1);
 					setYellowFrames(dlg, id);
-					o_LastChoosenPage = id; 
+					ds->GetListener(2, id+1, -1, -1); // o_LastChoosenPage = id;
 					dlg->Redraw();					
 				}
 				
@@ -1636,8 +1643,9 @@ int __stdcall Dlg_WoG_Options_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 			if (msg->subtype == MST_LBUTTONCLICK) { // ЛКМ при отжатии
 				int callBack = 0;
 				if (msg->item_id == 5 ) { if (o_LastChoosenPage != -1) callBack = ds->GetListener(0, o_LastChoosenPage +1, 0, 4); }  // Выбрать все
-				if (msg->item_id == 6 ) { if (o_LastChoosenPage != -1) callBack = ds->GetListener(0, o_LastChoosenPage +1, 0, 5); }	// Сбросить все
-				if (msg->item_id == 7 ) { if (o_LastChoosenPage != -1) callBack = ds->GetListener(0, o_LastChoosenPage +1, 0, 2); }	// По умолчанию 
+				if (msg->item_id == 6 ) { if (o_LastChoosenPage != -1) callBack = ds->GetListener(0, o_LastChoosenPage +1, 0, 5); }	 // Сбросить все
+				if (msg->item_id == 7 ) { if (o_LastChoosenPage != -1) callBack = ds->GetListener(0, o_LastChoosenPage +1, 0, 2); }	 // По умолчанию 
+				if (msg->item_id == 10 ) { if (o_LastChoosenPage != -1) callBack = ds->GetListener(0, o_LastChoosenPage +1, 0, 3); } // Мультиплеер
 				if (msg->item_id == 8 || msg->item_id == 9 ) {
 					((_DlgStaticText_*)dlg->GetItem(4))->Hide();
 					if (o_LastChoosenPage == -1) {
@@ -1745,7 +1753,7 @@ void __stdcall Dlg_WoG_Options_Show(HiHook* hook, int a1)
 	dlg->AddItem(statbarWoGOptions); // подсказка в статус баре	
 
 	dlg->AddItem(_DlgStaticText_::Create(214, 20, 370, 20, ds->Name, n_bigfont2, 1, 3, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); // id = 3
-	dlg->AddItem(_DlgStaticText_::Create(230, 50, 538, 468, ds->Intro, n_bigfont2, 2, 4, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(230, 50, 538, 468, ds->Intro, n_bigfont2, 2, 4, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); //id = 4
 
 	for (int i=0; i<8; i++) {
 		if (ds->Pages[i]->Enabled) {
@@ -1755,11 +1763,12 @@ void __stdcall Dlg_WoG_Options_Show(HiHook* hook, int a1)
 			ShowHide_WoGDlgSetup_ElemOnPage(dlg, i, ds, 0); // скрываем все элементы на странице
 		}
 	}
-	if (ds->ButtonsStates[5] == 1) {dlg->AddItem(_DlgButton_::Create(375, 528, 64, 30, 5, "WoGBttn.def", 15, 16, 0, HK_B, 0)); } // id = 5
-	if (ds->ButtonsStates[4] == 1) {dlg->AddItem(_DlgButton_::Create(440, 528, 64, 30, 6, "WoGBttn.def", 18, 19, 0, HK_N, 0)); } // id = 6
-	if (ds->ButtonsStates[2] == 1) {dlg->AddItem(_DlgButton_::Create(510, 528, 64, 30, 7, "WoGBttn.def", 12, 13, 0, HK_R, 0)); } // id = 7	
-	if (ds->ButtonsStates[8] == 1) {dlg->AddItem(_DlgButton_::Create(580, 528, 64, 30, 8, "WoGBttn.def", 6, 7, 0, HK_L, 0)); }   // id = 8
-	if (ds->ButtonsStates[1] == 1) {dlg->AddItem(_DlgButton_::Create(645, 528, 64, 30, 9, "WoGBttn.def", 9, 10, 0, HK_S, 0)); }  // id = 9
+	if (ds->ButtonsStates[5] == 1) {dlg->AddItem(_DlgButton_::Create(375, 528, 64, 30, 5, "WoGBttn.def", 15, 16, 0, HK_B, 0)); } // id = 5 // выбрать всё
+	if (ds->ButtonsStates[4] == 1) {dlg->AddItem(_DlgButton_::Create(440, 528, 64, 30, 6, "WoGBttn.def", 18, 19, 0, HK_N, 0)); } // id = 6 // сбросить всё
+	if (ds->ButtonsStates[2] == 1) {dlg->AddItem(_DlgButton_::Create(510, 528, 64, 30, 7, "WoGBttn.def", 12, 13, 0, HK_R, 0)); } // id = 7 // по умолчанию
+	if (ds->ButtonsStates[8] == 1) {dlg->AddItem(_DlgButton_::Create(580, 528, 64, 30, 8, "WoGBttn.def", 6, 7, 0, HK_L, 0)); }   // id = 8 // загрузить
+	if (ds->ButtonsStates[1] == 1) {dlg->AddItem(_DlgButton_::Create(645, 528, 64, 30, 9, "WoGBttn.def", 9, 10, 0, HK_S, 0)); }  // id = 9 // сохранить
+	if (ds->ButtonsStates[3] == 1) {dlg->AddItem(_DlgButton_::Create(305, 528, 64, 30, 10, "WoGBttn.def", 21, 22, 0, HK_M, 0)); }  // id = 10 // мультиплеер
 	if (ds->ButtonsStates[0] == 1) {dlg->AddItem(_DlgButton_::Create(715, 528, 64, 30, DIID_OK, "WoGBttn.def", 0, 1, 1, HK_ENTER, 2)); } // id = 30725
 
 	//_DlgScroll_* wogOptScroll = _DlgScroll_::Create(26, 534, 334, 16, 11, 8, (_ptr_)Dlg_WoG_Options_Scroll, 0, 0, 0); // создать ползунок
@@ -2233,7 +2242,7 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 	if (Sphinx->Text2) {
 		h_text2 = 16;
 		yy += h_text2 +26; // 26 выделяем высоту на поле ввода текста
-	} else cansel_show = 0;
+	} 
 
 	if (Sphinx->Text3 ) {
 		h_text3 = 16;
@@ -2242,6 +2251,10 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 
 	if (Sphinx->Text2 && Sphinx->Text3 ) {
 		yy -= h_text3;
+	}
+
+	if (!Sphinx->Text2 && !Sphinx->Text3 ) {
+		cansel_show = 0;
 	}
 
 	if (Sphinx->Pic1Path || Sphinx->Pic2Path) {
@@ -2258,7 +2271,6 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 	}
 
 	if (count_bttns > 1) {
-		cansel_show = Sphinx->ShowCancel;
 		if (Sphinx->Text2) { 
 			yy -= 32;
 		}
@@ -2444,7 +2456,6 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 	dlg->AddItem(_DlgButton_::Create(x_center -32, dlg->height -73, 64, 30, DIID_OK, "iOkay.def", 0, 1, 1, 28, 2));
 	dlg->GetItem(DIID_OK)->full_tip_text = o_NullString;
 	dlg->GetItem(DIID_OK)->short_tip_text = txtresWOG->GetString(11);
-	Sphinx->ShowCancel = cansel_show;
 
 	if ( count_bttns > 0) {	
 		dlg->GetItem(DIID_OK)->SetEnabled(0); 
@@ -2884,8 +2895,6 @@ void __stdcall Y_NewScenarioDlg_Create(HiHook* hook, _NewScenarioDlg_* this_, in
 // #############################################################################################
 // ################################## HD 5 funk start ##########################################
 
-#ifdef DOP_FUNK_TO_ERA
-
 _dword_ time_click_MsgBox, dlgHeroLvlUp_heroID;   
 
 int __stdcall Y_Dlg_HeroLvlUp_Proc(HiHook* hook, int this_, _EventMsg_* msg)
@@ -2965,6 +2974,7 @@ int __stdcall b_MsgBox_Proc(HiHook* hook, _EventMsg_* msg)
 }
 
 // #############################################################################################
+#ifdef DOP_FUNK_TO_ERA
 
 int __stdcall Y_Dlg_Recuit_Proc(HiHook* hook, _Struct_* this_, _EventMsg_* msg)
 {
@@ -3034,13 +3044,33 @@ int __stdcall Y_DlgMainMenu_Proc(HiHook* hook, _EventMsg_* msg)
 // #############################################################################################
 // быстро закончить бой по Q
 _int_ QuickBattle_SAVE, isNeedRestore;
+_int_ saveManaHero[2][2];
 
 _int_ __stdcall Y_BATTLE_Proc(HiHook* hook, _BattleMgr_* bm, _EventMsg_* msg)
 {
 	if ( msg->type == MT_KEYDOWN ) {
 		if ( msg->subtype == HK_Q )	{
 			if ( (bm->isNotAI[0] && !bm->isNotAI[1]) || (!bm->isNotAI[0] && bm->isNotAI[1]) ) {
+
 				if ( b_MsgBox( WogNDlg_TXT->GetString(27), MBX_OKCANCEL) ) {
+
+					saveManaHero[0][0] = 0; // кол-во маны левого героя
+					saveManaHero[1][0] = 0; // кол-во маны правого героя
+					saveManaHero[0][1] = -1; // id левого героя
+					saveManaHero[1][1] = -1; // id правого героя
+
+					if ( bm->hero[0] ) {
+						saveManaHero[0][0] = bm->hero[0]->spell_points;
+						saveManaHero[0][1] = bm->hero[0]->id;
+						bm->hero[0]->spell_points = 0;
+					}
+
+					if ( bm->hero[1] ) {
+						saveManaHero[1][0] = bm->hero[1]->spell_points;
+						saveManaHero[1][1] = bm->hero[1]->id;
+						bm->hero[1]->spell_points = 0;
+					}
+
 					QuickBattle_SAVE = o_QuickBattle;
 					isNeedRestore = 1;
 					o_QuickBattle = 1;
@@ -3055,12 +3085,28 @@ _int_ __stdcall Y_BATTLE_Proc(HiHook* hook, _BattleMgr_* bm, _EventMsg_* msg)
 int __stdcall Y_EndBattle(LoHook* h, HookContext* c)
 {
 	if ( isNeedRestore ) {
+
+		if (saveManaHero[0][1] > -1 && saveManaHero[0][1] < 256) {
+			o_GameMgr->GetHero(saveManaHero[0][1])->spell_points = saveManaHero[0][0];
+		}
+
+		if (saveManaHero[1][1] > -1 && saveManaHero[1][1] < 256) {
+			o_GameMgr->GetHero(saveManaHero[1][1])->spell_points = saveManaHero[1][0];
+		}
+
+		saveManaHero[0][0] = 0; // кол-во маны левого героя
+		saveManaHero[1][0] = 0; // кол-во маны правого героя
+		saveManaHero[0][1] = -1; // id левого героя
+		saveManaHero[1][1] = -1; // id правого героя
+		
 		o_QuickBattle = QuickBattle_SAVE;
 		QuickBattle_SAVE = 0;
 		isNeedRestore = 0;
 	}
 	return EXEC_DEFAULT;
 } 
+
+#endif DOP_FUNK_TO_ERA
 
 // ############################# HD 5 funk end #################################################
 // #############################################################################################
@@ -3075,6 +3121,7 @@ void StartHD5Functions()
 	// двойной клик в b_MsgBox()
 	_PI->WriteHiHook(0x4F0F60, SPLICE_, EXTENDED_, THISCALL_, b_MsgBox_Proc);
 
+#ifdef DOP_FUNK_TO_ERA
 	// установить ползунок в MAX положение при покупке монстров
 	_PI->WriteHiHook(0x550D40, SPLICE_, EXTENDED_, THISCALL_, Y_Dlg_Recuit_Proc);
 	_PI->WriteHiHook(0x5502A0, SPLICE_, EXTENDED_, THISCALL_, Y_Dlg_Recuit_Create);
@@ -3087,8 +3134,9 @@ void StartHD5Functions()
 	// быстро закончить бой по Q
 	_PI->WriteHiHook(0x473F55, CALL_, EXTENDED_, THISCALL_, Y_BATTLE_Proc);
 	_PI->WriteLoHook(0x476DA5, Y_EndBattle);
-}
 #endif DOP_FUNK_TO_ERA
+}
+
 
 // #############################################################################################
 
@@ -3171,18 +3219,18 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 			_P = GetPatcher();
 			_PI = _P->CreateInstance("WoG_Native_Dialogs"); 
 
-			// загружаем HD данные
-			_HD = _P->GetInstance("HD.WoG"); if (_HD) { isHD = true; }
-			
 			// подтягиваем ERA
 			Era::ConnectEra();
 
-#ifdef DOP_FUNK_TO_ERA
-				HD_Version = _P->VarValue<_dword_>("HD.Version.Dword");
-				if ( HD_Version == 0 || HD_Version > 5000000 ) { // версия HD 5.000.RC0
-					StartHD5Functions();
-				}	
-#endif DOP_FUNK_TO_ERA	
+			// загружаем HD данные
+			_HD = _P->GetInstance("HD.WoG"); 
+			if (_HD) { isHD = true; }
+		
+			// создание функции, вырезанных в HD 5й версии
+			HD_Version = _P->VarValue<_dword_>("HD.Version.Dword");
+			if ( HD_Version == 0 || HD_Version > 5000000 ) { // версия HD 5.000.RC0
+				StartHD5Functions();
+			}	
 
 			// создаем загрузку необходимых тектовиков
 			_PI->WriteLoHook(0x4EDD65, Y_LoadAllTXTinGames);

@@ -663,6 +663,8 @@ void startPlugin(Patcher* _P, PatcherInstance* _PI)
 	// не считать кавалерийский бонус при полете
 	_PI->WriteLoHook(0x44307A, Y_AntiKavalierAndFly);
 
+	// фикс двойной атаки командиров 0x441BA8
+
 	// Решение бага Вога, когда в бою накладывается опыт через EA:E и атака, защита, уроны, скорость, боезапасы и т.п. заново пересчитываются.
 	// Из-за этого теряются бонусы наложенных заклинаний (например бонус скорости от ускорения)
 	_PI->WriteHiHook(0x726DE4, CALL_, EXTENDED_, CDECL_, ERM_Fix_EA_E);
@@ -699,8 +701,8 @@ void startPlugin(Patcher* _P, PatcherInstance* _PI)
 
 	// частичное исправление разсихнронизации 
 	// сетевое копирование параметров стеков в битве
-	_PI->WriteHiHook(0x464F10, SPLICE_, EXTENDED_, THISCALL_, Y_SelectNewMonsterToAct);
-	_PI->WriteLoHook(0x473D41, Y_BM_ReceNetData);
+	//_PI->WriteHiHook(0x464F10, SPLICE_, EXTENDED_, THISCALL_, Y_SelectNewMonsterToAct);
+	//_PI->WriteLoHook(0x473D41, Y_BM_ReceNetData);
 
 	// вызовы драконов от артефакта сердце дракона
 	// меняем местами номера гексов, 
