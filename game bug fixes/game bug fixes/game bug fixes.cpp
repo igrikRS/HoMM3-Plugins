@@ -522,6 +522,29 @@ int __stdcall Y_ArtGive_AllSpells(HiHook* hook, int spells_array, char enable)
 	return CALL_2(int, __thiscall, hook->GetDefaultFunc(), spells_array, enable);
 }
 
+
+// фикс переполнения опыта существ (вызов проверки на max опыт 0x71924A)
+void __stdcall Y_WoGCrExpoSet_AddExpo(HiHook* hook, int cr_Expo) 
+{
+	int expo = IntAt(cr_Expo);
+
+	// если опыт по какой то причине перевалил 
+	// через предел (2^32)/4 и ушел в отрицательное число
+	// ставим максимальный опыт
+	if (expo < -1073741824) {
+		IntAt(cr_Expo) = 200000;
+		expo = IntAt(cr_Expo);
+	}
+
+	// если опыт был < 0 && > -1073741824, обнуляем опыт
+	if (expo < 0) { 
+		IntAt(cr_Expo) = 0; 
+	}
+	// ориг.функция проверки на превышение допустимого опыта
+	return CALL_1(void, __thiscall, hook->GetDefaultFunc(), cr_Expo);
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -663,8 +686,6 @@ void startPlugin(Patcher* _P, PatcherInstance* _PI)
 	// не считать кавалерийский бонус при полете
 	_PI->WriteLoHook(0x44307A, Y_AntiKavalierAndFly);
 
-	// фикс двойной атаки командиров 0x441BA8
-
 	// Решение бага Вога, когда в бою накладывается опыт через EA:E и атака, защита, уроны, скорость, боезапасы и т.п. заново пересчитываются.
 	// Из-за этого теряются бонусы наложенных заклинаний (например бонус скорости от ускорения)
 	_PI->WriteHiHook(0x726DE4, CALL_, EXTENDED_, CDECL_, ERM_Fix_EA_E);
@@ -755,6 +776,9 @@ void startPlugin(Patcher* _P, PatcherInstance* _PI)
 	_PI->WriteHiHook(0x4D9673, CALL_, EXTENDED_, THISCALL_, Y_ArtGive_AllSpells);
 	_PI->WriteHiHook(0x4D9720, CALL_, EXTENDED_, THISCALL_, Y_ArtGive_AllSpells);
 	//_PI->WriteHiHook(0x4D9673, CALL_, EXTENDED_, THISCALL_, Y_ArtGive_AllSpells);
+
+	// фикс переполнения опыта существ (вызов проверки на max опыт)	
+	_PI->WriteHiHook(0x71924A, CALL_, EXTENDED_, THISCALL_, Y_WoGCrExpoSet_AddExpo);
 
 }
 

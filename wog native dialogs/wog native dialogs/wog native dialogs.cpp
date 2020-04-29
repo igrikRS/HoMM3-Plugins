@@ -235,15 +235,16 @@ int __stdcall Y_New_CommanderDlg_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 		}		
 	}
 
-	// делаем подвижность дефа командира	
-	if (((o_GetTime() - DwordAt(0x6989E8)) & 0x80000000) == 0) /*  && !npc->alive) */ 
+	//  делаем подвижность дефа командира	
+	if (( (o_GetTime() - DrawingWaitTime) & 0x80000000) == 0) /*  && !npc->alive) */ 
 	{
-		CALL_1(void, __thiscall, 0x4EB140, NPC_Def);  
+		CALL_1(_int_, __thiscall, 0x4EB140, NPC_Def); 
 		dlg->Redraw(1);
-		_dword_ t = o_GetTime() - DwordAt(0x6989E8);
+		_dword_ t = o_GetTime() - DrawingWaitTime;
 		if ((signed int)t < 100) t = 100;
-		DwordAt(0x6989E8) += t;
+		DrawingWaitTime += t;
 	}
+
 	return r;
 }
 
@@ -281,13 +282,16 @@ _int_ __stdcall Y_Dlg_NPC_Show(HiHook* hook, _DlgNPC_* dlgNPC)
 	_CustomDlg_* dlg = _CustomDlg_::Create(-1, -1, x, y, DF_SCREENSHOT | DF_SHADOW, Y_New_CommanderDlg_Proc);
 
 	// установить курсор(0,0)
-	CALL_3 (void, __thiscall, 0x50CEA0, o_MouseMgr, 0, 0);
-	CALL_2 (void, __thiscall, 0x50D7B0, o_MouseMgr, 0);
+	_MouseMgr_* mouse = o_MouseMgr;
+	mouse->SetMouseCursor(0, 0);
+	mouse->MouseON(0);
 
 	// (id = 4, 5) шагающий деф командира (делаем за фоновой картинкой)
 	sprintf(o_TextBuffer, "%s", *(int*)(0x68295C+4+4*(o_CreatureInfo[npc->type + 174].town)) );
 	dlg->AddItem(_DlgStaticPcx8_::Create(20, 70, 100, 130, 4, /*"CRBKGNEU.pcx"*/ o_TextBuffer )); // фон замка под дефом командира нейтральный (id = 4)
 	dlg->AddItem(NPC_Def = _DlgStaticDef_::Create(-130, -80, 100, 130, 5, o_CreatureInfo[npc->type + 174].def_name, 0, 0, 18)); // шагающий деф командира (id = 5)
+	//NPC_Def->def->groups_count = 2; 
+
 
 	// задник диалога под цвет игрока (id = 1)
 	_DlgStaticPcx8_* fonPcx;
@@ -296,7 +300,7 @@ _int_ __stdcall Y_Dlg_NPC_Show(HiHook* hook, _DlgNPC_* dlgNPC)
 	if (tempVar == -1) {
 		tempVar = o_GameMgr->GetMeID();
 	} 
-	fonPcx->Colorize(tempVar); // установить цвет рамки диалога
+	fonPcx->Colorize(tempVar); // установить цвет рамки диалога	
 
 	// кнопки ок и уволить
 	_DlgButton_* bttnOK;
@@ -446,6 +450,7 @@ _int_ __stdcall Y_Dlg_NPC_Show(HiHook* hook, _DlgNPC_* dlgNPC)
 
 	dlg->Run();	
 	dlg->Destroy(TRUE);
+
 	return dlgNPC->DlgLeft; 
 }
 
@@ -3041,6 +3046,8 @@ int __stdcall Y_DlgMainMenu_Proc(HiHook* hook, _EventMsg_* msg)
 	return CALL_1(int, __thiscall, hook->GetDefaultFunc(), msg);
 }
 
+#endif DOP_FUNK_TO_ERA
+
 // #############################################################################################
 // быстро закончить бой по Q
 _int_ QuickBattle_SAVE, isNeedRestore;
@@ -3106,8 +3113,6 @@ int __stdcall Y_EndBattle(LoHook* h, HookContext* c)
 	return EXEC_DEFAULT;
 } 
 
-#endif DOP_FUNK_TO_ERA
-
 // ############################# HD 5 funk end #################################################
 // #############################################################################################
 
@@ -3131,10 +3136,11 @@ void StartHD5Functions()
 	_PI->WriteHiHook(0x4D5B50, SPLICE_, EXTENDED_, THISCALL_, Y_DlgMainMenu_Proc);
 	_PI->WriteHiHook(0x456FD0, SPLICE_, EXTENDED_, THISCALL_, Y_DlgMainMenu_Proc);
 
+#endif DOP_FUNK_TO_ERA
+
 	// быстро закончить бой по Q
 	_PI->WriteHiHook(0x473F55, CALL_, EXTENDED_, THISCALL_, Y_BATTLE_Proc);
 	_PI->WriteLoHook(0x476DA5, Y_EndBattle);
-#endif DOP_FUNK_TO_ERA
 }
 
 
