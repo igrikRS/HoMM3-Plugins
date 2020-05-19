@@ -642,7 +642,9 @@ void startPlugin(Patcher* _P, PatcherInstance* _PI)
 	// в диалоге таверны
 	_PI->WriteDword(0x5D7ACA, 0x682A24); // iCN6432.def
 	// в диалоге резделения отрядов
-	_PI->WriteDword(0x449A41, 0x682A24); // iCN6432.def
+	_PI->WriteDword(0x449A41, 0x682A24); // iCN6432.def	
+	// в диалоге преобразователя скелетов
+	_PI->WriteDword(0x565E4A, 0x682A24); // iCN6432.def
 
 	// исправление бага блока командира, когда защита падала из-за флага "в защите"
 	_PI->WriteCodePatch(0x76E7D7, "%n", 24); // 15 nop 

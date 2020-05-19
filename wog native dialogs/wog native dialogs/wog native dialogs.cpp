@@ -3059,7 +3059,7 @@ _int_ __stdcall Y_BATTLE_Proc(HiHook* hook, _BattleMgr_* bm, _EventMsg_* msg)
 		if ( msg->subtype == HK_Q )	{
 			if ( (bm->isNotAI[0] && !bm->isNotAI[1]) || (!bm->isNotAI[0] && bm->isNotAI[1]) ) {
 
-				if ( b_MsgBox( WogNDlg_TXT->GetString(27), MBX_OKCANCEL) ) {
+				if ( b_MsgBox( WogNDlg_TXT->GetString(27), MBX_OKCANCEL) ) {					
 
 					saveManaHero[0][0] = 0; // кол-во маны левого героя
 					saveManaHero[1][0] = 0; // кол-во маны правого героя
@@ -3078,6 +3078,9 @@ _int_ __stdcall Y_BATTLE_Proc(HiHook* hook, _BattleMgr_* bm, _EventMsg_* msg)
 						bm->hero[1]->spell_points = 0;
 					}
 
+					// очистить массив теней курсора
+					CALL_0(int, __cdecl, 0x493EF0);
+					
 					QuickBattle_SAVE = o_QuickBattle;
 					isNeedRestore = 1;
 					o_QuickBattle = 1;
@@ -3086,7 +3089,7 @@ _int_ __stdcall Y_BATTLE_Proc(HiHook* hook, _BattleMgr_* bm, _EventMsg_* msg)
 			}
 		}
 	}
-	return CALL_2(_int_, __thiscall, hook->GetDefaultFunc(), bm, msg);
+	return CALL_2(_int_, __thiscall, hook->GetDefaultFunc(), bm, msg);	
 }
 
 int __stdcall Y_EndBattle(LoHook* h, HookContext* c)
