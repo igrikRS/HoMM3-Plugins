@@ -25,7 +25,7 @@ _int_ HD_Version;
 
 // переменная, для чистого WND
 // для Берса ее коментирую
-#define DOP_FUNK_TO_ERA
+// #define DOP_FUNK_TO_ERA
 
 struct _TXT_;
 _TXT_* txtresWOG;
