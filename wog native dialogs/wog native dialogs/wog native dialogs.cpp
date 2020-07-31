@@ -25,7 +25,7 @@ _int_ HD_Version;
 
 // переменная, для чистого WND
 // для Берса ее коментирую
-// #define DOP_FUNK_TO_ERA
+#define DOP_FUNK_TO_ERA
 
 struct _TXT_;
 _TXT_* txtresWOG;
@@ -2807,15 +2807,19 @@ int __stdcall Y_Battle_SetHintAttackWillKilled(LoHook* h, HookContext* c)
 	
 	if (damHi == damLo || willKilledHi == willKilledLo) {
 		if (willKilledHi > 9999) {			
-			sprintf((char*)c->ecx, "%s, %s %dk", c->ecx, WogNDlg_TXT->GetString(22), (willKilledHi / 1000) );
+			// sprintf((char*)c->ecx, "%s%s %dk", c->ecx, WogNDlg_TXT->GetString(22), (willKilledHi / 1000) );
+			sprintf((char*)c->ecx, "%s%s %dk", c->ecx, WogNDlg_TXT->GetString(22), (willKilledHi / 1000) );
 		} else {
-			sprintf((char*)c->ecx, "%s, %s %d", c->ecx, WogNDlg_TXT->GetString(22), willKilledHi);
+			// sprintf((char*)c->ecx, "%s%s %d", c->ecx, WogNDlg_TXT->GetString(22), willKilledHi);
+			 sprintf((char*)c->ecx, "%s%s %d", c->ecx, WogNDlg_TXT->GetString(22), willKilledHi);
 		} 
 	} else {
 		if (willKilledLo > 9999) {
-			sprintf((char*)c->ecx, "%s, %s %dk-%dk", c->ecx, WogNDlg_TXT->GetString(22), (willKilledLo / 1000), (willKilledHi / 1000) );
+			// sprintf((char*)c->ecx, "%s%s %dk-%dk", c->ecx, WogNDlg_TXT->GetString(22), (willKilledLo / 1000), (willKilledHi / 1000) );
+			sprintf((char*)c->ecx, "%s%s %dk-%dk", c->ecx, WogNDlg_TXT->GetString(22), (willKilledLo / 1000), (willKilledHi / 1000) );
 		} else {
-			sprintf((char*)c->ecx, "%s, %s %d-%d", c->ecx, WogNDlg_TXT->GetString(22), willKilledLo, willKilledHi);
+			// sprintf((char*)c->ecx, "%s%s %d-%d", c->ecx, WogNDlg_TXT->GetString(22), willKilledLo, willKilledHi);
+			sprintf((char*)c->ecx, "%s%s %d-%d", c->ecx, WogNDlg_TXT->GetString(22), willKilledLo, willKilledHi);
 		} 
 	}
 
