@@ -2399,7 +2399,7 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 		b_YellowFrame_Create(dlg, editText_x, editText_y -1, editText_width +1, 20, 8, ON, o_Pal_Grey);
 		// b_YellowFrame_Create(dlg, editText_x -2, editText_y -2, editText_width +4, 22, 8, ON, o_Pal_Y);
 
-		dlg->AddItem(edit_text = _DlgTextEdit_::Create(editText_x+2, editText_y, editText_width-2, 18, 30, o_NullString, n_medfont2, 1, ALIGN_H_LEFT | ALIGN_V_CENTER, "WoGTextEdit.pcx", 256, 4, 0, 0));
+		dlg->AddItem(edit_text = _DlgTextEdit_::Create(editText_x+2, editText_y, editText_width-2, 18, 510, o_NullString, n_medfont2, 1, ALIGN_H_LEFT | ALIGN_V_CENTER, "WoGTextEdit.pcx", 256, 4, 0, 0));
 		dlg->GetItem(256)->full_tip_text = o_NullString;
 		dlg->GetItem(256)->short_tip_text = Sphinx->Text2;
 	}
@@ -2807,18 +2807,14 @@ int __stdcall Y_Battle_SetHintAttackWillKilled(LoHook* h, HookContext* c)
 	
 	if (damHi == damLo || willKilledHi == willKilledLo) {
 		if (willKilledHi > 9999) {			
-			// sprintf((char*)c->ecx, "%s%s %dk", c->ecx, WogNDlg_TXT->GetString(22), (willKilledHi / 1000) );
 			sprintf((char*)c->ecx, "%s%s %dk", c->ecx, WogNDlg_TXT->GetString(22), (willKilledHi / 1000) );
 		} else {
-			// sprintf((char*)c->ecx, "%s%s %d", c->ecx, WogNDlg_TXT->GetString(22), willKilledHi);
 			 sprintf((char*)c->ecx, "%s%s %d", c->ecx, WogNDlg_TXT->GetString(22), willKilledHi);
 		} 
 	} else {
 		if (willKilledLo > 9999) {
-			// sprintf((char*)c->ecx, "%s%s %dk-%dk", c->ecx, WogNDlg_TXT->GetString(22), (willKilledLo / 1000), (willKilledHi / 1000) );
 			sprintf((char*)c->ecx, "%s%s %dk-%dk", c->ecx, WogNDlg_TXT->GetString(22), (willKilledLo / 1000), (willKilledHi / 1000) );
 		} else {
-			// sprintf((char*)c->ecx, "%s%s %d-%d", c->ecx, WogNDlg_TXT->GetString(22), willKilledLo, willKilledHi);
 			sprintf((char*)c->ecx, "%s%s %d-%d", c->ecx, WogNDlg_TXT->GetString(22), willKilledLo, willKilledHi);
 		} 
 	}
