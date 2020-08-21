@@ -3,7 +3,16 @@
 _int_ damLo;
 _int_ damHi;
 
-int __stdcall Y_Battle_SetHintAttackWillKilled(LoHook* h, HookContext* c)
+// перехват получения величин урона
+int __stdcall Y_Battle_SetHintAttackGetDamage(LoHook* h, HookContext* c)
+{
+	damLo = c->edi;
+	damHi = c->esi;
+	return EXEC_DEFAULT;
+} 
+
+// вычисление кол-ва убитых и помещение этих данных в строку
+_char_* GetStringKilled(char* strCountKilled, _BattleStack_* stackD)
 {
 	_int_ fullHealth = 0; 
 	_int_ willKilledLo = 0;
@@ -11,7 +20,6 @@ int __stdcall Y_Battle_SetHintAttackWillKilled(LoHook* h, HookContext* c)
 
 	_int_ lost;
 
-	_BattleStack_* stackD = (_BattleStack_*)c->esi;
 	fullHealth = stackD->GetFullHealth(0);
 
 	if (fullHealth > damHi){
@@ -35,44 +43,55 @@ int __stdcall Y_Battle_SetHintAttackWillKilled(LoHook* h, HookContext* c)
 			willKilledLo = stackD->count_current - lost;
 		} else willKilledLo = stackD->count_current;
 	}
-	
+
 	if (damHi == damLo || willKilledHi == willKilledLo) {
 		if (willKilledHi > 9999) {			
-			sprintf((char*)c->ecx, "%s%s %dk", c->ecx, WogNDlg_TXT->GetString(22), (willKilledHi / 1000) );
+			sprintf(strCountKilled, "%dk", (willKilledHi / 1000) );
 		} else {
-			 sprintf((char*)c->ecx, "%s%s %d", c->ecx, WogNDlg_TXT->GetString(22), willKilledHi);
+			 sprintf(strCountKilled, "%d", willKilledHi);
 		} 
 	} else {
 		if (willKilledLo > 9999) {
-			sprintf((char*)c->ecx, "%s%s %dk-%dk", c->ecx, WogNDlg_TXT->GetString(22), (willKilledLo / 1000), (willKilledHi / 1000) );
+			sprintf(strCountKilled, "%dk-%dk", (willKilledLo / 1000), (willKilledHi / 1000) );
 		} else {
-			sprintf((char*)c->ecx, "%s%s %d-%d", c->ecx, WogNDlg_TXT->GetString(22), willKilledLo, willKilledHi);
+			sprintf(strCountKilled, "%d-%d", willKilledLo, willKilledHi);
 		} 
 	}
 
-	return EXEC_DEFAULT;
+	return strCountKilled;
 }
 
-// перехват получения величин урона
-int __stdcall Y_Battle_SetHintAttackGetDamage(LoHook* h, HookContext* c)
+// расширение стандартной геройской функции показа наносимого урона (добаляем предпологаемый диапазон кол-во убитых)
+_HStr_* __stdcall BattleMgr_GetAttackDamage_Hint_LogString(HiHook* hook, _HStr_* H3Str, _BattleStack_* attacker, _BattleStack_* enemy, _byte_ shoot, _int_ stepsTaken) 
 {
-	damLo = c->edi;
-	damHi = c->esi;
-	return EXEC_DEFAULT;
-} 
+	_HStr_* H3string;
+	H3string = CALL_5(_HStr_*, __fastcall, hook->GetDefaultFunc(), H3Str, attacker, enemy, shoot, stepsTaken);
+
+	char countKilled[512];
+	char stringKilled[512];
+
+	// сначала копируем stringKilled = ", убъет: %s" + "количество убитых"
+	sprintf((char*)stringKilled, WogNDlg_TXT->GetString(23), GetStringKilled((char*)countKilled, enemy) );
+
+	// потом копируем: "Атаковать/Стрелять в монстр (урон X + stringKilled)" 
+	sprintf(o_TextBuffer, "%s %s", H3string->c_str, (char*)stringKilled );
+
+	// создаем новый класс строки H3
+	_HStr_* myString = new _HStr_;
+	myString->Set(o_TextBuffer);
+
+	// удаляем старый класс строки H3
+	H3string->Destruct(1);
+	
+	return myString;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void Battle_ShowKilled(PatcherInstance* _PI)
 {
-	// показ предполагаемого количества убитых монстров при атаке и стрельбе (подмена строк)
-	_PI->WriteDword(0x4925FD +1, (int)&WogNDlg_TXT );	_PI->WriteDword(0x492605 +2, 88); // рукопашная (подмена строк)
-	_PI->WriteDword(0x492825 +2, (int)&WogNDlg_TXT );	_PI->WriteDword(0x492837 +2, 92); // стрелять (подмена строк)
-	_PI->WriteDword(0x49279C +1, (int)&WogNDlg_TXT );	_PI->WriteDword(0x4927A4 +2, 96); // последний выстрел (подмена строк)
 	// показ предполагаемого количества убитых монстров при атаке и стрельбе 
-	_PI->WriteLoHook(0x493058, Y_Battle_SetHintAttackGetDamage); // получение урона			
-	_PI->WriteLoHook(0x4925FD, Y_Battle_SetHintAttackWillKilled); // рукопашная
-	_PI->WriteLoHook(0x492825, Y_Battle_SetHintAttackWillKilled); // стрелять
-	_PI->WriteLoHook(0x49279C, Y_Battle_SetHintAttackWillKilled); // последний выстрел
+	_PI->WriteLoHook(0x493058, Y_Battle_SetHintAttackGetDamage); // перехват величин наносимого урона			
+	_PI->WriteHiHook(0x492F50, SPLICE_, EXTENDED_, FASTCALL_, BattleMgr_GetAttackDamage_Hint_LogString);
 }

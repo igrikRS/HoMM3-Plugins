@@ -1,6 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////// Диалог IF:D/E /////////////////////////////////////////////////////////
  
+#define OPTION_ID 911
 
 _Sphinx1_* o_Sphinx1 = 0;
 
@@ -404,7 +405,7 @@ int __stdcall Y_Dlg_CustomReq(LoHook* h, HookContext* c)
 
 		int result = 0;
 
-		if (Sphinx->Text2 && GetWoGOptionsStatus(911)) {			
+		if (Sphinx->Text2 && GetWoGOptionsStatus(OPTION_ID)) {			
 			result = 10; // гребанные выкрутасы. Мне такие костыли очень, очень не нравятся!
 		}
 
@@ -467,7 +468,7 @@ int __stdcall Y_Dlg_CustomReq2(HiHook* hook, _Sphinx1_* Sphinx)
 int __stdcall Y_WoGDlg_SphinxReq(HiHook* hook, int Num) 
 {
 	// if ( если окно ввода должно быть отключено (и необходима работа стандартного воговского (опция 911)) )
-	if ( GetWoGOptionsStatus(911) )
+	if ( GetWoGOptionsStatus(OPTION_ID) )
 	{
 		// вызов оригинальной функции
 		return CALL_1(int, __cdecl, hook->GetDefaultFunc(), Num);

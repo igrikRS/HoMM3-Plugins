@@ -412,7 +412,7 @@ int __stdcall Y_NewScenarioDlg_Proc(HiHook* hook, _CustomDlg_* this_, _EventMsg_
 void __stdcall Y_NewScenarioDlg_Create(HiHook* hook, _NewScenarioDlg_* this_, int type)
 {
 	CALL_2(void, __thiscall, hook->GetDefaultFunc(), this_, type);
-	this_->AddItem(_DlgTextButton_::Create(622, 105, 4444, "GSPBUT2.DEF", WogNDlg_TXT->GetString(26), n_smallfont2, 0, 1, 0, 0, 1));
+	this_->AddItem(_DlgTextButton_::Create(622, 105, 4444, "GSPBUT2.DEF", WogNDlg_TXT->GetString(21), n_smallfont2, 0, 1, 0, 0, 1));
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
