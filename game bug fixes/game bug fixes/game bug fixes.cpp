@@ -752,6 +752,9 @@ void startPlugin(Patcher* _P, PatcherInstance* _PI)
 	_PI->WriteByte(0x723ACB, 0xB6);
 	_PI->WriteByte(0x723F1C, 0xB6);
 
+	// фикс невлезающего кол-ва существ (100-249 и т.п.) в маленьком окне героя ПКМ
+	_PI->WriteByte(0x52F7CE +1, 34);
+
 	// корректировка описаний заклинаний в книге (не учитывались бонусы специалистов по заклинаниям)
 	_PI->WriteHiHook(0x59BFFD, CALL_, SAFE_, THISCALL_, Y_DlgSpellBook_FixDecription_SpellPower);
 
