@@ -5,7 +5,7 @@
 _Sphinx1_* o_Sphinx1 = 0;
 
 _bool_ Dlg_CustomReq_Ban = false;
-_bool_ Dlg_CustomReq_EnterText_Ban = false;
+// _bool_ Dlg_CustomReq_EnterText_Ban = false;
 
 // void f_Dlg_CustomReq_IsEnterText_Ban() 
 // {
@@ -399,21 +399,30 @@ int __stdcall Y_Dlg_CustomReq(LoHook* h, HookContext* c)
 	{
 		o_PauseVideo();
 
-		int save_WOG_DisableMouse = WOG_DisableMouse;
-		WOG_DisableMouse = 0; // отключаем блок изменения кадров курсора
-		// запоминаем кадр курсора мыши
-		int cursor_t = o_MouseMgr->Field<_int_>(+0x4C);
-		int cursor_f = o_MouseMgr->Field<_int_>(+0x50);
-		b_MouseMgr_SetCursor(0,0);
-		CALL_2(void*, __thiscall, 0x50D7B0, o_MouseMgr, 0);
-
 		_Sphinx1_* Sphinx = (_Sphinx1_*)(c->ebp -0x260);
 		o_Sphinx1 = Sphinx; // делаем глобальное сохранение адреса класса, чтобы потом при необходимости иметь прямой доступ
 
-		int result = New_Dlg_CustomReq(Sphinx);
+		int result = 0;
 
-		b_MouseMgr_SetCursor(cursor_f, cursor_t);
-		WOG_DisableMouse = save_WOG_DisableMouse;
+		if (Sphinx->Text2 && GetWoGOptionsStatus(911)) {			
+			result = 10; // гребанные выкрутасы. Мне такие костыли очень, очень не нравятся!
+		}
+
+		if (result != 10) 
+		{
+			int save_WOG_DisableMouse = WOG_DisableMouse;
+			WOG_DisableMouse = 0; // отключаем блок изменения кадров курсора
+			// запоминаем кадр курсора мыши
+			int cursor_t = o_MouseMgr->Field<_int_>(+0x4C);
+			int cursor_f = o_MouseMgr->Field<_int_>(+0x50);
+			b_MouseMgr_SetCursor(0,0);
+			CALL_2(void*, __thiscall, 0x50D7B0, o_MouseMgr, 0);
+
+			result = New_Dlg_CustomReq(Sphinx);
+
+			b_MouseMgr_SetCursor(cursor_f, cursor_t);
+			WOG_DisableMouse = save_WOG_DisableMouse;
+		}
 
 		if (result == 10) 
 		{ // в диалоге gif/avi = грузим стандартный воговский диалог
@@ -457,58 +466,64 @@ int __stdcall Y_Dlg_CustomReq2(HiHook* hook, _Sphinx1_* Sphinx)
 // диалог вопросов Сфинкса
 int __stdcall Y_WoGDlg_SphinxReq(HiHook* hook, int Num) 
 {
-	_Sphinx1_ Sphinx;
-	Sphinx.SelItm = -1;
-	Sphinx.Text1 = CALL_3(char*, __cdecl, 0x77710B, Num, 0, 0x289BFF0); 
-	Sphinx.Text2 = CALL_3(char*, __cdecl, 0x77710B, 122, 0, 0x7C8E3C); 
-	Sphinx.Text3 = 0;
-	*(_byte_*)0x28AAB88 = 57; // Answer[0]='9';
-	*(_byte_*)0x28AAB89 = 57; // Answer[1]='9';
-	*(_byte_*)0x28AAB8A = 57; // Answer[2]='9';
-	*(_byte_*)0x28AAB8B = 57; // Answer[3]='9';
-	*(_byte_*)0x28AAB8C = 0;  // Answer[4]=0;
+	// if ( если окно ввода должно быть отключено (и необходима работа стандартного воговского (опция 911)) )
+	if ( GetWoGOptionsStatus(911) )
+	{
+		// вызов оригинальной функции
+		return CALL_1(int, __cdecl, hook->GetDefaultFunc(), Num);
+	} 
+	else 
+	{
+		_Sphinx1_ Sphinx;
+		Sphinx.SelItm = -1;
+		Sphinx.Text1 = CALL_3(char*, __cdecl, 0x77710B, Num, 0, 0x289BFF0); 
+		Sphinx.Text2 = CALL_3(char*, __cdecl, 0x77710B, 122, 0, 0x7C8E3C); 
+		Sphinx.Text3 = 0;
+		*(_byte_*)0x28AAB88 = 57; // Answer[0]='9';
+		*(_byte_*)0x28AAB89 = 57; // Answer[1]='9';
+		*(_byte_*)0x28AAB8A = 57; // Answer[2]='9';
+		*(_byte_*)0x28AAB8B = 57; // Answer[3]='9';
+		*(_byte_*)0x28AAB8C = 0;  // Answer[4]=0;
 
-	Sphinx.Text4 = (char*)0x28AAB88;
-	Sphinx.Pic1Path = 0;
-	Sphinx.Pic2Path = 0;
-	Sphinx.Pic3Path = 0;
-	Sphinx.Pic4Path = 0;
-	Sphinx.Pic1Hint = 0;
-	Sphinx.Pic2Hint = 0;
-	Sphinx.Pic3Hint = 0;
-	Sphinx.Pic4Hint = 0;
-	Sphinx.Chk1Text = 0;
-	Sphinx.Chk2Text = 0;
-	Sphinx.Chk3Text = 0;
-	Sphinx.Chk4Text = 0;
-	Sphinx.Chk1Hint = 0;
-	Sphinx.Chk2Hint = 0;
-	Sphinx.Chk3Hint = 0;
-	Sphinx.Chk4Hint = 0;
-	Sphinx.ShowCancel = 0;
+		Sphinx.Text4 = (char*)0x28AAB88;
+		Sphinx.Pic1Path = 0;
+		Sphinx.Pic2Path = 0;
+		Sphinx.Pic3Path = 0;
+		Sphinx.Pic4Path = 0;
+		Sphinx.Pic1Hint = 0;
+		Sphinx.Pic2Hint = 0;
+		Sphinx.Pic3Hint = 0;
+		Sphinx.Pic4Hint = 0;
+		Sphinx.Chk1Text = 0;
+		Sphinx.Chk2Text = 0;
+		Sphinx.Chk3Text = 0;
+		Sphinx.Chk4Text = 0;
+		Sphinx.Chk1Hint = 0;
+		Sphinx.Chk2Hint = 0;
+		Sphinx.Chk3Hint = 0;
+		Sphinx.Chk4Hint = 0;
+		Sphinx.ShowCancel = 0;
 
-	// делаем глоб.ссылку на Sphinx
-	o_Sphinx1 = (_Sphinx1_*)&Sphinx;
+		// делаем глоб.ссылку на Sphinx
+		o_Sphinx1 = (_Sphinx1_*)&Sphinx;
 
-	// запоминаем кадр курсора мыши
-	int save_WOG_DisableMouse = WOG_DisableMouse;
-	WOG_DisableMouse = 0; // разблокировали
-	int cursor_t = o_MouseMgr->Field<_int_>(+0x4C);
-	int cursor_f = o_MouseMgr->Field<_int_>(+0x50);
-	b_MouseMgr_SetCursor(0,0);
-	CALL_2(void*, __thiscall, 0x50D7B0, o_MouseMgr, 0);
+		// запоминаем кадр курсора мыши
+		int save_WOG_DisableMouse = WOG_DisableMouse;
+		WOG_DisableMouse = 0; // разблокировали
+		int cursor_t = o_MouseMgr->Field<_int_>(+0x4C);
+		int cursor_f = o_MouseMgr->Field<_int_>(+0x50);
+		b_MouseMgr_SetCursor(0,0);
+		CALL_2(void*, __thiscall, 0x50D7B0, o_MouseMgr, 0);
 
-	New_Dlg_CustomReq(o_Sphinx1); // диалог
+		New_Dlg_CustomReq(o_Sphinx1); // диалог
 
-	// возвращаем курсор
-	b_MouseMgr_SetCursor(cursor_f, cursor_t);
-	WOG_DisableMouse = save_WOG_DisableMouse;
+		// возвращаем курсор
+		b_MouseMgr_SetCursor(cursor_f, cursor_t);
+		WOG_DisableMouse = save_WOG_DisableMouse;
 
-	CALL_3(void, __cdecl, 0x710B9B, 0x28AAB88, 512, Sphinx.Text4); // WoG_StrCopy(Answer, int 512, Sphinx.Text4)
-	return CALL_2(int, __cdecl, 0x772DFD, 0x28AAB88, CALL_3(char*, __cdecl, 0x77710B, Num, 1, 0x289BFF0));
-
-	// оригинальная функция
-	// return CALL_1(int, __cdecl, hook->GetDefaultFunc(), Num);
+		CALL_3(void, __cdecl, 0x710B9B, 0x28AAB88, 512, Sphinx.Text4); // WoG_StrCopy(Answer, int 512, Sphinx.Text4)
+		return CALL_2(int, __cdecl, 0x772DFD, 0x28AAB88, CALL_3(char*, __cdecl, 0x77710B, Num, 1, 0x289BFF0));
+	}
 }
  
 
