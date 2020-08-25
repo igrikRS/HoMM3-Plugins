@@ -85,11 +85,17 @@ int __stdcall Y_ReplayBattle(HiHook* hook, _AdvMgr_* advMng, _dword_ MixedPos, _
 	_GameMgr_* gm = o_GameMgr;
 	char isAHuman = 0;
 	char isDHuman = 0;
-	if (HrA) { isAHuman = gm->GetPlayer(HrA->owner_id)->IsHuman(); }
-	if (OwnerD >= 0 ) {	isDHuman = gm->GetPlayer(OwnerD)->IsHuman(); }
+	if (HrA) { 
+		isAHuman = gm->GetPlayer(HrA->owner_id)->IsHuman(); 
+	}
 
-	if ( o_NetworkGame || o_IsOnlineGame || o_GameMgrType == 2 || (!isAHuman && !isDHuman) ) { 
-		// b_MsgBox("Переигрывание битвы ОТКЛЮЧЕНО", 1);
+	if (OwnerD >= 0 ) {	
+		isDHuman = gm->GetPlayer(OwnerD)->IsHuman(); 
+	}
+
+	// if ( ( o_NetworkGame || o_IsOnlineGame || o_GameMgrType == 2 ) && (!isAHuman && !isDHuman) ) { 
+	if ( o_GameMgrType == 2 && isAHuman && isDHuman ) { 
+		b_MsgBox("Переигрывание битвы ОТКЛЮЧЕНО", 1);
 		return CALL_11(int, __thiscall, hook->GetDefaultFunc(), advMng, MixedPos, HrA, MArrA, OwnerD, townD, HrD, MArrD, Pv3, Pv2, Pv1);
 	} 
 
