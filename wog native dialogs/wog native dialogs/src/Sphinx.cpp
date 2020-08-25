@@ -1,21 +1,34 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////// Диалог IF:D/E /////////////////////////////////////////////////////////
- 
+
+int BanDlg_CustomReq_EnterText = false;
+
+// #define EXPORT comment(linker, "/EXPORT:" UseWin32InputControl"="d_UseWin32InputControl)
+extern "C" __declspec(dllexport) int UseWin32InputControl(int newState);
+
+int UseWin32InputControl(int newState)
+{
+	// #pragma EXPORT
+	// читаем предыдущее состояние
+	int prevState = BanDlg_CustomReq_EnterText;
+
+	if ( newState ) {
+		BanDlg_CustomReq_EnterText = true;
+	} else BanDlg_CustomReq_EnterText = false;
+
+	// возвращаем предыдущее состояние
+	return prevState;
+}
+
+
+
+
 #define OPTION_ID 911
 
 _Sphinx1_* o_Sphinx1 = 0;
 
 _bool_ Dlg_CustomReq_Ban = false;
-// _bool_ Dlg_CustomReq_EnterText_Ban = false;
 
-// void f_Dlg_CustomReq_IsEnterText_Ban() 
-// {
-// 	// проверяем параметр (будем ли показывать диалог ввода текста в диалоге IF:D/E)
-// 	// int ReadStrINI(char *Value,int Len,char *DefValue,char *Parameter,char *Section,char *File)
-// 	char* textINI;		
-// 	int readINI = CALL_6(int, __cdecl, 0x773A46, textINI, 10 /* lenght */ , "0", "UseWindowsInputControl", "Era", "heroes3.ini");
-// 	Dlg_CustomReq_EnterText_Ban = StrToInt(textINI);
-// }
 
 bool IsSupportedFormatImage(char* image_name) 
 {
@@ -405,7 +418,7 @@ int __stdcall Y_Dlg_CustomReq(LoHook* h, HookContext* c)
 
 		int result = 0;
 
-		if (Sphinx->Text2 && GetWoGOptionsStatus(OPTION_ID)) {			
+		if (Sphinx->Text2 && BanDlg_CustomReq_EnterText /* GetWoGOptionsStatus(OPTION_ID) */ ) {			
 			result = 10; // гребанные выкрутасы. Мне такие костыли очень, очень не нравятся!
 		}
 
@@ -468,7 +481,7 @@ int __stdcall Y_Dlg_CustomReq2(HiHook* hook, _Sphinx1_* Sphinx)
 int __stdcall Y_WoGDlg_SphinxReq(HiHook* hook, int Num) 
 {
 	// if ( если окно ввода должно быть отключено (и необходима работа стандартного воговского (опция 911)) )
-	if ( GetWoGOptionsStatus(OPTION_ID) )
+	if ( BanDlg_CustomReq_EnterText /* GetWoGOptionsStatus(OPTION_ID) */  )
 	{
 		// вызов оригинальной функции
 		return CALL_1(int, __cdecl, hook->GetDefaultFunc(), Num);
