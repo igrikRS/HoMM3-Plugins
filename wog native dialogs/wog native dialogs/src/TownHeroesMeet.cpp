@@ -4,60 +4,63 @@ bool inTownDlg;
 
 int __stdcall Y_DlgTown_Proc(HiHook* hook, _TownMgr_* tm, _EventMsg_* click)
 {
-   int res = CALL_2(int, __thiscall, hook->GetDefaultFunc(), tm, click);
-   inTownDlg = false;
+	int res = CALL_2(int, __thiscall, hook->GetDefaultFunc(), tm, click);
+	inTownDlg = false;
 
-   if (res) {
-      if (click->type == MT_KEYDOWN && click->subtype == HK_E) {
+	if (res) {
+		if (click->type == MT_KEYDOWN && click->subtype == HK_E) {
 
-		  // не знаю как, но при такой проверке "if ( true )"
-		  // при работающем чате не вызывается окно встречи. Я хз, если честно!
-		if ( true ) 
-		{
-			 int heroU_id = tm->town->up_hero_id;
-			 int heroD_id = tm->town->down_hero_id;
+			// не знаю как, но при такой проверке "if ( true )"
+			// при работающем чате не вызывается окно встречи. Я хз, если честно!
+			if ( true ) {
 
-			 if ( heroU_id != -1 && heroD_id != -1) {
-				_Hero_* heroU = o_GameMgr->GetHero(heroU_id);
-				_Hero_* heroD = o_GameMgr->GetHero(heroD_id);
+			// _DlgTextEdit_* editText = (_DlgTextEdit_*)tm->dlg->GetItem(7001); 
+			// if (!editText) {
+			// if (!editText->enteringText ) {
+				 int heroU_id = tm->town->up_hero_id;
+				 int heroD_id = tm->town->down_hero_id;
 
-				inTownDlg = true;
+				 if ( heroU_id != -1 && heroD_id != -1) {
+					_Hero_* heroU = o_GameMgr->GetHero(heroU_id);
+					_Hero_* heroD = o_GameMgr->GetHero(heroD_id);
 
-				if ( *(int*)((int)o_ExecMgr +4) != (int)o_WndMgr ) {
-				   *(int*)((int)o_TownMgr +4) = (int)o_AdvMgr;
-				   *(int*)((int)o_TownMgr +8) = (int)o_WndMgr;
+					inTownDlg = true;
 
-				   *(int*)((int)o_AdvMgr +4) = NULL;
-				   *(int*)((int)o_AdvMgr +8) = (int)o_WndMgr;            
+					 if ( *(int*)((int)o_ExecMgr +4) != (int)o_WndMgr ) {
+					    *(int*)((int)o_TownMgr +4) = (int)o_AdvMgr;
+					    *(int*)((int)o_TownMgr +8) = (int)o_WndMgr;
 
-				   *(int*)((int)o_WndMgr +4) = (int)o_TownMgr;
-				   *(int*)((int)o_WndMgr +8) = (int)o_MouseMgr;
+					    *(int*)((int)o_AdvMgr +4) = NULL;
+					    *(int*)((int)o_AdvMgr +8) = (int)o_WndMgr;            
+
+					    *(int*)((int)o_WndMgr +4) = (int)o_TownMgr;
+					    *(int*)((int)o_WndMgr +8) = (int)o_MouseMgr;
+					 }
+
+					hdv(_bool_, "HotA.SwapMgrCalledFromTown") = 1;
+
+					
+					tm->dlg->GetItem(30720)->SetEnabled(false); // отключаем кнопку OK в городе
+
+					CALL_2(void, __fastcall, 0x4A25B0, heroU, heroD);
+					CALL_3(void, __thiscall, 0x4AAA60, o_TownMgr, heroU, heroD);
+					
+					tm->dlg->GetItem(30720)->SetEnabled(true); // включаем кнопку OK в городе
+
+
+					hdv(_bool_, "HotA.SwapMgrCalledFromTown") = 0;
+
+
+					CALL_1(void, __thiscall, 0x5D5930, o_TownMgr);       
+					CALL_1(void, __thiscall, 0x5D5810, o_TownMgr);   
+
+					inTownDlg = false;
+
+					// return 1; 
+					}
 				}
-
-				hdv(_bool_, "HotA.SwapMgrCalledFromTown") = 1;
-
-				
-				tm->dlg->GetItem(30720)->SetEnabled(false); // отключаем кнопку OK в городе
-
-				CALL_2(void, __fastcall, 0x4A25B0, heroU, heroD);
-				CALL_3(void, __thiscall, 0x4AAA60, o_TownMgr, heroU, heroD);
-				
-				tm->dlg->GetItem(30720)->SetEnabled(true); // включаем кнопку OK в городе
-
-
-				hdv(_bool_, "HotA.SwapMgrCalledFromTown") = 0;
-
-
-				CALL_1(void, __thiscall, 0x5D5930, o_TownMgr);       
-				CALL_1(void, __thiscall, 0x5D5810, o_TownMgr);   
-
-				inTownDlg = false;
-
-				// return 1; 
-			}
-         }
-      }
-   }
+		}
+	}
 
    return res;
 }
