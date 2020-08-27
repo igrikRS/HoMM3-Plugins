@@ -3,12 +3,10 @@
 
 int BanDlg_CustomReq_EnterText = false;
 
-// #define EXPORT comment(linker, "/EXPORT:" UseWin32InputControl"="d_UseWin32InputControl)
 extern "C" __declspec(dllexport) int UseWin32InputControl(int newState);
 
 int UseWin32InputControl(int newState)
 {
-	// #pragma EXPORT
 	// читаем предыдущее состояние
 	int prevState = BanDlg_CustomReq_EnterText;
 
@@ -21,7 +19,21 @@ int UseWin32InputControl(int newState)
 }
 
 
-
+void Y_Mouse_SetCursor(int type)
+{
+	if (type) {
+		b_MouseMgr_SetCursor(saveCursor[1], saveCursor[0]);
+		WOG_DisableMouse = saveCursor[2];
+	} else {
+		saveCursor[2] = WOG_DisableMouse;
+		WOG_DisableMouse = 0; // отключаем блок изменения кадров курсора
+		// запоминаем кадр курсора мыши
+		saveCursor[0] = o_MouseMgr->Field<_int_>(+0x4C); // type
+		saveCursor[1] = o_MouseMgr->Field<_int_>(+0x50); // frame
+		b_MouseMgr_SetCursor(0,0);
+		CALL_2(void*, __thiscall, 0x50D7B0, o_MouseMgr, 0);
+	}
+}
 
 #define OPTION_ID 911
 
@@ -424,18 +436,13 @@ int __stdcall Y_Dlg_CustomReq(LoHook* h, HookContext* c)
 
 		if (result != 10) 
 		{
-			int save_WOG_DisableMouse = WOG_DisableMouse;
-			WOG_DisableMouse = 0; // отключаем блок изменения кадров курсора
-			// запоминаем кадр курсора мыши
-			int cursor_t = o_MouseMgr->Field<_int_>(+0x4C);
-			int cursor_f = o_MouseMgr->Field<_int_>(+0x50);
-			b_MouseMgr_SetCursor(0,0);
-			CALL_2(void*, __thiscall, 0x50D7B0, o_MouseMgr, 0);
+			// устанавливаем стандартный курсор мыши
+			Y_Mouse_SetCursor(0);
 
 			result = New_Dlg_CustomReq(Sphinx);
 
-			b_MouseMgr_SetCursor(cursor_f, cursor_t);
-			WOG_DisableMouse = save_WOG_DisableMouse;
+			// возвращаем запомненный курсор мыши
+			Y_Mouse_SetCursor(1);
 		}
 
 		if (result == 10) 
@@ -457,25 +464,6 @@ int __stdcall Y_Dlg_CustomReq(LoHook* h, HookContext* c)
 	return NO_EXEC_DEFAULT;
 } 
 
-/*
-// 0x772D50 диалог посещения камней силы (повышение перв.навыков командира)
-int __stdcall Y_Dlg_CustomReq2(HiHook* hook, _Sphinx1_* Sphinx)
-{
-	Sphinx->Pic1Path = Sphinx->Pic2Path;
-
-	New_Dlg_CustomReq(Sphinx); // диалог
-
-	//sprintf(o_TextBuffer, "res: %d \n\n %s \n\n %s \n %s", 
-	//	Sphinx->SelItm,
-	//	Sphinx->Text1,
-	//	Sphinx->Pic1Path,
-	//	Sphinx->Pic2Path);
-	//b_MsgBox(o_TextBuffer, 1);
-
-	// return CALL_1(int, __cdecl, hook->GetDefaultFunc(), Sphinx);
-	return 0;
-}
-*/ 
 
 // диалог вопросов Сфинкса
 int __stdcall Y_WoGDlg_SphinxReq(HiHook* hook, int Num) 
@@ -521,25 +509,92 @@ int __stdcall Y_WoGDlg_SphinxReq(HiHook* hook, int Num)
 		// делаем глоб.ссылку на Sphinx
 		o_Sphinx1 = (_Sphinx1_*)&Sphinx;
 
-		// запоминаем кадр курсора мыши
-		int save_WOG_DisableMouse = WOG_DisableMouse;
-		WOG_DisableMouse = 0; // разблокировали
-		int cursor_t = o_MouseMgr->Field<_int_>(+0x4C);
-		int cursor_f = o_MouseMgr->Field<_int_>(+0x50);
-		b_MouseMgr_SetCursor(0,0);
-		CALL_2(void*, __thiscall, 0x50D7B0, o_MouseMgr, 0);
+		// устанавливаем стандартный курсор мыши
+		Y_Mouse_SetCursor(0);
 
 		New_Dlg_CustomReq(o_Sphinx1); // диалог
 
-		// возвращаем курсор
-		b_MouseMgr_SetCursor(cursor_f, cursor_t);
-		WOG_DisableMouse = save_WOG_DisableMouse;
+		// возвращаем курсор мыши
+		Y_Mouse_SetCursor(1);
 
 		CALL_3(void, __cdecl, 0x710B9B, 0x28AAB88, 512, Sphinx.Text4); // WoG_StrCopy(Answer, int 512, Sphinx.Text4)
 		return CALL_2(int, __cdecl, 0x772DFD, 0x28AAB88, CALL_3(char*, __cdecl, 0x77710B, Num, 1, 0x289BFF0));
 	}
 }
+
+
+
+
+// диалог посещения камней силы (повышение перв.навыков командира)
+int __stdcall Y_Dlg_QuickDialog(HiHook* hook, _Sphinx1_* Sphinx)
+{		
+	Y_Mouse_SetCursor(0);	
+	int ret = New_Dlg_CustomReq(Sphinx); // диалог
+	Y_Mouse_SetCursor(1);
+
+	// -1: Esc, 1: Ok
+	return ret;
+}
+
+int WoG_FindCData(int num) {
+	return CALL_1(int, __cdecl, 0x771A13, num); 
+}
+
+void WoG_SplitPath(char *all, char *path, char *name) {
+	return CALL_3(void, __cdecl, 0x716701, all, path, name);
+}
+
+
+//// диалог IF:B/P
+//int __stdcall Y_Dlg_CustomPic(HiHook* hook, int num, int startup)
+//{	
+//	int needOrigFunc = 0;
+//	int ind = WoG_FindCData(num);
+//
+//	if (ind == -1 ) {
+//		needOrigFunc = 1;
+//	} else {
+//		_CustomData_* CD = (_CustomData_*)(0x28809B8 +112*ind);
+//
+//		WoG_SplitPath(CD->Pic[0], (char*)myString1, (char*)myString2 );
+//		if ( IsSupportedFormatImage((char*)myString2) )
+//		{
+//			Y_Mouse_SetCursor(0);
+//
+//			sprintf(o_TextBuffer, "{Dlg_CustomPic} \n\n CD->Pic[0]: %s \n\n %s", (char*)myString2, (char*)myString1);
+//			b_MsgBox(o_TextBuffer, 1);
+//	
+//			_Pcx16_* o_Pic = (_Pcx16_*)Era::LoadImageAsPcx16(CD->Pic[0], (char*)myString2, 0, 0, 100, 100, 3);
+//
+//			int height = o_Pic->height;
+//			int width = o_Pic->width;
+//
+//			sprintf(o_TextBuffer, "{Dlg_CustomPic} \n\n CD->Pic[0]: %s \n\n height: %d \n\n width: %d", (char*)myString2, height, width);
+//			b_MsgBox(o_TextBuffer, 1);
+//
+//			// sprintf(o_TextBuffer, "{Dlg_CustomPic} \n\n CD->Pic[0]: %s \n\n %s \n\n %s", short_name, (char*)myString1, (char*)myString2);
+//			// b_MsgBox(o_TextBuffer, 1);
+//
+//			// WoG_GetPathFile(CD->Pic[0]);
+//			// _Pcx16_* o_Pic = (_Pcx16_*)Era::LoadImageAsPcx16(CD->Pic[0], short_name, 0, 0, 800, 600, 3); 
+//
+//
+//			
+//			// sprintf(o_TextBuffer, "{Dlg_CustomPic} \n\n CD->Pic[0]: %s (%d)", short_name, yes);
+//			// b_MsgBox(o_TextBuffer, 1);		
+//
+//			Y_Mouse_SetCursor(1);
+//		} else needOrigFunc = 1;
+//	}
+//
+//	if ( needOrigFunc )
+//		return CALL_2(int, __cdecl, hook->GetDefaultFunc(), num, startup);
+//	else return 1;
+//}
+
  
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void Dlg_Sphinx(PatcherInstance* _PI)
 {
@@ -549,10 +604,20 @@ void Dlg_Sphinx(PatcherInstance* _PI)
 	_PI->WriteCodePatch(0x772D39, "%n", 5); // call    WOG_AfterDialog()		
 	_PI->WriteLoHook(0x772CBD, Y_Dlg_CustomReq);
 	// проверяем параметр (будем ли показывать диалог ввода текста в диалоге IF:D/E)
-	// Dlg_CustomReq_IsEnterText_Ban();
+
+	// диалог посещения камней силы командиров (убираем текст "Ваш командир")
+	_PI->WriteDword(0x770916 +1, 256);
+	// диалог посещения камней силы командиров (убираем "\\Data\\ZVS\\LIB1.RES\\NPC#.GIF")
+	_PI->WriteByte(0x770990 +2, 0x2C);
+	_PI->WriteByte(0x7709C7 +2, 0x2C);
+	_PI->WriteByte(0x7709FB +2, 0x2C);
+	_PI->WriteByte(0x770A2F +2, 0x2C);
 
 	// диалог посещения камней силы командиров
-	// _PI->WriteHiHook(0x772D50, SPLICE_, EXTENDED_, CDECL_, Y_Dlg_CustomReq2);
+	_PI->WriteHiHook(0x772D50, SPLICE_, EXTENDED_, CDECL_, Y_Dlg_QuickDialog);
+
+	// диалог IF:B/P
+	// _PI->WriteHiHook(0x7732B4, SPLICE_, EXTENDED_, CDECL_, Y_Dlg_CustomPic);
 
 	// диалог сфинкса
 	_PI->WriteHiHook(0x772E48, SPLICE_, EXTENDED_, CDECL_, Y_WoGDlg_SphinxReq);

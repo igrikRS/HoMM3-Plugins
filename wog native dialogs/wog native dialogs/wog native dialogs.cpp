@@ -28,6 +28,12 @@ char* n_medfont2 = "medfont2.fnt";
 char* n_smallfont2 = "smalfont2.fnt";
 char* n_bigfont2 = "bigfont2.fnt";
 
+int saveCursor[3];
+
+char myString1[1024];
+char myString2[1024];
+char myString3[1024];
+
 #define o_HD_X (*(_int_*)0x401448)
 #define o_HD_Y (*(_int_*)0x40144F)
 
@@ -64,7 +70,7 @@ int __stdcall Y_Dlg_MainMenu_Create(HiHook* hook, _Dlg_* dlg)
 
 	ERA_version = Era::GetEraVersion();
 	sprintf(o_TextBuffer, "HoMM3 ERA %s", ERA_version );
-	dlg->AddItem(_DlgStaticText_::Create(4, 576, 200, 20, o_TextBuffer, n_medfont2, 7, 545, ALIGN_H_LEFT | ALIGN_V_BOTTOM, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(596, 576, 200, 20, o_TextBuffer, n_medfont2, 7, 545, ALIGN_H_RIGHT | ALIGN_V_BOTTOM, 0)); 
 
 	return ret;
 }

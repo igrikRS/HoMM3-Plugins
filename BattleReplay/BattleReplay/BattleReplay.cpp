@@ -168,8 +168,10 @@ int __stdcall Y_ReplayBattle(HiHook* hook, _AdvMgr_* advMng, _dword_ MixedPos, _
 			ERM_FU_CALL(870520); // аналог !!FU87052:P (важно! можно испортить все переменные)
 			o_QuickBattle = 0;
 			hdv(_bool_, "HD.QuickCombat") = 0;
+			
 		}
-
+		
+		o_BattleMgr->round = 0; // фикс призывов от опыта стеков (вызов существ в 1м раунде битвы)
 		ret = CALL_11(int, __thiscall, hook->GetDefaultFunc(), advMng, MixedPos, HrA, MArrA, OwnerD, townD, HrD, MArrD, Pv3, Pv2, Pv1);
 
 		if ( isNeedReplay ) {
@@ -194,6 +196,10 @@ int __stdcall Y_ReplayBattle(HiHook* hook, _AdvMgr_* advMng, _dword_ MixedPos, _
 
 	return ret; 
 }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
@@ -226,7 +232,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 			// а пропущенный код выполнить (придется писать ручками) после всех переигровок
 			// АЛЬТЕРНАТИВНОЕ РЕШЕНИЕ (как по мне - лучше)
 			// hihook на функцию 0x76C616 c полным пропуском оной во время переигровок
-
+			
 
         }
         break;
