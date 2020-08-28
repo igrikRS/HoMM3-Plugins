@@ -242,6 +242,10 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 			char* pHint = *(char**)(ptr_pic1 +4*i +16);
 		
 			char* short_name = GetShortFileName_Y(pPath);
+
+			//sprintf(o_TextBuffer, "pPath: %s \n\n short_name: %s", pPath, short_name);
+			//b_MsgBox(o_TextBuffer, 1);
+
 			if (IsSupportedFormatImage(short_name) )
 			{
 				// грузим картинку через era.dll->LoadImageAsPcx16()
@@ -439,14 +443,14 @@ int __stdcall Y_Dlg_CustomReq(LoHook* h, HookContext* c)
 			// устанавливаем стандартный курсор мыши
 			Y_Mouse_SetCursor(0);
 
-			result = New_Dlg_CustomReq(Sphinx);
+			result = New_Dlg_CustomReq(Sphinx);	
 
 			// возвращаем запомненный курсор мыши
 			Y_Mouse_SetCursor(1);
 		}
 
 		if (result == 10) 
-		{ // в диалоге gif/avi = грузим стандартный воговский диалог
+		{ // в диалоге gif/avi = грузим стандартный воговский диалог			
 			CALL_0(void, __stdcall, 0x771978); //  WoG_BeforeDialog()  
 			int soundEffect = CALL_0(int, __cdecl, 0x71666C) > 4;
 			int v5 = CALL_0(int, __cdecl, 0x771116); // int __cdecl Service_GetForegroundWindow()

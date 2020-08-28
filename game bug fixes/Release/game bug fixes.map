@@ -1,6 +1,6 @@
  game bug fixes
 
- Timestamp is 5f3c1d0e (Tue Aug 18 21:25:18 2020)
+ Timestamp is 5f48e72c (Fri Aug 28 14:14:52 2020)
 
  Preferred load address is 10000000
 
@@ -16,19 +16,19 @@
  0002:0000010c 00000004H .CRT$XPZ                DATA
  0002:00000110 00000004H .CRT$XTA                DATA
  0002:00000114 00000004H .CRT$XTZ                DATA
- 0002:00000120 00001318H .rdata                  DATA
- 0002:00001438 00000062H .rdata$debug            DATA
- 0002:000014a0 0000000cH .rdata$sxdata           DATA
- 0002:000014ac 00000004H .rtc$IAA                DATA
- 0002:000014b0 00000004H .rtc$IZZ                DATA
- 0002:000014b4 00000004H .rtc$TAA                DATA
- 0002:000014b8 00000004H .rtc$TZZ                DATA
- 0002:000014c0 0000028cH .xdata$x                DATA
- 0002:0000174c 00000014H .idata$2                DATA
- 0002:00001760 00000014H .idata$3                DATA
- 0002:00001774 000000ecH .idata$4                DATA
- 0002:00001860 0000043cH .idata$6                DATA
- 0002:00001c9c 00000000H .edata                  DATA
+ 0002:00000120 00001338H .rdata                  DATA
+ 0002:00001458 00000062H .rdata$debug            DATA
+ 0002:000014c0 0000000cH .rdata$sxdata           DATA
+ 0002:000014cc 00000004H .rtc$IAA                DATA
+ 0002:000014d0 00000004H .rtc$IZZ                DATA
+ 0002:000014d4 00000004H .rtc$TAA                DATA
+ 0002:000014d8 00000004H .rtc$TZZ                DATA
+ 0002:000014e0 0000028cH .xdata$x                DATA
+ 0002:0000176c 00000014H .idata$2                DATA
+ 0002:00001780 00000014H .idata$3                DATA
+ 0002:00001794 000000ecH .idata$4                DATA
+ 0002:00001880 0000043cH .idata$6                DATA
+ 0002:00001cbc 00000000H .edata                  DATA
  0003:00000000 00000c54H .data                   DATA
  0003:00000c60 00000bbcH .bss                    DATA
 
@@ -44,31 +44,30 @@
  0001:000000e0       ?AI_TP_cursed_check@@YGHPAVLoHook@@PAUHookContext@@@Z 100010e0 f   game bug fixes.obj
  0001:00000110       ?castleOwnerCheck@@YGHPAVLoHook@@PAUHookContext@@@Z 10001110 f   game bug fixes.obj
  0001:00000140       ?EarthquakeBug@@YGHPAVLoHook@@PAUHookContext@@@Z 10001140 f   game bug fixes.obj
- 0001:00000160       ?faerie_button@@YGHPAVLoHook@@PAUHookContext@@@Z 10001160 f   game bug fixes.obj
- 0001:00000180       ?faerie_button_RMB@@YGHPAVLoHook@@PAUHookContext@@@Z 10001180 f   game bug fixes.obj
- 0001:000001a0       ?setActStack@@YGHPAVLoHook@@PAUHookContext@@@Z 100011a0 f   game bug fixes.obj
- 0001:00000210       ?catapultaShoot@@YGHPAVLoHook@@PAUHookContext@@@Z 10001210 f   game bug fixes.obj
- 0001:00000230       ?monstreShoot@@YGHPAVLoHook@@PAUHookContext@@@Z 10001230 f   game bug fixes.obj
- 0001:00000260       ?Y_FixBagCreatureGredeOfNeutrals@@YGHPAVHiHook@@PAU_Army_@@H@Z 10001260 f   game bug fixes.obj
- 0001:000002a0       ?fixHarpyBinds@@YGHPAVLoHook@@PAUHookContext@@@Z 100012a0 f   game bug fixes.obj
- 0001:000002d0       ?ERM_Fix_EA_E@@YGHPAVHiHook@@PAU_BattleStack_@@@Z 100012d0 f   game bug fixes.obj
- 0001:00000370       ?Y_AntiKavalierAndFly@@YGHPAVLoHook@@PAUHookContext@@@Z 10001370 f   game bug fixes.obj
- 0001:000003a0       ?Y_SetCanselWitchHut@@YGHPAVHiHook@@PAU_Hero_@@HE@Z 100013a0 f   game bug fixes.obj
- 0001:000003e0       ?Y_SetCanselScholarlySS@@YGHPAVLoHook@@PAUHookContext@@@Z 100013e0 f   game bug fixes.obj
- 0001:00000470       ?Y_FixWoG_GetCreatureGrade@@YGHPAVLoHook@@PAUHookContext@@@Z 10001470 f   game bug fixes.obj
- 0001:000004d0       ?Y_WoG_MixedPos_Fix@@YGIPAVHiHook@@HHH@Z 100014d0 f   game bug fixes.obj
- 0001:00000500       ?Y_WoG_UnMixedPos_Fix@@YGXPAVHiHook@@IIII@Z 10001500 f   game bug fixes.obj
- 0001:00000540       ?Y_SetWogHates@@YGHPAVLoHook@@PAUHookContext@@@Z 10001540 f   game bug fixes.obj
- 0001:00000680       ?Y_DlgSpellBook_FixDecription_SpellPower@@YG_JPAVHiHook@@PAU_Hero_@@HHPAU_BattleStack_@@@Z 10001680 f   game bug fixes.obj
- 0001:000006d0       ?Y_Fix_ViewEarthOrAirSpell_Add_Monoliths_Show@@YGHPAVLoHook@@PAUHookContext@@@Z 100016d0 f   game bug fixes.obj
- 0001:00000770       ?Y_Fix_ViewEarthOrAirSpell_Add_Monoliths_Prepare@@YGHPAVLoHook@@PAUHookContext@@@Z 10001770 f   game bug fixes.obj
- 0001:000007b0       ?Y_Fix_ReportStatusMsg_CastArmageddonSpell@@YGHPAVHiHook@@PAU_BattleMgr_@@HHPAU_Hero_@@2PAU_BattleStack_@@H@Z 100017b0 f   game bug fixes.obj
- 0001:00000800       ?Fix_WoG_GetCreatureGrade_Expo@@YGHPAVLoHook@@PAUHookContext@@@Z 10001800 f   game bug fixes.obj
- 0001:00000820       ?Fix_WoG_GetCreatureGrade_Town@@YGHPAVLoHook@@PAUHookContext@@@Z 10001820 f   game bug fixes.obj
- 0001:00000840       ?Y_ArtGive_Spell@@YGHPAVHiHook@@HID@Z 10001840 f   game bug fixes.obj
- 0001:00000880       ?Y_ArtGive_LoadSpells@@YGHPAVHiHook@@HD@Z 10001880 f   game bug fixes.obj
- 0001:000008c0       ?Y_ArtGive_AllSpells@@YGHPAVHiHook@@HD@Z 100018c0 f   game bug fixes.obj
- 0001:00000900       ?Y_WoGCrExpoSet_AddExpo@@YGXPAVHiHook@@H@Z 10001900 f   game bug fixes.obj
+ 0001:00000160       ?faerie_button_RMB@@YGHPAVLoHook@@PAUHookContext@@@Z 10001160 f   game bug fixes.obj
+ 0001:000001b0       ?setActStack@@YGHPAVLoHook@@PAUHookContext@@@Z 100011b0 f   game bug fixes.obj
+ 0001:00000220       ?catapultaShoot@@YGHPAVLoHook@@PAUHookContext@@@Z 10001220 f   game bug fixes.obj
+ 0001:00000240       ?monstreShoot@@YGHPAVLoHook@@PAUHookContext@@@Z 10001240 f   game bug fixes.obj
+ 0001:00000270       ?Y_FixBagCreatureGredeOfNeutrals@@YGHPAVHiHook@@PAU_Army_@@H@Z 10001270 f   game bug fixes.obj
+ 0001:000002b0       ?fixHarpyBinds@@YGHPAVLoHook@@PAUHookContext@@@Z 100012b0 f   game bug fixes.obj
+ 0001:000002e0       ?ERM_Fix_EA_E@@YGHPAVHiHook@@PAU_BattleStack_@@@Z 100012e0 f   game bug fixes.obj
+ 0001:00000380       ?Y_AntiKavalierAndFly@@YGHPAVLoHook@@PAUHookContext@@@Z 10001380 f   game bug fixes.obj
+ 0001:000003b0       ?Y_SetCanselWitchHut@@YGHPAVHiHook@@PAU_Hero_@@HE@Z 100013b0 f   game bug fixes.obj
+ 0001:000003f0       ?Y_SetCanselScholarlySS@@YGHPAVLoHook@@PAUHookContext@@@Z 100013f0 f   game bug fixes.obj
+ 0001:00000480       ?Y_FixWoG_GetCreatureGrade@@YGHPAVLoHook@@PAUHookContext@@@Z 10001480 f   game bug fixes.obj
+ 0001:000004e0       ?Y_WoG_MixedPos_Fix@@YGIPAVHiHook@@HHH@Z 100014e0 f   game bug fixes.obj
+ 0001:00000510       ?Y_WoG_UnMixedPos_Fix@@YGXPAVHiHook@@IIII@Z 10001510 f   game bug fixes.obj
+ 0001:00000550       ?Y_SetWogHates@@YGHPAVLoHook@@PAUHookContext@@@Z 10001550 f   game bug fixes.obj
+ 0001:00000690       ?Y_DlgSpellBook_FixDecription_SpellPower@@YG_JPAVHiHook@@PAU_Hero_@@HHPAU_BattleStack_@@@Z 10001690 f   game bug fixes.obj
+ 0001:000006e0       ?Y_Fix_ViewEarthOrAirSpell_Add_Monoliths_Show@@YGHPAVLoHook@@PAUHookContext@@@Z 100016e0 f   game bug fixes.obj
+ 0001:00000780       ?Y_Fix_ViewEarthOrAirSpell_Add_Monoliths_Prepare@@YGHPAVLoHook@@PAUHookContext@@@Z 10001780 f   game bug fixes.obj
+ 0001:000007c0       ?Y_Fix_ReportStatusMsg_CastArmageddonSpell@@YGHPAVHiHook@@PAU_BattleMgr_@@HHPAU_Hero_@@2PAU_BattleStack_@@H@Z 100017c0 f   game bug fixes.obj
+ 0001:00000810       ?Fix_WoG_GetCreatureGrade_Expo@@YGHPAVLoHook@@PAUHookContext@@@Z 10001810 f   game bug fixes.obj
+ 0001:00000830       ?Fix_WoG_GetCreatureGrade_Town@@YGHPAVLoHook@@PAUHookContext@@@Z 10001830 f   game bug fixes.obj
+ 0001:00000850       ?Y_ArtGive_Spell@@YGHPAVHiHook@@HID@Z 10001850 f   game bug fixes.obj
+ 0001:00000890       ?Y_ArtGive_LoadSpells@@YGHPAVHiHook@@HD@Z 10001890 f   game bug fixes.obj
+ 0001:000008d0       ?Y_ArtGive_AllSpells@@YGHPAVHiHook@@HD@Z 100018d0 f   game bug fixes.obj
+ 0001:00000910       ?Y_WoGCrExpoSet_AddExpo@@YGXPAVHiHook@@H@Z 10001910 f   game bug fixes.obj
  0001:00000960       ?startPlugin@@YAXPAVPatcher@@PAVPatcherInstance@@@Z 10001960 f   game bug fixes.obj
  0001:00001100       _DllMain@12                10002100 f   game bug fixes.obj
  0001:00001171       @__security_check_cookie@4 10002171 f   LIBCMT:secchk.obj
@@ -292,8 +291,8 @@
  0002:0000010c       ___xp_z                    1000910c     LIBCMT:crt0init.obj
  0002:00000110       ___xt_a                    10009110     LIBCMT:crt0init.obj
  0002:00000114       ___xt_z                    10009114     LIBCMT:crt0init.obj
- 0002:0000013c       __pDefaultRawDllMain       1000913c     LIBCMT:dllcrt0.obj
  0002:0000013c       __pRawDllMain              1000913c     LIBCMT:dllcrt0.obj
+ 0002:0000013c       __pDefaultRawDllMain       1000913c     LIBCMT:dllcrt0.obj
  0002:00000148       ??_C@_0O@NLDKAIKN@EncodePointer?$AA@ 10009148     LIBCMT:tidtable.obj
  0002:00000158       ??_C@_1BK@DBDEIDLH@?$AAK?$AAE?$AAR?$AAN?$AAE?$AAL?$AA3?$AA2?$AA?4?$AAD?$AAL?$AAL?$AA?$AA@ 10009158     LIBCMT:tidtable.obj
  0002:00000174       ??_C@_0O@KBPMFGHI@DecodePointer?$AA@ 10009174     LIBCMT:tidtable.obj
@@ -390,29 +389,31 @@
  0002:00001280       ??_C@_0P@GHFPNOJB@bad?5allocation?$AA@ 1000a280     game bug fixes.obj
  0002:00001290       ??_C@_0BA@FDLNIKIG@patcher_x86?4dll?$AA@ 1000a290     game bug fixes.obj
  0002:000012a0       ??_C@_0BB@CKHJKIEB@_GetPatcherX86?$EA0?$AA@ 1000a2a0     game bug fixes.obj
- 0002:000012b4       ??_C@_0BL@KKGHLGMK@0F?5BF?578?524?583?5FF?5FF?50F?584?$AA@ 1000a2b4     game bug fixes.obj
- 0002:000012d0       ??_C@_0BI@BIOBJCEG@0F?5BF?577?524?583?5FE?5FF?574?$AA@ 1000a2d0     game bug fixes.obj
- 0002:000012e8       ??_C@_0BI@HFHMJAJF@0F?5BF?57F?524?583?5FF?5FF?574?$AA@ 1000a2e8     game bug fixes.obj
- 0002:00001300       ??_C@_0P@FBFFNPMD@90?58B?57C?581?51C?$AA@ 1000a300     game bug fixes.obj
- 0002:00001310       ??_C@_0BF@JIHIBFMB@90?589?5F8?589?544?5B2?51C?$AA@ 1000a310     game bug fixes.obj
- 0002:00001328       ??_C@_0CB@FLNDGMKJ@90?58B?556?51C?589?545?5DC?589?555?5E4?590@ 1000a328     game bug fixes.obj
- 0002:0000134c       ??_C@_0BC@HLBAJJMM@8B?54D?5E4?590?557?551?$AA@ 1000a34c     game bug fixes.obj
- 0002:00001360       ??_C@_0CK@GHPHDNIN@0F?5BF?557?518?5?58B?54F?524?5B8?5?5FF?5FF?5@ 1000a360     game bug fixes.obj
- 0002:0000138c       ??_C@_02MFEGOEMP@?$CFn?$AA@ 1000a38c     game bug fixes.obj
- 0002:00001390       ??_C@_0BL@KDNLKMAG@8B4D?508?5C601?501?5C641?502?504?$AA@ 1000a390     game bug fixes.obj
- 0002:000013ac       ??_C@_04CNHNGAPO@EB17?$AA@ 1000a3ac     game bug fixes.obj
- 0002:000013b4       ??_C@_0BG@HLEFPKFH@81FF?5B7000000?590?57747?$AA@ 1000a3b4     game bug fixes.obj
- 0002:000013cc       ??_C@_04CNNEPIP@EB74?$AA@  1000a3cc     game bug fixes.obj
- 0002:000013d4       ??_C@_04CMIOOACJ@2800?$AA@ 1000a3d4     game bug fixes.obj
- 0002:000013dc       ??_C@_0O@MJHHPDO@ERA_bug_fixes?$AA@ 1000a3dc     game bug fixes.obj
- 0002:000013f0       __load_config_used         1000a3f0     LIBCMT:loadcfg.obj
- 0002:000014a0       ___safe_se_handler_table   1000a4a0     <linker-defined>
- 0002:000014ac       ___rtc_iaa                 1000a4ac     LIBCMT:_initsect_.obj
- 0002:000014b0       ___rtc_izz                 1000a4b0     LIBCMT:_initsect_.obj
- 0002:000014b4       ___rtc_taa                 1000a4b4     LIBCMT:_initsect_.obj
- 0002:000014b8       ___rtc_tzz                 1000a4b8     LIBCMT:_initsect_.obj
- 0002:0000174c       __IMPORT_DESCRIPTOR_KERNEL32 1000a74c     kernel32:KERNEL32.dll
- 0002:00001760       __NULL_IMPORT_DESCRIPTOR   1000a760     kernel32:KERNEL32.dll
+ 0002:000012b4       ??_C@_09KFBPDMFE@My?5Plugin?$AA@ 1000a2b4     game bug fixes.obj
+ 0002:000012c0       ??_C@_0O@MJHHPDO@ERA_bug_fixes?$AA@ 1000a2c0     game bug fixes.obj
+ 0002:000012d0       ??_C@_0BL@KKGHLGMK@0F?5BF?578?524?583?5FF?5FF?50F?584?$AA@ 1000a2d0     game bug fixes.obj
+ 0002:000012ec       ??_C@_0BI@BIOBJCEG@0F?5BF?577?524?583?5FE?5FF?574?$AA@ 1000a2ec     game bug fixes.obj
+ 0002:00001304       ??_C@_0BI@HFHMJAJF@0F?5BF?57F?524?583?5FF?5FF?574?$AA@ 1000a304     game bug fixes.obj
+ 0002:0000131c       ??_C@_0P@FBFFNPMD@90?58B?57C?581?51C?$AA@ 1000a31c     game bug fixes.obj
+ 0002:0000132c       ??_C@_0BF@JIHIBFMB@90?589?5F8?589?544?5B2?51C?$AA@ 1000a32c     game bug fixes.obj
+ 0002:00001344       ??_C@_0CB@FLNDGMKJ@90?58B?556?51C?589?545?5DC?589?555?5E4?590@ 1000a344     game bug fixes.obj
+ 0002:00001368       ??_C@_0BC@HLBAJJMM@8B?54D?5E4?590?557?551?$AA@ 1000a368     game bug fixes.obj
+ 0002:0000137c       ??_C@_0CK@GHPHDNIN@0F?5BF?557?518?5?58B?54F?524?5B8?5?5FF?5FF?5@ 1000a37c     game bug fixes.obj
+ 0002:000013a8       ??_C@_02MFEGOEMP@?$CFn?$AA@ 1000a3a8     game bug fixes.obj
+ 0002:000013ac       ??_C@_0BL@KDNLKMAG@8B4D?508?5C601?501?5C641?502?504?$AA@ 1000a3ac     game bug fixes.obj
+ 0002:000013c8       ??_C@_04CNHNGAPO@EB17?$AA@ 1000a3c8     game bug fixes.obj
+ 0002:000013d0       ??_C@_0BG@HLEFPKFH@81FF?5B7000000?590?57747?$AA@ 1000a3d0     game bug fixes.obj
+ 0002:000013e8       ??_C@_04CNNEPIP@EB74?$AA@  1000a3e8     game bug fixes.obj
+ 0002:000013f0       ??_C@_04CMIOOACJ@2800?$AA@ 1000a3f0     game bug fixes.obj
+ 0002:000013f8       ??_C@_0BI@NFDPFHCG@game?5bug?5fixes?5extended?$AA@ 1000a3f8     game bug fixes.obj
+ 0002:00001410       __load_config_used         1000a410     LIBCMT:loadcfg.obj
+ 0002:000014c0       ___safe_se_handler_table   1000a4c0     <linker-defined>
+ 0002:000014cc       ___rtc_iaa                 1000a4cc     LIBCMT:_initsect_.obj
+ 0002:000014d0       ___rtc_izz                 1000a4d0     LIBCMT:_initsect_.obj
+ 0002:000014d4       ___rtc_taa                 1000a4d4     LIBCMT:_initsect_.obj
+ 0002:000014d8       ___rtc_tzz                 1000a4d8     LIBCMT:_initsect_.obj
+ 0002:0000176c       __IMPORT_DESCRIPTOR_KERNEL32 1000a76c     kernel32:KERNEL32.dll
+ 0002:00001780       __NULL_IMPORT_DESCRIPTOR   1000a780     kernel32:KERNEL32.dll
  0003:00000000       ___security_cookie         1000b000     LIBCMT:gs_cookie.obj
  0003:00000004       ___security_cookie_complement 1000b004     LIBCMT:gs_cookie.obj
  0003:00000008       ___flsindex                1000b008     LIBCMT:tidtable.obj
@@ -495,18 +496,19 @@
  0003:000016bc       ?_P@@3PAVPatcher@@A        1000c6bc     game bug fixes.obj
  0003:000016c0       ?isVisible_Gates@@3HA      1000c6c0     game bug fixes.obj
  0003:000016c4       ?isVisible_Monoliths@@3HA  1000c6c4     game bug fixes.obj
- 0003:000016c8       ?calls_count@?1??GetPatcher@@YAPAVPatcher@@XZ@4HA 1000c6c8     game bug fixes.obj
- 0003:000016d0       ___sse2_available          1000c6d0     <common>
- 0003:000016d4       ___sbh_cntHeaderList       1000c6d4     <common>
- 0003:000016d8       ___sbh_pHeaderList         1000c6d8     <common>
- 0003:000016dc       ___sbh_threshold           1000c6dc     <common>
- 0003:000016e0       ___sbh_pHeaderScan         1000c6e0     <common>
- 0003:000016e4       ___sbh_sizeHeaderList      1000c6e4     <common>
- 0003:000016e8       ___sbh_indGroupDefer       1000c6e8     <common>
- 0003:000016ec       __debugger_hook_dummy      1000c6ec     <common>
- 0003:000016f0       __pDestructExceptionObject 1000c6f0     <common>
- 0003:000016f4       ___active_heap             1000c6f4     <common>
- 0003:000016f8       __nhandle                  1000c6f8     <common>
+ 0003:000016c8       ?_RK@@3PAVPatcherInstance@@A 1000c6c8     game bug fixes.obj
+ 0003:000016cc       ?calls_count@?1??GetPatcher@@YAPAVPatcher@@XZ@4HA 1000c6cc     game bug fixes.obj
+ 0003:000016d4       ___sse2_available          1000c6d4     <common>
+ 0003:000016d8       ___sbh_cntHeaderList       1000c6d8     <common>
+ 0003:000016dc       ___sbh_pHeaderList         1000c6dc     <common>
+ 0003:000016e0       ___sbh_threshold           1000c6e0     <common>
+ 0003:000016e4       ___sbh_pHeaderScan         1000c6e4     <common>
+ 0003:000016e8       ___sbh_sizeHeaderList      1000c6e8     <common>
+ 0003:000016ec       ___sbh_indGroupDefer       1000c6ec     <common>
+ 0003:000016f0       __debugger_hook_dummy      1000c6f0     <common>
+ 0003:000016f4       __pDestructExceptionObject 1000c6f4     <common>
+ 0003:000016f8       ___active_heap             1000c6f8     <common>
+ 0003:000016fc       __nhandle                  1000c6fc     <common>
  0003:00001700       ___pioinfo                 1000c700     <common>
  0003:00001800       ___env_initialized         1000c800     <common>
  0003:00001804       ___onexitend               1000c804     <common>

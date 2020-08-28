@@ -2,6 +2,7 @@
 
 Patcher* _P;
 PatcherInstance* _PI;
+PatcherInstance* _RK;
 
 // by RoseKavalier ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -86,6 +87,7 @@ int __stdcall faerie_button_RMB(LoHook *h, HookContext *c)
 {
    if (c->esi == 15)
    {
+	  b_MsgBox("My Plugin", 1);
       c->esi = *(int*)0x6A6A00; // "Cast Spell" text ~ taken from 0x46B4FE
       return NO_EXEC_DEFAULT;
    }
@@ -278,6 +280,11 @@ int __stdcall Y_FixWoG_GetCreatureGrade(LoHook* h, HookContext* c)
 _dword_ __stdcall Y_WoG_MixedPos_Fix(HiHook* hook, int x, int y, int z)
 {
 	_dword_ xyz = b_pack_xyz(x, y, z);
+
+	//_RK = _P->GetInstance("ERA_bug_fixes");
+	//if (_RK) {
+	//	b_MsgBox("Yes RK Plugin", 1);
+	//} else b_MsgBox("No RK Plugin", 1);
 
 	return xyz; 
 }
@@ -561,37 +568,46 @@ void __stdcall Y_WoGCrExpoSet_AddExpo(HiHook* hook, int cr_Expo)
 void startPlugin(Patcher* _P, PatcherInstance* _PI)
 {
 // by RoseKavalier ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	_PI->WriteLoHook(0x42DDA6, AI_split_div0); // Prevent crash when AI attacks "ghost" hero			
-	_PI->WriteByte(0x49E4EC +1, 99); // работающая кнопка Отмена в Арене
 
-	// ХЗ  что это (возможно операции со стеками)
-	_PI->WriteByte(0x49C021, 183);
-	_PI->WriteByte(0x4A763F, 183);
-	_PI->WriteByte(0x4A9423, 183);
-	_PI->WriteByte(0x4AA82E, 183);
-	_PI->WriteByte(0x4C9662, 183);
-	_PI->WriteByte(0x4FD164, 183);
-	_PI->WriteByte(0x505C9F, 183);
-	_PI->WriteByte(0x52CD36, 183);
-	_PI->WriteJmp(0x5A365D, 0x5A3666);
-	_PI->WriteJmp(0x5A37B9, 0x5A37C2);
-	_PI->WriteJmp(0x464DF1, 0x464DFB);
-	_PI->WriteHexPatch(0x4FD12A, "0F BF 78 24 83 FF FF 0F 84");
-	_PI->WriteHexPatch(0x505C75, "0F BF 77 24 83 FE FF 74");
-	_PI->WriteHexPatch(0x52CD26, "0F BF 7F 24 83 FF FF 74");
-	_PI->WriteHexPatch(0x44AA4F, "90 8B 7C 81 1C");
-	_PI->WriteHexPatch(0x44AA58, "90 89 F8 89 44 B2 1C");
-	_PI->WriteHexPatch(0x42D922, "90 8B 56 1C 89 45 DC 89 55 E4 90");
-	_PI->WriteHexPatch(0x42DA39, "8B 4D E4 90 57 51");
-	_PI->WriteHexPatch(0x42DAD9, "8B 4D E4 90 57 51");
+	_RK = _P->GetInstance("ERA_bug_fixes");
 
-	// исправление бага посещения банков в которых дают существ (вылет в диалоге присоедиенния монстров) © RoseKavalier
-	_PI->WriteHiHook(0x5D52CA, CALL_, EXTENDED_, THISCALL_, HH_Show_Hero_Info_Dlg); // alternative 2 - should
+	if (!_RK ) {
 
-	////////////////////////// AI BAGs ///////////////////////////////////////
-	_PI->WriteLoHook(0x56B344, AI_TP_cursed_check);
-	_PI->WriteLoHook(0x43020E, AI_waterwalk_fly);
+		_PI->WriteLoHook(0x42DDA6, AI_split_div0); // Prevent crash when AI attacks "ghost" hero			
+		_PI->WriteByte(0x49E4EC +1, 99); // работающая кнопка Отмена в Арене
+
+		// описание кнопки сказочного дракона
+		// _PI->WriteLoHook(0x5F5320, faerie_button);
+		_PI->WriteLoHook(0x5F4C99, faerie_button_RMB);
+
+		// ХЗ  что это (возможно операции со стеками)
+		_PI->WriteByte(0x49C021, 183);
+		_PI->WriteByte(0x4A763F, 183);
+		_PI->WriteByte(0x4A9423, 183);
+		_PI->WriteByte(0x4AA82E, 183);
+		_PI->WriteByte(0x4C9662, 183);
+		_PI->WriteByte(0x4FD164, 183);
+		_PI->WriteByte(0x505C9F, 183);
+		_PI->WriteByte(0x52CD36, 183);
+		_PI->WriteJmp(0x5A365D, 0x5A3666);
+		_PI->WriteJmp(0x5A37B9, 0x5A37C2);
+		_PI->WriteJmp(0x464DF1, 0x464DFB);
+		_PI->WriteHexPatch(0x4FD12A, "0F BF 78 24 83 FF FF 0F 84");
+		_PI->WriteHexPatch(0x505C75, "0F BF 77 24 83 FE FF 74");
+		_PI->WriteHexPatch(0x52CD26, "0F BF 7F 24 83 FF FF 74");
+		_PI->WriteHexPatch(0x44AA4F, "90 8B 7C 81 1C");
+		_PI->WriteHexPatch(0x44AA58, "90 89 F8 89 44 B2 1C");
+		_PI->WriteHexPatch(0x42D922, "90 8B 56 1C 89 45 DC 89 55 E4 90");
+		_PI->WriteHexPatch(0x42DA39, "8B 4D E4 90 57 51");
+		_PI->WriteHexPatch(0x42DAD9, "8B 4D E4 90 57 51");
+
+		// исправление бага посещения банков в которых дают существ (вылет в диалоге присоедиенния монстров) © RoseKavalier
+		_PI->WriteHiHook(0x5D52CA, CALL_, EXTENDED_, THISCALL_, HH_Show_Hero_Info_Dlg); // alternative 2 - should
+
+		////////////////////////// AI BAGs ///////////////////////////////////////
+		_PI->WriteLoHook(0x56B344, AI_TP_cursed_check);
+		_PI->WriteLoHook(0x43020E, AI_waterwalk_fly);
+	}
 
 
 // by Ben80 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -623,8 +639,6 @@ void startPlugin(Patcher* _P, PatcherInstance* _PI)
 	_PI->WriteByte(0x5F3DA4, 21);    // подложка поз.X
 	_PI->WriteDword(0x5F3DF5, 235);  // кнопка   поз.Y
 	_PI->WriteByte(0x5F3DFA, 21);    // кнопка   поз.X
-    _PI->WriteLoHook(0x5F5320, faerie_button);
-    _PI->WriteLoHook(0x5F4C99, faerie_button_RMB);
 
 	// исправление ошибки ERM в командре IF:N1, теперь командра работает 
 	// со всеми локальными, глобальными и отрицательными переменными z, а не только с z1
@@ -800,7 +814,8 @@ BOOL APIENTRY DllMain( HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpRese
 			bug_fixes_On = 1;    
 
 			_P = GetPatcher();
-			_PI = _P->CreateInstance("ERA_bug_fixes"); 
+			_PI = _P->CreateInstance("game bug fixes extended"); 
+			// _PI = _P->CreateInstance("ERA_bug_fixes");
 
 			startPlugin(_P, _PI);
 
