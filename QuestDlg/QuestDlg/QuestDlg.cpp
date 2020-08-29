@@ -1,6 +1,6 @@
 // #include "stdafx.h"
-#include "..\..\include\homm3.h"
-#include "..\..\include\HoMM3_Dlg.cpp"
+#include "..\..\..\include\homm3.h"
+#include "..\..\..\include\HoMM3_Dlg.cpp"
 
 //#include "..\..\include\era.h"
 //using namespace Era;
@@ -13,7 +13,7 @@ PatcherInstance* _PI;
 
 int quest_show_coords[4];
 
-// высота текста описания квестов
+// высота текста описания квестов 
 #define oHT 26
 
 // показ сообщения по ПКМ c одним дефом
