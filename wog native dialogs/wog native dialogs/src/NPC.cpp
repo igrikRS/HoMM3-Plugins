@@ -23,21 +23,36 @@ int __stdcall Y_New_CommanderDlg_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 			int IDM = it->id;
 			switch (IDM)
 			{
-				case 3:	text = txtresWOG->GetString(53); break; // подсказка Уволить командира
+				case 3:	
+					text = txtresWOG->GetString(53); 
+					break; // подсказка Уволить командира
 				
-				case 6: text = dlgNPC->PortraitHint; break; // портрет командира
-				case 11: text = txtresWOG->GetString(74); break; // подсказка имя командира
+				case 6: 
+					text = dlgNPC->PortraitHint; 
+					break; // портрет командира
 
-				case 13: sprintf(o_TextBuffer, "%s %d", txtresWOG->GetString(67), dlgNPC->Level);
-					text = o_TextBuffer;	break; // подсказка уровень командира
+				case 11: 
+					text = txtresWOG->GetString(74); 
+					break; // подсказка имя командира
 
-				case 15: text = dlgNPC->TypeHint; break; // подсказка класса командира
+				case 13: 
+					sprintf(o_TextBuffer, "%s %d", txtresWOG->GetString(67), dlgNPC->Level);
+					text = o_TextBuffer;	
+					break; // подсказка уровень командира
 
-				case 17: sprintf(o_TextBuffer, "%s %s", txtresWOG->GetString(68), dlgNPC->HeroName);
-					text = o_TextBuffer;	break; // подсказка имя героя хозяина
+				case 15: 
+					text = dlgNPC->TypeHint; 
+					break; // подсказка класса командира
 
-				case 19: sprintf(o_TextBuffer, "%s %d", txtresWOG->GetString(71), dlgNPC->CurExp);
-					text = o_TextBuffer;	break; // подсказка текущий опыт
+				case 17: 
+					sprintf(o_TextBuffer, "%s %s", txtresWOG->GetString(68), dlgNPC->HeroName);
+					text = o_TextBuffer;	
+					break; // подсказка имя героя хозяина
+
+				case 19: 
+					sprintf(o_TextBuffer, "%s %d", txtresWOG->GetString(71), dlgNPC->CurExp);
+					text = o_TextBuffer;	
+					break; // подсказка текущий опыт
 
 				case 21: sprintf(o_TextBuffer, "%s %d", txtresWOG->GetString(72), dlgNPC->NextExp);
 					text = o_TextBuffer;	break; // подсказка следующий опыт
@@ -47,47 +62,73 @@ int __stdcall Y_New_CommanderDlg_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 				case 24:	text = txtresWOG->GetString(69); break; // подсказка основные навыки
 				case 25:	text = txtresWOG->GetString(70); break; // подсказка вторичные навыки
 
-				case 31:	sprintf(o_TextBuffer, "%s %d (%d)", txtresWOG->GetString(54), dlgNPC->pAT, dlgNPC->hAT);
-					text = o_TextBuffer;	break; // подсказка атака
+				case 31:	
+					sprintf(o_TextBuffer, "%s %d (%d)", txtresWOG->GetString(54), dlgNPC->pAT, dlgNPC->hAT);
+					text = o_TextBuffer;	
+					break; // подсказка атака
 
-				case 33:	sprintf(o_TextBuffer, "%s %d (%d)", txtresWOG->GetString(55), dlgNPC->pDF, dlgNPC->hDF);
-					text = o_TextBuffer;	break; // подсказка защита
+				case 33:	
+					sprintf(o_TextBuffer, "%s %d (%d)", txtresWOG->GetString(55), dlgNPC->pDF, dlgNPC->hDF);
+					text = o_TextBuffer;	
+					break; // подсказка защита
 
-				case 35:	sprintf(o_TextBuffer, "%s %d", txtresWOG->GetString(56), dlgNPC->pHP);
-					text = o_TextBuffer;	break; // подсказка здоровье
+				case 35:	
+					sprintf(o_TextBuffer, "%s %d", txtresWOG->GetString(56), dlgNPC->pHP);
+					text = o_TextBuffer;	
+					break; // подсказка здоровье
 
-				case 37:	sprintf(o_TextBuffer, "%s %d - %d", txtresWOG->GetString(58), dlgNPC->pDML, dlgNPC->pDMH);
-					text = o_TextBuffer;	break; // подсказка урон
+				case 37:	
+					sprintf(o_TextBuffer, "%s %d - %d", txtresWOG->GetString(58), dlgNPC->pDML, dlgNPC->pDMH);
+					text = o_TextBuffer;	
+					break; // подсказка урон
 
-				case 39:	sprintf(o_TextBuffer, "%s %d", txtresWOG->GetString(59), dlgNPC->pMP);
-					text = o_TextBuffer;	break; // подсказка сила магии
+				case 39:	
+					sprintf(o_TextBuffer, "%s %d", txtresWOG->GetString(59), dlgNPC->pMP);
+					text = o_TextBuffer;	
+					break; // подсказка сила магии
 
-				case 41:	sprintf(o_TextBuffer, "%s %d%%", txtresWOG->GetString(60), dlgNPC->pMR);
-					text = o_TextBuffer;	break; // подсказка сопротивление
+				case 41:	
+					sprintf(o_TextBuffer, "%s %d%%", txtresWOG->GetString(60), dlgNPC->pMR);
+					text = o_TextBuffer;	
+					break; // подсказка сопротивление
 
-				case 43:	sprintf(o_TextBuffer, "%s %d", txtresWOG->GetString(61), dlgNPC->pShots);
-					text = o_TextBuffer;	break; // подсказка боезапас
+				case 43:	
+					sprintf(o_TextBuffer, "%s %d", txtresWOG->GetString(61), dlgNPC->pShots);
+					text = o_TextBuffer;	
+					break; // подсказка боезапас
 
-				case 45:	sprintf(o_TextBuffer, "%s %d", txtresWOG->GetString(57), dlgNPC->pSP);
-					text = o_TextBuffer;	break; // подсказка скорость
+				case 45:	
+					sprintf(o_TextBuffer, "%s %d", txtresWOG->GetString(57), dlgNPC->pSP);
+					text = o_TextBuffer;	
+					break; // подсказка скорость
 
-				case 46: text = dlgNPC->SpecHint1; break;	// подсказка спец навык класса 1
-				case 47: text = dlgNPC->SpecHint2; break;	// подсказка спец навык класса 2
+				case 46: 
+					text = dlgNPC->SpecHint1; 
+					break;	// подсказка спец навык класса 1
+
+				case 47: 
+					text = dlgNPC->SpecHint2; 
+					break;	// подсказка спец навык класса 2
 
 				case 48: case 49: case 50: case 51: case 52: case 53:  
-					text = dlgNPC->ArtHints[IDM -48]; break; // подсказка артефакты[48-53]
+					text = dlgNPC->ArtHints[IDM -48]; 
+					break; // подсказка артефакты[48-53]
 
 				case 54: case 55: case 56: case 57: case 58: case 59:  
-					text = dlgNPC->BonusHints[IDM -54]; break; // подсказка основные навыки[54-59]
+					text = dlgNPC->BonusHints[IDM -54]; 
+					break; // подсказка основные навыки[54-59]
 				
 				case 60: case 61: case 62: case 63: case 64: case 65:  
-					text = dlgNPC->SpecBonusHints[IDM -60]; break; // подсказка доп. навыки[60-65]
+					text = dlgNPC->SpecBonusHints[IDM -60]; 
+					break; // подсказка доп. навыки[60-65]
 
 				case 67: case 68: case 69: case 70: case 71: case 72:  
-					text = dlgNPC->NextHints[IDM -67]; break; // подсказка изучаемые. навыки[66-72] 
+					text = dlgNPC->NextHints[IDM -67]; 
+					break; // подсказка изучаемые. навыки[66-72] 
 
 				case DIID_OK: 
-					text = txtresWOG->GetString(85); break; // подсказка Ok
+					text = dlgNPC->Request ? json_Npc[2] : json_Npc[1]; 
+					break; // подсказка Ok
 
 				default: 
 					text = "";	break;
@@ -105,29 +146,41 @@ int __stdcall Y_New_CommanderDlg_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 			int IDR = msg->item_id;
 			switch (IDR)
 			{
-				case 3: b_MsgBox(WogNDlg_TXT->GetString(17), MBX_RMC);	break;  // уволить командира
+				case 3:	
+					b_MsgBox(json_Npc[3], MBX_RMC);	
+					break;  // уволить командира
 
-				case 6: case 11: b_MsgBox(dlgNPC->Description, MBX_RMC);	break; // биография
+				case 6: case 11: 
+					b_MsgBox(dlgNPC->Description, MBX_RMC);	
+					break; // биография
 
-				case 15:  b_MsgBox(dlgNPC->TypePopUpText, MBX_RMC);	break; // описание класса командира
+				case 15:  
+					b_MsgBox(dlgNPC->TypePopUpText, MBX_RMC);	
+					break; // описание класса командира
 
-				case 46: b_MsgBoxAndDef("Dlg_NPC1.def", (int)dlgNPC->SpecIcon1, dlgNPC->SpecPopUpText1);  break;		// спец навык класса 1
-				case 47: b_MsgBoxAndDef("Dlg_NPC1.def", (int)dlgNPC->SpecIcon2, dlgNPC->SpecPopUpText2);  break;		// спец навык класса 2
+				case 46: 
+					b_MsgBoxAndDef("Dlg_NPC1.def", (int)dlgNPC->SpecIcon1, dlgNPC->SpecPopUpText1);  
+					break;		// спец навык класса 1
+
+				case 47: 
+					b_MsgBoxAndDef("Dlg_NPC1.def", (int)dlgNPC->SpecIcon2, dlgNPC->SpecPopUpText2);  
+					break;		// спец навык класса 2
 				
 				case 48: case 49: case 50: case 51: case 52: case 53:  // артефакты[48-53]
-					b_MsgBoxD(dlgNPC->ArtPopUpTexts[IDR -48], MBX_RMC, 8, (int)dlgNPC->ArtIcons[IDR -48]); break; 
+					b_MsgBoxD(dlgNPC->ArtPopUpTexts[IDR -48], MBX_RMC, 8, (int)dlgNPC->ArtIcons[IDR -48]); 
+					break; 
 
 				case 54: case 55: case 56: case 57: case 58: case 59:  // основные навыки[54-59]
-					b_MsgBoxAndDef("Dlg_NPC2.def", (int)dlgNPC->Bonus[IDR -54], dlgNPC->BonusPopUpText[IDR -54]); break; 
+					b_MsgBoxAndDef("Dlg_NPC2.def", (int)dlgNPC->Bonus[IDR -54], dlgNPC->BonusPopUpText[IDR -54]); 
+					break; 
 
 				case 60: case 61: case 62: case 63: case 64: case 65:  // доп. навыки[60-65]
-					b_MsgBoxAndDef("Dlg_NPC3.def", (int)dlgNPC->SpecBonus[IDR -60], dlgNPC->SpecBonusPopUpText[IDR -60]); break;
+					b_MsgBoxAndDef("Dlg_NPC3.def", (int)dlgNPC->SpecBonus[IDR -60], dlgNPC->SpecBonusPopUpText[IDR -60]); 
+					break;
 
 				case 67: case 68: case 69: case 70: case 71: case 72:  // изучаемые. навыки[67-72]
-					b_MsgBoxAndDef("Dlg_NPC2.def", (int)dlgNPC->Next[IDR -67], dlgNPC->NextPopUpTexts[IDR -67]); break;
-
-				case DIID_OK: 
-						b_MsgBox(WogNDlg_TXT->GetString(dlgNPC->Request ? 19 :18), MBX_RMC); break; // ПКМ OK Выход
+					b_MsgBoxAndDef("Dlg_NPC2.def", (int)dlgNPC->Next[IDR -67], dlgNPC->NextPopUpTexts[IDR -67]); 
+					break;
 	
 				default: 
 					break;
@@ -273,91 +326,91 @@ _int_ __stdcall Y_Dlg_NPC_Show(HiHook* hook, _DlgNPC_* dlgNPC)
 	if ( !(dlgNPC->Flags & 8) || !(dlgNPC->Flags & 1) ) dlg->GetItem(3)->SetEnabled(0); 
 
 	// (id = 6) подсказка на дефе (пустышка, но по ней ПКМ определяет id и выдает окно биографии)
-	dlg->AddItem(_DlgStaticText_::Create(20, 70, 100, 130, "", n_medfont2, 1, 6, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));  
+	dlg->AddItem(_DlgStaticText_::Create(20, 70, 100, 130, "", n_MedFont, 1, 6, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));  
 
 	// (id = 10) подсказка в статус баре	
-	dlg->AddItem(NPC_StatBar = _DlgStaticTextPcx8ed_::Create(8, dlg->height -18 -8, dlg->width - 16, 18, "", n_smallfont2, "AdRollvr.pcx", 1, 10, ALIGN_H_CENTER | ALIGN_V_CENTER) ); // HD_TStat.pcx
+	dlg->AddItem(NPC_StatBar = _DlgStaticTextPcx8ed_::Create(8, dlg->height -18 -8, dlg->width - 16, 18, "", n_SmallFont, "AdRollvr.pcx", 1, 10, ALIGN_H_CENTER | ALIGN_V_CENTER) ); // HD_TStat.pcx
 
 	if ( !(dlgNPC->Flags & 1) ){ // текстовые вставки " МЕРТВ!!! "  (id = 8, 9)
-		dlg->AddItem(_DlgStaticText_::Create(131, 18, 370, medfontHI, txtresWOG->GetString(66), n_medfont2, 27, 8, ALIGN_H_LEFT  | ALIGN_V_CENTER, 0)); 
-		dlg->AddItem(_DlgStaticText_::Create(131, 18, 370, medfontHI, txtresWOG->GetString(66), n_medfont2, 27, 9, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));	
+		dlg->AddItem(_DlgStaticText_::Create(131, 18, 370, medfontHI, txtresWOG->GetString(66), n_MedFont, 27, 8, ALIGN_H_LEFT  | ALIGN_V_CENTER, 0)); 
+		dlg->AddItem(_DlgStaticText_::Create(131, 18, 370, medfontHI, txtresWOG->GetString(66), n_MedFont, 27, 9, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));	
 	}
 	// (id = 11) имя командира 
-	dlg->AddItem(_DlgStaticText_::Create(131, 18, 370, medfontHI, dlgNPC->Name, n_medfont2, 7, 11, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(131, 18, 370, medfontHI, dlgNPC->Name, n_MedFont, 7, 11, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
 
 	// (id = 12, 13) уровень текст и число 
-	dlg->AddItem(_DlgStaticText_::Create(22, 46, 96, medfontHI, txtresWOG->GetString(67), n_medfont2, 7, 12, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(22, 46, 96, medfontHI, txtresWOG->GetString(67), n_MedFont, 7, 12, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
 	sprintf(o_TextBuffer, "%d", dlgNPC->Level);
-	dlg->AddItem(_DlgStaticText_::Create(22, 46, 96, medfontHI, o_TextBuffer, n_medfont2, 1, 13, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(22, 46, 96, medfontHI, o_TextBuffer, n_MedFont, 1, 13, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0)); 
 
 	// (id = 14, 15) класс командира текст 
-	dlg->AddItem(_DlgStaticText_::Create(16, 205, 104, medfontHI, txtresWOG->GetString(65), n_medfont2, 7, 14, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
-	dlg->AddItem(_DlgStaticText_::Create(16, 220, 104, medfontHI, dlgNPC->Type, n_medfont2, 1, 15, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(16, 205, 104, medfontHI, txtresWOG->GetString(65), n_MedFont, 7, 14, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(16, 220, 104, medfontHI, dlgNPC->Type, n_MedFont, 1, 15, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 
 	// (id = 16, 17) имя героя хозяина 
-	dlg->AddItem(_DlgStaticText_::Create(128, 46, 192, medfontHI, txtresWOG->GetString(68), n_medfont2, 7, 16, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
-	dlg->AddItem(_DlgStaticText_::Create(128, 46, 192, medfontHI, dlgNPC->HeroName, n_medfont2, 1, 17, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(128, 46, 192, medfontHI, txtresWOG->GetString(68), n_MedFont, 7, 16, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(128, 46, 192, medfontHI, dlgNPC->HeroName, n_MedFont, 1, 17, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0)); 
 
 	// (id = 18, 19) текущий опыт 
-	dlg->AddItem(_DlgStaticText_::Create(330, 46, 284, medfontHI, txtresWOG->GetString(71), n_medfont2, 7, 18, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(330, 46, 284, medfontHI, txtresWOG->GetString(71), n_MedFont, 7, 18, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
 	sprintf(o_TextBuffer, "%d", dlgNPC->CurExp);
-	dlg->AddItem(_DlgStaticText_::Create(330, 46, 284, medfontHI, o_TextBuffer, n_medfont2, 1, 19, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(330, 46, 284, medfontHI, o_TextBuffer, n_MedFont, 1, 19, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 
 	// (id = 20, 21) следующий уровень
-	dlg->AddItem(_DlgStaticText_::Create(330, 68, 284, medfontHI, txtresWOG->GetString(72), n_medfont2, 7, 20, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(330, 68, 284, medfontHI, txtresWOG->GetString(72), n_MedFont, 7, 20, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
 	sprintf(o_TextBuffer, "%d", dlgNPC->NextExp);
-	dlg->AddItem(_DlgStaticText_::Create(330, 68, 284, medfontHI, o_TextBuffer, n_medfont2, 1, 21, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(330, 68, 284, medfontHI, o_TextBuffer, n_MedFont, 1, 21, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0)); 
 
 	// (id = 22) Навыки_класса_текст 
-	dlg->AddItem(_DlgStaticText_::Create(377, 90, 192, medfontHI, txtresWOG->GetString(77), n_medfont2, 7, 22, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(377, 90, 192, medfontHI, txtresWOG->GetString(77), n_MedFont, 7, 22, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
 	// (id = 23) Артефакты_текст 
-	dlg->AddItem(_DlgStaticText_::Create(377, 159, 192, medfontHI, txtresWOG->GetString(78), n_medfont2, 7, 23, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(377, 159, 192, medfontHI, txtresWOG->GetString(78), n_MedFont, 7, 23, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
 	// (id = 24) Основные_навыки_текст 
-	dlg->AddItem(_DlgStaticText_::Create(133, 246, 366, medfontHI, txtresWOG->GetString(69), n_medfont2, 7, 24, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(133, 246, 366, medfontHI, txtresWOG->GetString(69), n_MedFont, 7, 24, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
 	// (id = 25) Вторичные_навыки_текст 
-	dlg->AddItem(_DlgStaticText_::Create(133, 343, 366, medfontHI, txtresWOG->GetString(70), n_medfont2, 7, 25, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(133, 343, 366, medfontHI, txtresWOG->GetString(70), n_MedFont, 7, 25, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
 
 	///////////////////////////////////////////////////////////
 
 	// (id = 30, 31) Атака 
 	sprintf(o_TextBuffer, "%d (%d)", dlgNPC->pAT, dlgNPC->hAT);
-	dlg->AddItem(_DlgStaticText_::Create(128, 69, 192, medfontHI, o_TextBuffer, n_medfont2, 1, 30, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0)); 
-	dlg->AddItem(_DlgStaticText_::Create(128, 69, 192, medfontHI, txtresWOG->GetString(54), n_medfont2, 7, 31, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(128, 69, 192, medfontHI, o_TextBuffer, n_MedFont, 1, 30, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(128, 69, 192, medfontHI, txtresWOG->GetString(54), n_MedFont, 7, 31, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
 
 	// (id = 32, 33) Защита 
 	sprintf(o_TextBuffer, "%d (%d)", dlgNPC->pDF, dlgNPC->hDF);
-	dlg->AddItem(_DlgStaticText_::Create(128, 91, 192, medfontHI, o_TextBuffer, n_medfont2, 1, 32, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));  
-	dlg->AddItem(_DlgStaticText_::Create(128, 91, 192, medfontHI, txtresWOG->GetString(55), n_medfont2, 7, 33, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(128, 91, 192, medfontHI, o_TextBuffer, n_MedFont, 1, 32, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));  
+	dlg->AddItem(_DlgStaticText_::Create(128, 91, 192, medfontHI, txtresWOG->GetString(55), n_MedFont, 7, 33, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
 
 	// (id = 34, 35) Здоровье 
 	sprintf(o_TextBuffer, "%d", dlgNPC->pHP);
-	dlg->AddItem(_DlgStaticText_::Create(128, 113, 192, medfontHI, o_TextBuffer, n_medfont2, 1, 34, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));  
-	dlg->AddItem(_DlgStaticText_::Create(128, 113, 192, medfontHI, txtresWOG->GetString(56), n_medfont2, 7, 35, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(128, 113, 192, medfontHI, o_TextBuffer, n_MedFont, 1, 34, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));  
+	dlg->AddItem(_DlgStaticText_::Create(128, 113, 192, medfontHI, txtresWOG->GetString(56), n_MedFont, 7, 35, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
 
 	// (id = 36, 37) Урон 
 	sprintf(o_TextBuffer, "%d - %d", dlgNPC->pDML, dlgNPC->pDMH);
-	dlg->AddItem(_DlgStaticText_::Create(128, 135, 192, medfontHI, o_TextBuffer, n_medfont2, 1, 36, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));   
-	dlg->AddItem(_DlgStaticText_::Create(128, 135, 192, medfontHI, txtresWOG->GetString(58), n_medfont2, 7, 37, ALIGN_H_LEFT | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(128, 135, 192, medfontHI, o_TextBuffer, n_MedFont, 1, 36, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));   
+	dlg->AddItem(_DlgStaticText_::Create(128, 135, 192, medfontHI, txtresWOG->GetString(58), n_MedFont, 7, 37, ALIGN_H_LEFT | ALIGN_V_CENTER, 0));
 
 	// (id = 38, 39) Сила магии 
 	sprintf(o_TextBuffer, "%d", dlgNPC->pMP);
-	dlg->AddItem(_DlgStaticText_::Create(128, 157, 192, medfontHI, o_TextBuffer, n_medfont2, 1, 38, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));   
-	dlg->AddItem(_DlgStaticText_::Create(128, 157, 192, medfontHI, txtresWOG->GetString(59), n_medfont2, 7, 39, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(128, 157, 192, medfontHI, o_TextBuffer, n_MedFont, 1, 38, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));   
+	dlg->AddItem(_DlgStaticText_::Create(128, 157, 192, medfontHI, txtresWOG->GetString(59), n_MedFont, 7, 39, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
 
 	// (id = 40, 41) Сопротивление 
 	sprintf(o_TextBuffer, "%d%%", dlgNPC->pMR);
-	dlg->AddItem(_DlgStaticText_::Create(128, 179, 192, medfontHI, o_TextBuffer, n_medfont2, 1, 40, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));  
-	dlg->AddItem(_DlgStaticText_::Create(128, 179, 192, medfontHI, txtresWOG->GetString(60), n_medfont2, 7, 41, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(128, 179, 192, medfontHI, o_TextBuffer, n_MedFont, 1, 40, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));  
+	dlg->AddItem(_DlgStaticText_::Create(128, 179, 192, medfontHI, txtresWOG->GetString(60), n_MedFont, 7, 41, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
 
 	// (id = 42, 43) Боезапас 
 	sprintf(o_TextBuffer, "%d", dlgNPC->pShots);
-	dlg->AddItem(_DlgStaticText_::Create(128, 201, 192, medfontHI, o_TextBuffer, n_medfont2, 1, 42, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));   
-	dlg->AddItem(_DlgStaticText_::Create(129, 201, 192, medfontHI, txtresWOG->GetString(61), n_medfont2, 7, 43, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(128, 201, 192, medfontHI, o_TextBuffer, n_MedFont, 1, 42, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));   
+	dlg->AddItem(_DlgStaticText_::Create(129, 201, 192, medfontHI, txtresWOG->GetString(61), n_MedFont, 7, 43, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
 
 	// (id = 44, 45) Скорость 
 	sprintf(o_TextBuffer, "%d", dlgNPC->pSP);
-	dlg->AddItem(_DlgStaticText_::Create(128, 223, 192, medfontHI, o_TextBuffer, n_medfont2, 1, 44, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));    
-	dlg->AddItem(_DlgStaticText_::Create(128, 223, 192, medfontHI, txtresWOG->GetString(57), n_medfont2, 7, 45, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(128, 223, 192, medfontHI, o_TextBuffer, n_MedFont, 1, 44, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));    
+	dlg->AddItem(_DlgStaticText_::Create(128, 223, 192, medfontHI, txtresWOG->GetString(57), n_MedFont, 7, 45, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
 
 	///////////////////////////////////////////////////////////
 
@@ -391,7 +444,7 @@ _int_ __stdcall Y_Dlg_NPC_Show(HiHook* hook, _DlgNPC_* dlgNPC)
 
 	if ( dlgNPC->Request == 2 ) { // при повышении уровня c выбором картинок
 		// (id = 66) подсказка выберите навыки для повышения 
-		dlg->AddItem(_DlgStaticText_::Create(133, 422, 366, medfontHI, txtresWOG->GetString(73), n_medfont2, 7, 66, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
+		dlg->AddItem(_DlgStaticText_::Create(133, 422, 366, medfontHI, txtresWOG->GetString(73), n_MedFont, 7, 66, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
 		dlg->AddItem(_DlgStaticDef_::Create(40, 445, 70, 70, 67, "Dlg_NPC2.def", (int)dlgNPC->NextActive[0], 0, 18));
 		dlgNPC->DlgLeft = 1;
 		for (int i = 1; i < 6; ++i ){ 
@@ -459,8 +512,8 @@ int __stdcall Y_HeroDlg_Proc(HiHook* hook, _CustomDlg_* dlg, _EventMsg_* msg)
 		_DlgItem_* it = dlg->FindItem(msg->x_abs, msg->y_abs);
 
 		if (it && it->id == 4445)	{
-			sprintf(o_TextBuffer, WogNDlg_TXT->GetString(16)); 
-			_DlgMsg_ m;	CALL_2(void, __thiscall, 0x5FF3A0, dlg, m.Set(512, 3, 115, 0, 0, 0, (int)o_TextBuffer, 0)); 
+			// sprintf(o_TextBuffer, json_Npc[0]); 
+			_DlgMsg_ m;	CALL_2(void, __thiscall, 0x5FF3A0, dlg, m.Set(512, 3, 115, 0, 0, 0, (int)json_Npc[0], 0)); 
 			dlg->Redraw(TRUE, 114, 115);
 			return 1;		
 		}  

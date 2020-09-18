@@ -34,14 +34,14 @@ int __stdcall Dlg_ChooseMonAttack(HiHook* hook, int a1, int a2, int a3)
 
 	// Титульный текст
 	sprintf(o_TextBuffer, "%s", *(int*)0x282E6F4);
-	dlg->AddItem(_DlgStaticText_::Create(20, 20, dlg->width -40, 46, o_TextBuffer, n_medfont2, 1, 3, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(20, 20, dlg->width -40, 46, o_TextBuffer, n_MedFont, 1, 3, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 
 	for (int i = 0; i < count; i++){
 		dlg->AddItem(CALL_8 (_DlgItem_*, __thiscall, 0x44FE00, o_New(56), 18, 66+dy*i, dlg->width -36, 24, 4+i, *(int*)(*(int*)0x6AAD18 + 118), 1024));
 		dlg->GetItem(4+i)->SendCommand(5, 4);
 			
 		sprintf(o_TextBuffer, "{%s}", *(int*)(*(int*)0x282E6FC +4*i));
-		dlg->AddItem(_DlgStaticText_::Create(44, 70+dy*i, dlg->width -66, 16, o_TextBuffer, n_smallfont2, 1, 7+i, ALIGN_H_LEFT | ALIGN_V_CENTER, 0));
+		dlg->AddItem(_DlgStaticText_::Create(44, 70+dy*i, dlg->width -66, 16, o_TextBuffer, n_SmallFont, 1, 7+i, ALIGN_H_LEFT | ALIGN_V_CENTER, 0));
 
 		dlg->AddItem(_DlgButton_::Create(22, 70+dy*i, dlg->width -44, 18, 10+i, "radiobttn.def", 0, 3, 0, 0, 0));
 	}

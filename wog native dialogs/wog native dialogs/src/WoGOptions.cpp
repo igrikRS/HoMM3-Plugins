@@ -95,7 +95,7 @@ int Create_WoGDlgSetup_ElemOnPage(_CustomDlg_* dlg, int page, _DlgSetup_* ds)
 		id = 1000*(page+1) +(j*200);
 
 		// титульный текст группы
-		dlg->AddItem(_DlgStaticText_::Create(x, y, 267 +wx, 19, ds->Pages[page]->ItemList[j]->Name, n_medfont2, 2, 800+page*10+j, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+		dlg->AddItem(_DlgStaticText_::Create(x, y, 267 +wx, 19, ds->Pages[page]->ItemList[j]->Name, n_BigFont, 2, 800+page*10+j, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 
 		// рамка
 		int hy = ds->Pages[page]->ItemList[j]->ItemCount * dy +3;  
@@ -104,7 +104,7 @@ int Create_WoGDlgSetup_ElemOnPage(_CustomDlg_* dlg, int page, _DlgSetup_* ds)
 		// кнопки группы
 		for (int i=0; i<ds->Pages[page]->ItemList[j]->ItemCount; i++) {
 			sprintf(o_TextBuffer, "%s", ds->Pages[page]->ItemList[j]->ItemName[i]);
-			dlg->AddItem(_DlgStaticText_::Create(x+25, y+22 +dy*i, 238 +wx, 16, o_TextBuffer, n_smallfont2, 
+			dlg->AddItem(_DlgStaticText_::Create(x+25, y+22 +dy*i, 238 +wx, 16, o_TextBuffer, n_SmallFont, 
 				(ds->Pages[page]->ItemList[j]->ItemState[i] >= 2) ? 1 : 2, id +i, ALIGN_H_LEFT | ALIGN_V_CENTER, 0));
 
 			itState = ds->Pages[page]->ItemList[j]->ItemState[i];
@@ -118,7 +118,7 @@ int Create_WoGDlgSetup_ElemOnPage(_CustomDlg_* dlg, int page, _DlgSetup_* ds)
 				defState, (itState < 2) ? (defState+1) : defState, 0, 0, 0)); 
 			 /* dlg->AddItem(_DlgTextButton_::Create(x+3, y+22 +dy*i, 262 +wx, 16, id+i+100, 
 				 (ds->Pages[page]->ItemList[j]->Type == 2) ? "radiobttn.def" : "checkbox.def", 
-				 ds->Pages[page]->ItemList[j]->ItemName[i], n_smallfont2, 
+				 ds->Pages[page]->ItemList[j]->ItemName[i], n_SmallFont, 
 				 ds->Pages[page]->ItemList[j]->ItemState[i]*2, 
 				 (ds->Pages[page]->ItemList[j]->ItemState[i] == 2) ? 4 : ds->Pages[page]->ItemList[j]->ItemState[i]*2+1, 0, 0, 0x4, 2)); */ 
 
@@ -361,15 +361,15 @@ void __stdcall Dlg_WoG_Options_Show(HiHook* hook, int a1)
 	_CustomDlg_* dlg = _CustomDlg_::Create(o_HD_X/2 -400, o_HD_Y/2 -300, 800, 600, DF_SCREENSHOT , Dlg_WoG_Options_Proc);
 	Set_DlgBackground_RK(dlg, 1, o_GameMgr->GetMeID());
 	
-	statbarWoGOptions = _DlgStaticTextPcx8ed_::Create(7, dlg->height -26, dlg->width -14, 18, "", n_smallfont2, "WoGOptions.pcx", 1, 2, ALIGN_H_CENTER | ALIGN_V_CENTER); 
+	statbarWoGOptions = _DlgStaticTextPcx8ed_::Create(7, dlg->height -26, dlg->width -14, 18, "", n_SmallFont, "WoGOptions.pcx", 1, 2, ALIGN_H_CENTER | ALIGN_V_CENTER); 
 	dlg->AddItem(statbarWoGOptions); // подсказка в статус баре	
 
-	dlg->AddItem(_DlgStaticText_::Create(214, 20, 370, 20, ds->Name, n_bigfont2, 1, 3, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); // id = 3
-	dlg->AddItem(_DlgStaticText_::Create(230, 50, 538, 468, ds->Intro, n_bigfont2, 2, 4, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); //id = 4
+	dlg->AddItem(_DlgStaticText_::Create(214, 20, 370, 20, ds->Name, json_WoGOpt[0], 1, 3, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); // id = 3
+	dlg->AddItem(_DlgStaticText_::Create(230, 50, 538, 468, ds->Intro, json_WoGOpt[0], 2, 4, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); //id = 4
 
 	for (int i=0; i<8; i++) {
 		if (ds->Pages[i]->Enabled) {
-			dlg->AddItem(_DlgStaticText_::Create(23, 49 +60*i, 192, 49, ds->Pages[i]->Name, n_smallfont2, 1, 41 +i, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));	// id = 41...48
+			dlg->AddItem(_DlgStaticText_::Create(23, 49 +60*i, 192, 49, ds->Pages[i]->Name, n_SmallFont, 1, 41 +i, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));	// id = 41...48
 			
 			Create_WoGDlgSetup_ElemOnPage(dlg, i, ds); // функция построения элементов диалога текущей в цикле страницы
 			ShowHide_WoGDlgSetup_ElemOnPage(dlg, i, ds, 0); // скрываем все элементы на странице
@@ -412,7 +412,7 @@ int __stdcall Y_NewScenarioDlg_Proc(HiHook* hook, _CustomDlg_* this_, _EventMsg_
 void __stdcall Y_NewScenarioDlg_Create(HiHook* hook, _NewScenarioDlg_* this_, int type)
 {
 	CALL_2(void, __thiscall, hook->GetDefaultFunc(), this_, type);
-	this_->AddItem(_DlgTextButton_::Create(622, 105, 4444, "GSPBUT2.DEF", WogNDlg_TXT->GetString(21), n_smallfont2, 0, 1, 0, 0, 1));
+	this_->AddItem(_DlgTextButton_::Create(622, 105, 4444, "GSPBUT2.DEF", json_WoGOpt[1], n_SmallFont, 0, 1, 0, 0, 1));
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

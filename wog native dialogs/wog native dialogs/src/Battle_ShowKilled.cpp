@@ -71,7 +71,7 @@ _HStr_* __stdcall BattleMgr_GetAttackDamage_Hint_LogString(HiHook* hook, _HStr_*
 	char stringKilled[512];
 
 	// сначала копируем stringKilled = ", убъет: %s" + "количество убитых"
-	sprintf((char*)stringKilled, WogNDlg_TXT->GetString(23), GetStringKilled((char*)countKilled, enemy) );
+	sprintf((char*)stringKilled, json_Combat[1], GetStringKilled((char*)countKilled, enemy) );
 
 	// потом копируем: "Атаковать/Стрелять в монстр (урон X + stringKilled)" 
 	sprintf(o_TextBuffer, "%s %s", H3string->c_str, (char*)stringKilled );

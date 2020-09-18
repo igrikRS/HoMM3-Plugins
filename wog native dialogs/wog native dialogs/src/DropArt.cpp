@@ -95,9 +95,9 @@ int __stdcall Y_WoGDlg_ChooseArt(HiHook* hook, int a1, _Hero_* hero, int Remove)
 	dlg->custom_data[1] = (_dword_)hero;
 	
 	sprintf(o_TextBuffer, "%s", CALL_3(char*, __cdecl, 0x77710B, 222, 0, (int)0x7C8E3C) );
-	dlg->AddItem(_DlgStaticText_::Create(24, 20, dlg->width -48, 44, o_TextBuffer, n_medfont2, 1, 1, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(24, 20, dlg->width -48, 44, o_TextBuffer, n_MedFont, 1, 1, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 
-	dlg->AddItem(_DlgStaticText_::Create(8, dlg->height -26, dlg->width -16, 18, "", n_smallfont2, 1, 2, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(8, dlg->height -26, dlg->width -16, 18, "", n_SmallFont, 1, 2, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 
 	int i = 0;
 	for (int j = 0; j < 8; j++) {

@@ -48,7 +48,7 @@ int __stdcall Y_WoGCurseDlg_Show(LoHook* h, HookContext* c)
 	_CustomDlg_* dlg = _CustomDlg_::Create(-1, -1, x, y, DF_SCREENSHOT | DF_SHADOW, Y_WoGCurseDlg_Proc);
 	Set_DlgBackground_RK(dlg, 0, o_GameMgr->GetMeID());
 
-	dlg->AddItem(_DlgStaticText_::Create(8, y -62, x -102, 48, "", n_smallfont2, 1, 2, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(8, y -62, x -102, 48, "", n_SmallFont, 1, 2, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 
 	dlg->AddItem(CALL_8 (_DlgItem_*, __thiscall, 0x44FE00, o_New(56), 18, y-64, x-36, 1, 3, *(int*)(*(int*)0x6AAD18 + 118), 1024));
 	dlg->GetItem(3)->SendCommand(5, 4);

@@ -218,7 +218,7 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 
 	_DlgStaticText_* Text1 = 0;
 	if (Sphinx->Text1) {
-		dlg->AddItem(Text1 = _DlgStaticText_::Create(24, 20, dlg->width -48, h_text1, Sphinx->Text1, n_medfont2, 1, 4, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+		dlg->AddItem(Text1 = _DlgStaticText_::Create(24, 20, dlg->width -48, h_text1, Sphinx->Text1, n_MedFont, 1, 4, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 	}
 
 
@@ -275,7 +275,7 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 			} 
 			else 
 			{
-				dlg->AddItem(_DlgStaticText_::Create(start_x, 24+h_text1, 100, 100, pPath, n_smallfont2, 1, 50+i, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+				dlg->AddItem(_DlgStaticText_::Create(start_x, 24+h_text1, 100, 100, pPath, n_SmallFont, 1, 50+i, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 				b_YellowFrame_Create(dlg, start_x, 24+h_text1, 100, 100, 10+i, ON, o_Pal_Y);
 				dlg->GetItem(10+i)->full_tip_text = pPath; // ПКМ на картинке
 				if (pHint){
@@ -293,11 +293,11 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 	} // end if (count_pics)
 
 	if (Sphinx->Text2) {
-		dlg->AddItem(_DlgStaticText_::Create(24, 30+h_text1+h_pic, dlg->width -48, h_text2, Sphinx->Text2, n_medfont2, 7, 5, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+		dlg->AddItem(_DlgStaticText_::Create(24, 30+h_text1+h_pic, dlg->width -48, h_text2, Sphinx->Text2, n_MedFont, 7, 5, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 	}
 
 	if (Sphinx->Text3) {
-		dlg->AddItem(_DlgStaticText_::Create(24, 30+h_text1+h_pic, dlg->width -48, h_text3, Sphinx->Text3, n_medfont2, 7, 6, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+		dlg->AddItem(_DlgStaticText_::Create(24, 30+h_text1+h_pic, dlg->width -48, h_text3, Sphinx->Text3, n_MedFont, 7, 6, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 	}
 
 	if (Sphinx->Text2 && Sphinx->Text3)
@@ -327,7 +327,7 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 		b_YellowFrame_Create(dlg, editText_x, editText_y -1, editText_width +1, 20, 8, ON, o_Pal_Grey);
 		// b_YellowFrame_Create(dlg, editText_x -2, editText_y -2, editText_width +4, 22, 8, ON, o_Pal_Y);
 
-		dlg->AddItem(edit_text = _DlgTextEdit_::Create(editText_x+2, editText_y, editText_width-2, 18, 64, o_NullString, n_medfont2, 1, ALIGN_H_LEFT | ALIGN_V_CENTER, "WoGTextEdit.pcx", 256, 4, 0, 0));
+		dlg->AddItem(edit_text = _DlgTextEdit_::Create(editText_x+2, editText_y, editText_width-2, 18, 64, o_NullString, n_MedFont, 1, ALIGN_H_LEFT | ALIGN_V_CENTER, "WoGTextEdit.pcx", 256, 4, 0, 0));
 		dlg->GetItem(256)->full_tip_text = o_NullString;
 		dlg->GetItem(256)->short_tip_text = Sphinx->Text2;
 	}
@@ -339,7 +339,7 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 		int bttn_width = dlg->GetItem(6)->width;
 
 		if (Sphinx->Chk1Text) {
-			dlg->AddItem(_DlgStaticTextPcx8ed_::Create(bttn_x+1, bttn_y+1, bttn_width-2, 20, Sphinx->Chk1Text, n_smallfont2, "AdRollvr.pcx", 1, 19, ALIGN_H_CENTER | ALIGN_V_CENTER) );
+			dlg->AddItem(_DlgStaticTextPcx8ed_::Create(bttn_x+1, bttn_y+1, bttn_width-2, 20, Sphinx->Chk1Text, n_SmallFont, "AdRollvr.pcx", 1, 19, ALIGN_H_CENTER | ALIGN_V_CENTER) );
 			b_YellowFrame_Create(dlg, bttn_x-1, bttn_y-1, bttn_width+2, 23, 25, OFF, o_Pal_Y);
 			b_YellowFrame_Create(dlg, bttn_x, bttn_y, bttn_width, 21, 15, ON, o_Pal_Grey);
 			dlg->GetItem(15)->full_tip_text = o_NullString;
@@ -348,7 +348,7 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 		}
 
 		if (Sphinx->Chk2Text) {
-			dlg->AddItem(_DlgStaticTextPcx8ed_::Create(bttn_x+1, bttn_y+1, bttn_width-2, 20, Sphinx->Chk2Text, n_smallfont2, "AdRollvr.pcx", 1, 20, ALIGN_H_CENTER | ALIGN_V_CENTER) );
+			dlg->AddItem(_DlgStaticTextPcx8ed_::Create(bttn_x+1, bttn_y+1, bttn_width-2, 20, Sphinx->Chk2Text, n_SmallFont, "AdRollvr.pcx", 1, 20, ALIGN_H_CENTER | ALIGN_V_CENTER) );
 			b_YellowFrame_Create(dlg, bttn_x-1, bttn_y-1, bttn_width+2, 23, 26, OFF, o_Pal_Y);
 			b_YellowFrame_Create(dlg, bttn_x, bttn_y, bttn_width, 21, 16, ON, o_Pal_Grey);
 			dlg->GetItem(16)->full_tip_text = o_NullString;
@@ -357,7 +357,7 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 		}
 
 		if (Sphinx->Chk3Text) {
-			dlg->AddItem(_DlgStaticTextPcx8ed_::Create(bttn_x+1, bttn_y+1, bttn_width-2, 20, Sphinx->Chk3Text, n_smallfont2, "AdRollvr.pcx", 1, 21, ALIGN_H_CENTER | ALIGN_V_CENTER) );
+			dlg->AddItem(_DlgStaticTextPcx8ed_::Create(bttn_x+1, bttn_y+1, bttn_width-2, 20, Sphinx->Chk3Text, n_SmallFont, "AdRollvr.pcx", 1, 21, ALIGN_H_CENTER | ALIGN_V_CENTER) );
 			b_YellowFrame_Create(dlg, bttn_x-1, bttn_y-1, bttn_width+2, 23, 27, OFF, o_Pal_Y);
 			b_YellowFrame_Create(dlg, bttn_x, bttn_y, bttn_width, 21, 17, ON, o_Pal_Grey);
 			dlg->GetItem(17)->full_tip_text = o_NullString;
@@ -366,7 +366,7 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 		}
 
 		if (Sphinx->Chk4Text) {
-			dlg->AddItem(_DlgStaticTextPcx8ed_::Create(bttn_x+1, bttn_y+1, bttn_width-2, 20, Sphinx->Chk4Text, n_smallfont2, "AdRollvr.pcx", 1, 22, ALIGN_H_CENTER | ALIGN_V_CENTER) );
+			dlg->AddItem(_DlgStaticTextPcx8ed_::Create(bttn_x+1, bttn_y+1, bttn_width-2, 20, Sphinx->Chk4Text, n_SmallFont, "AdRollvr.pcx", 1, 22, ALIGN_H_CENTER | ALIGN_V_CENTER) );
 			b_YellowFrame_Create(dlg, bttn_x-1, bttn_y-1, bttn_width+2, 23, 28, OFF, o_Pal_Y);
 			b_YellowFrame_Create(dlg, bttn_x, bttn_y, bttn_width, 21, 18, ON, o_Pal_Grey);
 			dlg->GetItem(18)->full_tip_text = o_NullString;
@@ -395,7 +395,7 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 	}
 
 	// (id = 115) подсказка в статус баре	
-	dlg->AddItem(_DlgStaticTextPcx8ed_::Create(8, dlg->height -18 -8, dlg->width - 16, 18, o_NullString, n_smallfont2, "AdRollvr.pcx", 1, 115, ALIGN_H_CENTER | ALIGN_V_CENTER) ); // HD_TStat.pcx
+	dlg->AddItem(_DlgStaticTextPcx8ed_::Create(8, dlg->height -18 -8, dlg->width - 16, 18, o_NullString, n_SmallFont, "AdRollvr.pcx", 1, 115, ALIGN_H_CENTER | ALIGN_V_CENTER) ); // HD_TStat.pcx
 
 
 	Sphinx->SelItm = 0;

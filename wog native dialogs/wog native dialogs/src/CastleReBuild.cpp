@@ -46,7 +46,7 @@ int __stdcall Dlg_ChooseCastleReBuild(HiHook* hook, int a1, int a2)
 	_CustomDlg_* dlg = _CustomDlg_::Create(-1, -1, x, y, DF_SCREENSHOT | DF_SHADOW, Dlg_ChooseCastleReBuild_Proc);
 	Set_DlgBackground_RK(dlg, 0, o_GameMgr->GetMeID());
 
-	dlg->AddItem(_DlgStaticText_::Create(20, 20, x-40, 60, txtresWOG->GetString(22) , n_medfont2, 1, 4, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(20, 20, x-40, 60, txtresWOG->GetString(22) , n_MedFont, 1, 4, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 
 	for (int i = 0; i < 9; i++){
 		dlg->AddItem(CALL_8 (_DlgItem_*, __thiscall, 0x44FE00, o_New(56), 18 +dx*(i%3), 78 +dy*(i/3), 62, 68, 20+i, *(int*)(*(int*)0x6AAD18 + 118), 1024));

@@ -15,25 +15,38 @@
 Patcher* _P;
 PatcherInstance* _PI;
 
-
 // переменная, для чистого WND
 // для Берса ее коментирую
 #define DOP_FUNK_TO_ERA
 
 struct _TXT_;
 _TXT_* txtresWOG;
-_TXT_* WogNDlg_TXT;
 
-char* n_medfont2 = "medfont2.fnt";
-char* n_smallfont2 = "smalfont2.fnt";
-char* n_bigfont2 = "bigfont2.fnt";
+// текстовые переменные из wnd.json
+char* n_BigFont = "bigfont2.fnt";
+char* n_MedFont = "medfont2.fnt";
+char* n_SmallFont = "smalfont2.fnt";
 
+char* json_CrExpo[12];
+char* json_WoGOpt[2];
+char* json_Npc[4];
+char* json_Combat[2];
+
+// функция получения JSON строк методом ERA
+char* GetEraJSON(const char* json_string_name) {
+	return Era::tr(json_string_name);
+}
+
+// глобальная переменная для функции изменения 
+// и запоминания параметров курсора мыши
 int saveCursor[3];
 
+// мои текстовые буферы
 char myString1[1024];
 char myString2[1024];
 char myString3[1024];
 
+// получение разрешения игры
 #define o_HD_X (*(_int_*)0x401448)
 #define o_HD_Y (*(_int_*)0x40144F)
 
@@ -58,19 +71,16 @@ char myString3[1024];
 #include "src\Battle_ShowKilled.cpp"
 #endif DOP_FUNK_TO_ERA
 
-
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
-
-const char* ERA_version;
 
 int __stdcall Y_Dlg_MainMenu_Create(HiHook* hook, _Dlg_* dlg) 
 {
 	int ret = CALL_1(int, __thiscall, hook->GetDefaultFunc(), dlg);
 
-	ERA_version = Era::GetEraVersion();
+	const char* ERA_version = Era::GetEraVersion();
 	sprintf(o_TextBuffer, "HoMM3 ERA %s", ERA_version );
-	dlg->AddItem(_DlgStaticText_::Create(596, 576, 200, 20, o_TextBuffer, n_medfont2, 7, 545, ALIGN_H_RIGHT | ALIGN_V_BOTTOM, 0)); 
+	dlg->AddItem(_DlgStaticText_::Create(596, 576, 200, 20, o_TextBuffer, n_MedFont, 7, 545, ALIGN_H_RIGHT | ALIGN_V_BOTTOM, 0)); 
 
 	return ret;
 }
@@ -81,24 +91,46 @@ int __stdcall Y_Dlg_MainMenu_Create(HiHook* hook, _Dlg_* dlg)
 int __stdcall Y_LoadAllTXTinGames(LoHook* h, HookContext* c)
 {
 	txtresWOG = _TXT_::Load( "\\zvs\\Lib1.res\\txtres.txt" );
-	WogNDlg_TXT = _TXT_::Load( "WogNDlg.txt" );
 	return EXEC_DEFAULT;
 }
+
 //-----------------------------------------------------------------------
 int __stdcall Y_Hook_MainLoop(LoHook* h, HookContext* c)
 {	
+    n_BigFont = GetEraJSON("wnd.fonts.big_font");
+    n_MedFont = GetEraJSON("wnd.fonts.med_font");
+    n_SmallFont = GetEraJSON("wnd.fonts.small_font");
 	// загружаем необходимые русскоязычные игровые шрифты
-	bigfont2->Load(n_bigfont2); 	//_Fnt_* bigfont2;
-	medfont2->Load(n_medfont2);		//_Fnt_* medfont2;
-	smalfont2->Load(n_smallfont2);	//_Fnt_* smalfont2;
+	bigfont2 = _Fnt_::Load(n_BigFont);
+	medfont2 = _Fnt_::Load(n_MedFont);
+	smalfont2 = _Fnt_::Load(n_SmallFont);
 
-	bigfont2 = _Fnt_::Load(n_bigfont2);
-	medfont2 = _Fnt_::Load(n_medfont2);
-	smalfont2 = _Fnt_::Load(n_smallfont2);
+	json_CrExpo[0] = GetEraJSON("wnd.dlg_crexpo.line0");
+	json_CrExpo[1] = GetEraJSON("wnd.dlg_crexpo.line1");
+	json_CrExpo[2] = GetEraJSON("wnd.dlg_crexpo.line2");
+	json_CrExpo[3] = GetEraJSON("wnd.dlg_crexpo.line3");
+	json_CrExpo[4] = GetEraJSON("wnd.dlg_crexpo.line4");
+	json_CrExpo[5] = GetEraJSON("wnd.dlg_crexpo.line5");
+	json_CrExpo[6] = GetEraJSON("wnd.dlg_crexpo.line6");
+	json_CrExpo[7] = GetEraJSON("wnd.dlg_crexpo.line7");
+	json_CrExpo[8] = GetEraJSON("wnd.dlg_crexpo.line8");
+	json_CrExpo[9] = GetEraJSON("wnd.dlg_crexpo.line9");
+	json_CrExpo[10] = GetEraJSON("wnd.dlg_crexpo.line10");
+	json_CrExpo[11] = GetEraJSON("wnd.dlg_crexpo.line11");
+
+	json_WoGOpt[0] = GetEraJSON("wnd.dlg_wog_options.intro_font");
+	json_WoGOpt[1] = GetEraJSON("wnd.dlg_wog_options.bttn_name");
+
+	json_Npc[0] = GetEraJSON("wnd.dlg_commander.bttn_open_hint");
+	json_Npc[1] = GetEraJSON("wnd.dlg_commander.bttn_exit_hint");
+	json_Npc[2] = GetEraJSON("wnd.dlg_commander.bttn_lvlup_hint");
+	json_Npc[3] = GetEraJSON("wnd.dlg_commander.bttn_dismiss_rmc");
 
 	Dlg_WoGOptions(_PI); 			// диалог WoG Опций
 
 #ifdef DOP_FUNK_TO_ERA
+	json_Combat[0] = GetEraJSON("wnd.combat.finish_question");
+	json_Combat[1] = GetEraJSON("wnd.combat.show_killed");
 	Battle_ShowKilled(_PI);			// показ предполагаемого количества убитых монстров при атаке и стрельбе
 #endif DOP_FUNK_TO_ERA
 

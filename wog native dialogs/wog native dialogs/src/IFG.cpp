@@ -59,7 +59,7 @@ int New_Dlg_IF_G(int num_str, int htxt, int state, int txt, int chRAD)
 
 	// Титульный текст
 	sprintf(o_TextBuffer, "%s", htxt);
-	dlg->AddItem(_DlgStaticText_::Create(20, 20, dlg->width -40, 56, o_TextBuffer, n_medfont2, 1, 3, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(20, 20, dlg->width -40, 56, o_TextBuffer, n_MedFont, 1, 3, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 
 	int on_bttn = 0;
 	for (int i = 0; i < num_str; i++){
@@ -67,7 +67,7 @@ int New_Dlg_IF_G(int num_str, int htxt, int state, int txt, int chRAD)
 		dlg->GetItem(22+i)->SendCommand(5, 4);
 		
 		sprintf(o_TextBuffer, "{%s}", *(int*)(txt +4*i));
-		dlg->AddItem(_DlgStaticText_::Create(44, 80+i*dy, dlg->width -66, 16, o_TextBuffer, n_smallfont2, 1, 10+i, ALIGN_H_LEFT | ALIGN_V_CENTER, 0));
+		dlg->AddItem(_DlgStaticText_::Create(44, 80+i*dy, dlg->width -66, 16, o_TextBuffer, n_SmallFont, 1, 10+i, ALIGN_H_LEFT | ALIGN_V_CENTER, 0));
 		on_bttn = *(int*)(state +4*i);
 		dlg->AddItem(_DlgButton_::Create(22, 80+i*dy, dlg->width -44, 18, 34+i, chRAD ? "radiobttn.def" : "checkbox.def", on_bttn ? 2 : 0, on_bttn ? 3 : 1, 0, 0, 0));
 	} 
