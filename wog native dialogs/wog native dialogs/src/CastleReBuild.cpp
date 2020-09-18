@@ -1,7 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////// Диалог перестройки замков ////////////////////////////////////////////////////////
 
-int townID;
 #define itpaDef (*(char**)0x57C792) // "itpa.def" (small)
 #define itptDef (*(char**)0x45204E) // "itpt.def" (large)
 
@@ -37,7 +36,7 @@ int __stdcall Dlg_ChooseCastleReBuild_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 		if (msg->subtype == MST_LBUTTONCLICK) // ЛКМ при отжатии
 		{
 			if (msg->item_id == DIID_CANCEL)	{
-				dlg->custom_data[0] = townID;
+				dlg->custom_data[0] = -1;
 				return dlg->Close(msg);
 			}
 		}
@@ -45,7 +44,7 @@ int __stdcall Dlg_ChooseCastleReBuild_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 	return r;
 }
 
-int __stdcall Dlg_ChooseCastleReBuild(HiHook* hook)
+int Dlg_ChooseCastleReBuild()
 {
 	int dx = 64;
 	int dy = 75;
@@ -79,22 +78,33 @@ int __stdcall Dlg_ChooseCastleReBuild(HiHook* hook)
     dlg->AddItem(_DlgButton_::Create(zx+6, dlg->height -zy +1, 64, 30, DIID_CANCEL, iCancelDef, 0, 1, 0, 1, 2));
 
 	dlg->Run();
-	int ret = dlg->custom_data[0];
+	int result = dlg->custom_data[0];
 	dlg->Destroy(TRUE);
 
-	return ret; 
+	return result;
 }
 
-int __stdcall Dlg_ChooseCastleReBuild_SetCansellBttn(LoHook* h, HookContext* c)
+
+int __stdcall HiHook_Dlg_ChooseCastleReBuild(HiHook* hook)
 {
-	townID = DwordAt(c->ebp -0x68);
+	int result = Dlg_ChooseCastleReBuild();
+	return result; 
+}
 
-	if (townID < 0 || townID > 10)
-		townID = 0;
 
-	return EXEC_DEFAULT;
+int __stdcall LoHook_Dlg_ChooseCastleReBuild(LoHook* h, HookContext* c)
+{
+	int newTownID = Dlg_ChooseCastleReBuild();
+
+	IntAt(c->ebp -0x34) = newTownID;
+
+	if (newTownID == -1) 
+		c->return_address = 0x70B3E2; // Cancel
+	else 		
+		c->return_address = 0x70B165; // Rebuild
+
+	return NO_EXEC_DEFAULT;
 } 
-
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -103,9 +113,8 @@ int __stdcall Dlg_ChooseCastleReBuild_SetCansellBttn(LoHook* h, HookContext* c)
 void Dlg_CastleReBuild(PatcherInstance* _PI)
 {
 	// Диалог перестройки замка
-	// _PI->WriteHiHook(0x70B10B, CALL_, EXTENDED_, THISCALL_, Dlg_ChooseCastleReBuild); 
-	_PI->WriteLoHook(0x70B10B, Dlg_ChooseCastleReBuild_SetCansellBttn);
-	_PI->WriteHiHook(0x771914, SPLICE_, EXTENDED_, THISCALL_, Dlg_ChooseCastleReBuild); 
+	_PI->WriteLoHook(0x70B10B, LoHook_Dlg_ChooseCastleReBuild);
+	_PI->WriteHiHook(0x771914, SPLICE_, EXTENDED_, THISCALL_, HiHook_Dlg_ChooseCastleReBuild); 
 
 
 	// TEST

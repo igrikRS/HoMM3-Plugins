@@ -1,6 +1,6 @@
  wog native dialogs
 
- Timestamp is 5f64953a (Fri Sep 18 14:08:42 2020)
+ Timestamp is 5f64c703 (Fri Sep 18 17:41:07 2020)
 
  Preferred load address is 10000000
 
@@ -44,8 +44,8 @@
  0000:00000000       ___ImageBase               10000000     <linker-defined>
  0001:00000000       ?WriteCodePatch@PatcherInstance@@QAAPAVPatch@@IPADZZ 10001000 f i wog native dialogs.obj
  0001:00000020       ??1bad_alloc@std@@UAE@XZ   10001020 f i wog native dialogs.obj
- 0001:00000030       ??_Gbad_alloc@std@@UAEPAXI@Z 10001030 f i wog native dialogs.obj
  0001:00000030       ??_Ebad_alloc@std@@UAEPAXI@Z 10001030 f i  CIL library: CIL module
+ 0001:00000030       ??_Gbad_alloc@std@@UAEPAXI@Z 10001030 f i wog native dialogs.obj
  0001:00000060       ?Redraw@_Dlg_@@QAEXXZ      10001060 f i wog native dialogs.obj
  0001:00000080       ?Create@_DlgStaticDef_@@SAPAU1@HHHPADHHH@Z 10001080 f i wog native dialogs.obj
  0001:000000e0       ?Create@_DlgButton_@@SAPAU1@HHHPADHHHH@Z 100010e0 f i wog native dialogs.obj
@@ -103,8 +103,9 @@
  0001:0000ad80       ?Y_NewScenarioDlg_Create@@YGXPAVHiHook@@PAU_NewScenarioDlg_@@H@Z 1000bd80 f   wog native dialogs.obj
  0001:0000ade0       ?Dlg_WoGOptions@@YAXPAVPatcherInstance@@@Z 1000bde0 f   wog native dialogs.obj
  0001:0000ae80       ?Dlg_ChooseCastleReBuild_Proc@@YGHPAV_CustomDlg_@@PAU_DlgMsg_@@@Z 1000be80 f   wog native dialogs.obj
- 0001:0000afe0       ?Dlg_ChooseCastleReBuild@@YGHPAVHiHook@@@Z 1000bfe0 f   wog native dialogs.obj
- 0001:0000b5a0       ?Dlg_ChooseCastleReBuild_SetCansellBttn@@YGHPAVLoHook@@PAUHookContext@@@Z 1000c5a0 f   wog native dialogs.obj
+ 0001:0000afd0       ?Dlg_ChooseCastleReBuild@@YAHXZ 1000bfd0 f   wog native dialogs.obj
+ 0001:0000b590       ?HiHook_Dlg_ChooseCastleReBuild@@YGHPAVHiHook@@@Z 1000c590 f   wog native dialogs.obj
+ 0001:0000b5a0       ?LoHook_Dlg_ChooseCastleReBuild@@YGHPAVLoHook@@PAUHookContext@@@Z 1000c5a0 f   wog native dialogs.obj
  0001:0000b5d0       ?Y_Dlg_HeroLvlUp_Proc@@YGHPAVHiHook@@HPAU_DlgMsg_@@@Z 1000c5d0 f   wog native dialogs.obj
  0001:0000b6b0       ?Y_Lo_Dlg_HeroLvlUp_Create@@YGHPAVLoHook@@PAUHookContext@@@Z 1000c6b0 f   wog native dialogs.obj
  0001:0000b6d0       ?b_MsgBox_Proc@@YGHPAVHiHook@@PAU_DlgMsg_@@@Z 1000c6d0 f   wog native dialogs.obj
@@ -145,8 +146,8 @@
  0001:0000cc93       _free                      1000dc93 f   LIBCMT:free.obj
  0001:0000cd21       ??3@YAXPAX@Z               1000dd21 f   LIBCMT:delete.obj
  0001:0000cd2c       ??1type_info@@UAE@XZ       1000dd2c f   LIBCMT:typinfo.obj
- 0001:0000cd3c       ??_Etype_info@@UAEPAXI@Z   1000dd3c f i LIBCMT:typinfo.obj
  0001:0000cd3c       ??_Gtype_info@@UAEPAXI@Z   1000dd3c f i LIBCMT:typinfo.obj
+ 0001:0000cd3c       ??_Etype_info@@UAEPAXI@Z   1000dd3c f i LIBCMT:typinfo.obj
  0001:0000cd5d       ??0bad_alloc@std@@QAE@XZ   1000dd5d f i LIBCMT:new.obj
  0001:0000cd78       ??2@YAPAXI@Z               1000dd78 f   LIBCMT:new.obj
  0001:0000cddd       __CRT_INIT@12              1000dddd f   LIBCMT:dllcrt0.obj
@@ -297,8 +298,8 @@
  0001:00013a5d       __abnormal_termination     10014a5d f   LIBCMT:exsup.obj
  0001:00013a80       __NLG_Notify1              10014a80 f   LIBCMT:exsup.obj
  0001:00013a89       __NLG_Notify               10014a89 f   LIBCMT:exsup.obj
- 0001:00013aa0       __NLG_Dispatch             10014aa0     LIBCMT:exsup.obj
  0001:00013aa0       __NLG_Dispatch2            10014aa0     LIBCMT:exsup.obj
+ 0001:00013aa0       __NLG_Dispatch             10014aa0     LIBCMT:exsup.obj
  0001:00013aa8       __NLG_Call                 10014aa8 f   LIBCMT:exsup.obj
  0001:00013aaa       __NLG_Return2              10014aaa     LIBCMT:exsup.obj
  0001:00013aab       __free_osfhnd              10014aab f   LIBCMT:osfinfo.obj
@@ -308,8 +309,8 @@
  0001:00013c6f       __putwch_nolock            10014c6f f   LIBCMT:putwch.obj
  0001:00013d34       __mbtowc_l                 10014d34 f   LIBCMT:mbtowc.obj
  0001:00013e4b       _mbtowc                    10014e4b f   LIBCMT:mbtowc.obj
- 0001:00013e70       __alloca_probe             10014e70     LIBCMT:chkstk.obj
  0001:00013e70       __chkstk                   10014e70 f   LIBCMT:chkstk.obj
+ 0001:00013e70       __alloca_probe             10014e70     LIBCMT:chkstk.obj
  0001:00013e9b       __fcloseall                10014e9b f   LIBCMT:closeall.obj
  0001:00013f3a       __flush                    10014f3a f   LIBCMT:fflush.obj
  0001:00013fa2       __fflush_nolock            10014fa2 f   LIBCMT:fflush.obj
@@ -351,8 +352,8 @@
  0001:00015840       _strchr                    10016840 f   LIBCMT:strchr.obj
  0001:00015846       ___from_strstr_to_strchr   10016846     LIBCMT:strchr.obj
  0001:000158fe       _RtlUnwind@16              100168fe f   kernel32:KERNEL32.dll
- 0001:00015904       __initp_misc_winxfltr      10016904 f   LIBCMT:winxfltr.obj
  0001:00015904       __fpclear                  10016904 f   LIBCMT:_fpinit_.obj
+ 0001:00015904       __initp_misc_winxfltr      10016904 f   LIBCMT:winxfltr.obj
  0001:00015905       __cfltcvt_init             10016905 f   LIBCMT:_fpinit_.obj
  0001:00015965       __fpmath                   10016965 f   LIBCMT:_fpinit_.obj
  0001:00015990       __ftol2_sse                10016990 f   LIBCMT:ftol2.obj
@@ -965,67 +966,66 @@
  0003:00002644       ?timeClickAvtoSolo@@3HA    1001f644     wog native dialogs.obj
  0003:00002648       ?HD_Version@@3HA           1001f648     wog native dialogs.obj
  0003:0000264c       ?saveCursor@@3PAHA         1001f64c     wog native dialogs.obj
- 0003:00002658       ?townID@@3HA               1001f658     wog native dialogs.obj
- 0003:0000265c       ?time_click@@3HA           1001f65c     wog native dialogs.obj
- 0003:00002660       ?hAngel@Era@@3PAUHINSTANCE__@@A 1001f660     wog native dialogs.obj
- 0003:00002664       ?hEra@Era@@3PAUHINSTANCE__@@A 1001f664     wog native dialogs.obj
- 0003:00002668       ?txtresWOG@@3PAU_TXT_@@A   1001f668     wog native dialogs.obj
- 0003:0000266c       ?damHi@@3HA                1001f66c     wog native dialogs.obj
+ 0003:00002658       ?time_click@@3HA           1001f658     wog native dialogs.obj
+ 0003:0000265c       ?hAngel@Era@@3PAUHINSTANCE__@@A 1001f65c     wog native dialogs.obj
+ 0003:00002660       ?hEra@Era@@3PAUHINSTANCE__@@A 1001f660     wog native dialogs.obj
+ 0003:00002664       ?txtresWOG@@3PAU_TXT_@@A   1001f664     wog native dialogs.obj
+ 0003:00002668       ?damHi@@3HA                1001f668     wog native dialogs.obj
+ 0003:0000266c       ?bigfont2@@3PAU_Fnt_@@A    1001f66c     wog native dialogs.obj
  0003:00002670       ?myString3@@3PADA          1001f670     wog native dialogs.obj
- 0003:00002a70       ?bigfont2@@3PAU_Fnt_@@A    1001fa70     wog native dialogs.obj
- 0003:00002a74       ?EventParams@Era@@3PAY0BA@HA 1001fa74     wog native dialogs.obj
- 0003:00002a78       ?ApiHook@Era@@3P6GPAXPAXH0@ZA 1001fa78     wog native dialogs.obj
- 0003:00002a7c       ?ClearAllIniCache@Era@@3P6GXXZA 1001fa7c     wog native dialogs.obj
- 0003:00002a80       ?ClearIniCache@Era@@3P6GXPBD@ZA 1001fa80     wog native dialogs.obj
- 0003:00002a84       ?ExecErmCmd@Era@@3P6GXPBD@ZA 1001fa84     wog native dialogs.obj
- 0003:00002a88       ?ExtractErm@Era@@3P6GXXZA  1001fa88     wog native dialogs.obj
- 0003:00002a8c       ?FatalError@Era@@3P6GXPBD@ZA 1001fa8c     wog native dialogs.obj
- 0003:00002a90       ?FireErmEvent@Era@@3P6GXH@ZA 1001fa90     wog native dialogs.obj
- 0003:00002a94       ?FireEvent@Era@@3P6GXPBDPAXH@ZA 1001fa94     wog native dialogs.obj
- 0003:00002a98       ?GetButtonID@Era@@3P6GHPBD@ZA 1001fa98     wog native dialogs.obj
- 0003:00002a9c       ?GetEraVersion@Era@@3P6GPBDXZA 1001fa9c     wog native dialogs.obj
- 0003:00002aa0       ?GetVersionNum@Era@@3P6GHXZA 1001faa0     wog native dialogs.obj
- 0003:00002aa4       ?GetGameState@Era@@3P6GXPAUTGameState@1@@ZA 1001faa4     wog native dialogs.obj
- 0003:00002aa8       ?GetRealAddr@Era@@3P6GPAXPAX@ZA 1001faa8     wog native dialogs.obj
- 0003:00002aac       ?GlobalRedirectFile@Era@@3P6GXXZA 1001faac     wog native dialogs.obj
- 0003:00002ab0       ?Hook@Era@@3P6GPAXPAXHH0@ZA 1001fab0     wog native dialogs.obj
- 0003:00002ab4       ?HookCode@Era@@3P6GPAXPAXP6GHPAUTHookContext@1@@ZPAPAX@ZA 1001fab4     wog native dialogs.obj
- 0003:00002ab8       ?LoadImageAsPcx16@Era@@3P6GPAXPBD0HHHHH@ZA 1001fab8     wog native dialogs.obj
- 0003:00002abc       ?LoadTxt@Era@@3P6GPAXPBD@ZA 1001fabc     wog native dialogs.obj
- 0003:00002ac0       ?MemFree@Era@@3P6GXPBX@ZA  1001fac0     wog native dialogs.obj
- 0003:00002ac4       ?NameColor@Era@@3P6GXHPBD@ZA 1001fac4     wog native dialogs.obj
- 0003:00002ac8       ?NotifyError@Era@@3P6GXPBD@ZA 1001fac8     wog native dialogs.obj
- 0003:00002acc       ?PatchExists@Era@@3P6G_NPBD@ZA 1001facc     wog native dialogs.obj
- 0003:00002ad0       ?PluginExists@Era@@3P6G_NPBD@ZA 1001fad0     wog native dialogs.obj
- 0003:00002ad4       ?ReadSavegameSection@Era@@3P6GHHPAXPBD@ZA 1001fad4     wog native dialogs.obj
- 0003:00002ad8       ?ReadStrFromIni@Era@@3P6G_NPBD00PAD@ZA 1001fad8     wog native dialogs.obj
- 0003:00002adc       ?RecallAPI@Era@@3P6GHPAUTHookContext@1@H@ZA 1001fadc     wog native dialogs.obj
- 0003:00002ae0       ?RedirectFile@Era@@3P6GXXZA 1001fae0     wog native dialogs.obj
- 0003:00002ae4       ?RedirectMemoryBlock@Era@@3P6GXPAXH0@ZA 1001fae4     wog native dialogs.obj
- 0003:00002ae8       ?RegisterHandler@Era@@3P6GXP6GXPAUTEvent@1@@ZPBD@ZA 1001fae8     wog native dialogs.obj
- 0003:00002aec       ?ReloadErm@Era@@3P6GXXZA   1001faec     wog native dialogs.obj
- 0003:00002af0       ?ReportPluginVersion@Era@@3P6GXPBD@ZA 1001faf0     wog native dialogs.obj
- 0003:00002af4       ?RestoreEventParams@Era@@3P6GXXZA 1001faf4     wog native dialogs.obj
- 0003:00002af8       ?SaveEventParams@Era@@3P6GXXZA 1001faf8     wog native dialogs.obj
- 0003:00002afc       ?SaveIni@Era@@3P6G_NPBD@ZA 1001fafc     wog native dialogs.obj
- 0003:00002b00       ?Splice@Era@@3P6GPAXPAX0HHPAHPAPAX@ZA 1001fb00     wog native dialogs.obj
- 0003:00002b04       ?_tr@Era@@3P6GPADPBDPAPBDH@ZA 1001fb04     wog native dialogs.obj
- 0003:00002b08       ?WriteAtCode@Era@@3P6GXHPAX0@ZA 1001fb08     wog native dialogs.obj
- 0003:00002b0c       ?WriteSavegameSection@Era@@3P6GXHPAXPBD@ZA 1001fb0c     wog native dialogs.obj
- 0003:00002b10       ?WriteStrToIni@Era@@3P6G_NPBD000@ZA 1001fb10     wog native dialogs.obj
- 0003:00002b14       ?NPC_StatBar@@3PAU_DlgStaticTextPcx8ed_@@A 1001fb14     wog native dialogs.obj
- 0003:00002b18       ?str_num_hook@@3HA         1001fb18     wog native dialogs.obj
- 0003:00002b1c       ?BanDlg_CustomReq_EnterText@@3HA 1001fb1c     wog native dialogs.obj
- 0003:00002b20       ?o_Sphinx1@@3PAU_Sphinx1_@@A 1001fb20     wog native dialogs.obj
- 0003:00002b24       ?Dlg_CustomReq_Ban@@3HA    1001fb24     wog native dialogs.obj
- 0003:00002b28       ?statbarWoGOptions@@3PAU_DlgStaticTextPcx8ed_@@A 1001fb28     wog native dialogs.obj
- 0003:00002b2c       ?apdFont@@3HA              1001fb2c     wog native dialogs.obj
- 0003:00002b30       ?check_AIValue_isNotHero@@3_NA 1001fb30     wog native dialogs.obj
- 0003:00002b34       ?calls_count@?1??GetPatcher@@YAPAVPatcher@@XZ@4HA 1001fb34     wog native dialogs.obj
- 0003:00002b3c       ___fastflag                1001fb3c     LIBCMT:_fpinit_.obj
- 0003:00002b40       __adjust_fdiv              1001fb40     LIBCMT:_fpinit_.obj
- 0003:00002b44       __outputformat             1001fb44     LIBCMT:outputformat.obj
- 0003:00002b48       ___piob                    1001fb48     <common>
+ 0003:00002a70       ?EventParams@Era@@3PAY0BA@HA 1001fa70     wog native dialogs.obj
+ 0003:00002a74       ?ApiHook@Era@@3P6GPAXPAXH0@ZA 1001fa74     wog native dialogs.obj
+ 0003:00002a78       ?ClearAllIniCache@Era@@3P6GXXZA 1001fa78     wog native dialogs.obj
+ 0003:00002a7c       ?ClearIniCache@Era@@3P6GXPBD@ZA 1001fa7c     wog native dialogs.obj
+ 0003:00002a80       ?ExecErmCmd@Era@@3P6GXPBD@ZA 1001fa80     wog native dialogs.obj
+ 0003:00002a84       ?ExtractErm@Era@@3P6GXXZA  1001fa84     wog native dialogs.obj
+ 0003:00002a88       ?FatalError@Era@@3P6GXPBD@ZA 1001fa88     wog native dialogs.obj
+ 0003:00002a8c       ?FireErmEvent@Era@@3P6GXH@ZA 1001fa8c     wog native dialogs.obj
+ 0003:00002a90       ?FireEvent@Era@@3P6GXPBDPAXH@ZA 1001fa90     wog native dialogs.obj
+ 0003:00002a94       ?GetButtonID@Era@@3P6GHPBD@ZA 1001fa94     wog native dialogs.obj
+ 0003:00002a98       ?GetEraVersion@Era@@3P6GPBDXZA 1001fa98     wog native dialogs.obj
+ 0003:00002a9c       ?GetVersionNum@Era@@3P6GHXZA 1001fa9c     wog native dialogs.obj
+ 0003:00002aa0       ?GetGameState@Era@@3P6GXPAUTGameState@1@@ZA 1001faa0     wog native dialogs.obj
+ 0003:00002aa4       ?GetRealAddr@Era@@3P6GPAXPAX@ZA 1001faa4     wog native dialogs.obj
+ 0003:00002aa8       ?GlobalRedirectFile@Era@@3P6GXXZA 1001faa8     wog native dialogs.obj
+ 0003:00002aac       ?Hook@Era@@3P6GPAXPAXHH0@ZA 1001faac     wog native dialogs.obj
+ 0003:00002ab0       ?HookCode@Era@@3P6GPAXPAXP6GHPAUTHookContext@1@@ZPAPAX@ZA 1001fab0     wog native dialogs.obj
+ 0003:00002ab4       ?LoadImageAsPcx16@Era@@3P6GPAXPBD0HHHHH@ZA 1001fab4     wog native dialogs.obj
+ 0003:00002ab8       ?LoadTxt@Era@@3P6GPAXPBD@ZA 1001fab8     wog native dialogs.obj
+ 0003:00002abc       ?MemFree@Era@@3P6GXPBX@ZA  1001fabc     wog native dialogs.obj
+ 0003:00002ac0       ?NameColor@Era@@3P6GXHPBD@ZA 1001fac0     wog native dialogs.obj
+ 0003:00002ac4       ?NotifyError@Era@@3P6GXPBD@ZA 1001fac4     wog native dialogs.obj
+ 0003:00002ac8       ?PatchExists@Era@@3P6G_NPBD@ZA 1001fac8     wog native dialogs.obj
+ 0003:00002acc       ?PluginExists@Era@@3P6G_NPBD@ZA 1001facc     wog native dialogs.obj
+ 0003:00002ad0       ?ReadSavegameSection@Era@@3P6GHHPAXPBD@ZA 1001fad0     wog native dialogs.obj
+ 0003:00002ad4       ?ReadStrFromIni@Era@@3P6G_NPBD00PAD@ZA 1001fad4     wog native dialogs.obj
+ 0003:00002ad8       ?RecallAPI@Era@@3P6GHPAUTHookContext@1@H@ZA 1001fad8     wog native dialogs.obj
+ 0003:00002adc       ?RedirectFile@Era@@3P6GXXZA 1001fadc     wog native dialogs.obj
+ 0003:00002ae0       ?RedirectMemoryBlock@Era@@3P6GXPAXH0@ZA 1001fae0     wog native dialogs.obj
+ 0003:00002ae4       ?RegisterHandler@Era@@3P6GXP6GXPAUTEvent@1@@ZPBD@ZA 1001fae4     wog native dialogs.obj
+ 0003:00002ae8       ?ReloadErm@Era@@3P6GXXZA   1001fae8     wog native dialogs.obj
+ 0003:00002aec       ?ReportPluginVersion@Era@@3P6GXPBD@ZA 1001faec     wog native dialogs.obj
+ 0003:00002af0       ?RestoreEventParams@Era@@3P6GXXZA 1001faf0     wog native dialogs.obj
+ 0003:00002af4       ?SaveEventParams@Era@@3P6GXXZA 1001faf4     wog native dialogs.obj
+ 0003:00002af8       ?SaveIni@Era@@3P6G_NPBD@ZA 1001faf8     wog native dialogs.obj
+ 0003:00002afc       ?Splice@Era@@3P6GPAXPAX0HHPAHPAPAX@ZA 1001fafc     wog native dialogs.obj
+ 0003:00002b00       ?_tr@Era@@3P6GPADPBDPAPBDH@ZA 1001fb00     wog native dialogs.obj
+ 0003:00002b04       ?WriteAtCode@Era@@3P6GXHPAX0@ZA 1001fb04     wog native dialogs.obj
+ 0003:00002b08       ?WriteSavegameSection@Era@@3P6GXHPAXPBD@ZA 1001fb08     wog native dialogs.obj
+ 0003:00002b0c       ?WriteStrToIni@Era@@3P6G_NPBD000@ZA 1001fb0c     wog native dialogs.obj
+ 0003:00002b10       ?NPC_StatBar@@3PAU_DlgStaticTextPcx8ed_@@A 1001fb10     wog native dialogs.obj
+ 0003:00002b14       ?str_num_hook@@3HA         1001fb14     wog native dialogs.obj
+ 0003:00002b18       ?BanDlg_CustomReq_EnterText@@3HA 1001fb18     wog native dialogs.obj
+ 0003:00002b1c       ?o_Sphinx1@@3PAU_Sphinx1_@@A 1001fb1c     wog native dialogs.obj
+ 0003:00002b20       ?Dlg_CustomReq_Ban@@3HA    1001fb20     wog native dialogs.obj
+ 0003:00002b24       ?statbarWoGOptions@@3PAU_DlgStaticTextPcx8ed_@@A 1001fb24     wog native dialogs.obj
+ 0003:00002b28       ?apdFont@@3HA              1001fb28     wog native dialogs.obj
+ 0003:00002b2c       ?check_AIValue_isNotHero@@3_NA 1001fb2c     wog native dialogs.obj
+ 0003:00002b30       ?calls_count@?1??GetPatcher@@YAPAVPatcher@@XZ@4HA 1001fb30     wog native dialogs.obj
+ 0003:00002b38       ___fastflag                1001fb38     LIBCMT:_fpinit_.obj
+ 0003:00002b3c       __adjust_fdiv              1001fb3c     LIBCMT:_fpinit_.obj
+ 0003:00002b40       __outputformat             1001fb40     LIBCMT:outputformat.obj
+ 0003:00002b44       ___piob                    1001fb44     <common>
  0003:00002b60       __bufin                    1001fb60     <common>
  0003:00003b60       __nstream                  10020b60     <common>
  0003:00003b64       ___sse2_available          10020b64     <common>
