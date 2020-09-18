@@ -54,11 +54,11 @@ int New_Dlg_IF_G(int num_str, int htxt, int state, int txt, int chRAD)
 	CALL_2(void*, __thiscall, 0x50D7B0, o_MouseMgr, 0);
 
 	// кнопка ok и её обводка
-	dlg->AddItem(_DlgStaticPcx8_::Create(dlg->width/2 -33, dlg->height -22 -31, 0, "Box64x30.pcx"));
-	dlg->AddItem(_DlgButton_::Create(dlg->width/2 -32, dlg->height -22 -30, 64, 30, 1, "iOkay.def", 0, 1, 1, 28, 2));
+	dlg->AddItem(_DlgStaticPcx8_::Create(dlg->width/2 -33, dlg->height -22 -31, 0, box64x30Pcx));
+	dlg->AddItem(_DlgButton_::Create(dlg->width/2 -32, dlg->height -22 -30, 64, 30, 1, iOkayDef, 0, 1, 1, 28, 2));
 
 	// Титульный текст
-	sprintf(o_TextBuffer, "%s", htxt);
+	sprintf(o_TextBuffer, textProcS, htxt);
 	dlg->AddItem(_DlgStaticText_::Create(20, 20, dlg->width -40, 56, o_TextBuffer, n_MedFont, 1, 3, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 
 	int on_bttn = 0;
@@ -69,7 +69,7 @@ int New_Dlg_IF_G(int num_str, int htxt, int state, int txt, int chRAD)
 		sprintf(o_TextBuffer, "{%s}", *(int*)(txt +4*i));
 		dlg->AddItem(_DlgStaticText_::Create(44, 80+i*dy, dlg->width -66, 16, o_TextBuffer, n_SmallFont, 1, 10+i, ALIGN_H_LEFT | ALIGN_V_CENTER, 0));
 		on_bttn = *(int*)(state +4*i);
-		dlg->AddItem(_DlgButton_::Create(22, 80+i*dy, dlg->width -44, 18, 34+i, chRAD ? "radiobttn.def" : "checkbox.def", on_bttn ? 2 : 0, on_bttn ? 3 : 1, 0, 0, 0));
+		dlg->AddItem(_DlgButton_::Create(22, 80+i*dy, dlg->width -44, 18, 34+i, chRAD ? radioBttnDef : checkboxDef, on_bttn ? 2 : 0, on_bttn ? 3 : 1, 0, 0, 0));
 	} 
 
 	dlg->field_48 = chRAD;

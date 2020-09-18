@@ -33,7 +33,7 @@ int __stdcall Dlg_ChooseMonAttack(HiHook* hook, int a1, int a2, int a3)
 	CALL_2(void*, __thiscall, 0x50D7B0, o_MouseMgr, 0);
 
 	// Титульный текст
-	sprintf(o_TextBuffer, "%s", *(int*)0x282E6F4);
+	sprintf(o_TextBuffer, textProcS, *(int*)0x282E6F4);
 	dlg->AddItem(_DlgStaticText_::Create(20, 20, dlg->width -40, 46, o_TextBuffer, n_MedFont, 1, 3, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 
 	for (int i = 0; i < count; i++){
@@ -43,7 +43,7 @@ int __stdcall Dlg_ChooseMonAttack(HiHook* hook, int a1, int a2, int a3)
 		sprintf(o_TextBuffer, "{%s}", *(int*)(*(int*)0x282E6FC +4*i));
 		dlg->AddItem(_DlgStaticText_::Create(44, 70+dy*i, dlg->width -66, 16, o_TextBuffer, n_SmallFont, 1, 7+i, ALIGN_H_LEFT | ALIGN_V_CENTER, 0));
 
-		dlg->AddItem(_DlgButton_::Create(22, 70+dy*i, dlg->width -44, 18, 10+i, "radiobttn.def", 0, 3, 0, 0, 0));
+		dlg->AddItem(_DlgButton_::Create(22, 70+dy*i, dlg->width -44, 18, 10+i, radioBttnDef, 0, 3, 0, 0, 0));
 	}
 	
 	dlg->Run();

@@ -35,7 +35,7 @@ int New_Dlg_ExpaMon_Case8(int style)
 	Set_DlgBackground_RK(dlg, 0, o_GameMgr->GetMeID());
 	CALL_2(void*, __thiscall, 0x50D7B0, o_MouseMgr, 0);
 
-	dlg->AddItem(_DlgStaticDef_::Create(dlg->width/2 -41, 26, 2, "PSKILL.def", 4, 0, 0x12)); 
+	dlg->AddItem(_DlgStaticDef_::Create(dlg->width/2 -41, 26, 2, pskillDef, 4, 0, 0x12)); 
 
 	dlg->AddItem(_DlgStaticText_::Create(20, 126, dlg->width -40, 20, json_CrExpo[0], n_BigFont, 10, 5, ALIGN_H_CENTER | ALIGN_V_TOP, 0));
 
@@ -51,11 +51,11 @@ int New_Dlg_ExpaMon_Case8(int style)
 	dlg->AddItem(_DlgStaticText_::Create(24, 170, dlg->width -48, 20, o_TextBuffer, n_MedFont, 1, 23, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 
 
-	sprintf(o_TextBuffer, "%d", o_Expo); 
+	sprintf(o_TextBuffer, textProcD, o_Expo); 
 	dlg->AddItem(_DlgStaticText_::Create(24, 190, dlg->width -48, 20, o_TextBuffer, n_MedFont, 1, 24, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 
 
-	sprintf(o_TextBuffer, "%d", CALL_3(_int_, __cdecl, 0x727FB0, 1000, runk +1, 0) - o_Expo); 
+	sprintf(o_TextBuffer, textProcD, CALL_3(_int_, __cdecl, 0x727FB0, 1000, runk +1, 0) - o_Expo); 
 	dlg->AddItem(_DlgStaticText_::Create(24, 210, dlg->width -48, 20, o_TextBuffer, n_MedFont, 1, 25, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 
 
@@ -65,14 +65,14 @@ int New_Dlg_ExpaMon_Case8(int style)
 	dlg->AddItem(_DlgStaticText_::Create(24, 230, dlg->width -48, 20, o_TextBuffer, n_MedFont, 1, 26, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 
 
-	sprintf(o_TextBuffer, "%d", o_Num); 
+	sprintf(o_TextBuffer, textProcD, o_Num); 
 	dlg->AddItem(_DlgStaticText_::Create(24, 250, dlg->width -48, 20, o_TextBuffer, n_MedFont, 1, 27, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 
 
 	t1 = CALL_3(_int_, __cdecl, 0x727FB0, 1000, runk, 0);
 	t2 = 999999;
 	if( t1 ){ t2 = o_Num * o_Expo / t1 - o_Num; }	
-	sprintf(o_TextBuffer, "%d", t2); 
+	sprintf(o_TextBuffer, textProcD, t2); 
 	dlg->AddItem(_DlgStaticText_::Create(24, 270, dlg->width -48, 20, o_TextBuffer, n_MedFont, 1, 28, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 
 	sprintf(o_TextBuffer, "%hf", CALL_1(double, __cdecl, 0x727C00, 1000)); 
@@ -82,7 +82,7 @@ int New_Dlg_ExpaMon_Case8(int style)
 	dlg->AddItem(_DlgStaticText_::Create(24, 310, dlg->width -48, 20, o_TextBuffer, n_MedFont, 1, 30, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 
 	t1 = CALL_1(_int_, __cdecl, 0x7283B0, 1000);
-	sprintf(o_TextBuffer, "%d", t1); 
+	sprintf(o_TextBuffer, textProcD, t1); 
 	dlg->AddItem(_DlgStaticText_::Create(24, 330, dlg->width -48, 20, o_TextBuffer, n_MedFont, 1, 31, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 
 	t2 = CALL_3(_int_, __cdecl, 0x727FB0, 1000, 10, 0);
@@ -91,15 +91,15 @@ int New_Dlg_ExpaMon_Case8(int style)
 		int t4 = o_Num * (t2 + t1);
 		t3 = t4 / t2 - o_Num;
 	}
-	sprintf(o_TextBuffer, "%d", t3); 
+	sprintf(o_TextBuffer, textProcD, t3); 
 	dlg->AddItem(_DlgStaticText_::Create(24, 350, dlg->width -48, 20, o_TextBuffer, n_MedFont, 1, 32, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 
 
 	if (style == 1){
-		dlg->AddItem(_DlgStaticPcx8_::Create(dlg->width/2 -33, dlg->height -22 -31, 0, "Box64x30.pcx"));
+		dlg->AddItem(_DlgStaticPcx8_::Create(dlg->width/2 -33, dlg->height -22 -31, 0, box64x30Pcx));
 		// Добавляем кнопку OK (id = 30725)
 		_DlgButton_* bttnOK;
-		bttnOK = b_DlgButton_Create(dlg->width/2 -32, dlg->height -22 -30, 64, 30, DIID_OK, "iOkay.def", 0, 1, 1, 0, 2);
+		bttnOK = b_DlgButton_Create(dlg->width/2 -32, dlg->height -22 -30, 64, 30, DIID_OK, iOkayDef, 0, 1, 1, 0, 2);
 		// и сразу делаем выход и на ESC и ENTER
 		int hotkey = 1;		CALL_4(int, __thiscall, 0x404230, &bttnOK->hotkeys_struct, bttnOK->hotkeys_end, 1, &hotkey);
 			hotkey = 28;	CALL_4(int, __thiscall, 0x404230, &bttnOK->hotkeys_struct, bttnOK->hotkeys_end, 1, &hotkey);
@@ -145,7 +145,7 @@ int New_Dlg_ExpaMon_BannerDlg()
 	Set_DlgBackground_RK(dlg, 0, o_GameMgr->GetMeID());
 	CALL_2(void*, __thiscall, 0x50D7B0, o_MouseMgr, 0);
 
-	sprintf(o_TextBuffer, "%s", Get_ITxtExp(340));
+	sprintf(o_TextBuffer, textProcS, Get_ITxtExp(340));
     dlg->AddItem(_DlgStaticText_::Create(18, 30, 424, 30, o_TextBuffer, n_BigFont, 7, 3, ALIGN_H_CENTER | ALIGN_V_TOP, 0));
 	
 	int dy = 27;	
@@ -154,17 +154,17 @@ int New_Dlg_ExpaMon_BannerDlg()
 		dlg->AddItem(CALL_8 (_DlgItem_*, __thiscall, 0x44FE00, o_New(56), 18, 62+i*dy, 424, 24, 10+i, *(int*)(*(int*)0x6AAD18 + 118), 1024));
 		dlg->GetItem(10+i)->SendCommand(5, 4);
 		
-		sprintf(o_TextBuffer, "%s", Get_ITxtExp(341 +i));
+		sprintf(o_TextBuffer, textProcS, Get_ITxtExp(341 +i));
 		dlg->AddItem(_DlgStaticText_::Create(44, 66+i*dy, 394, 16, o_TextBuffer, n_SmallFont, 1, 20+i, ALIGN_H_LEFT | ALIGN_V_CENTER, 0));
 
-		dlg->AddItem(_DlgButton_::Create(22, 66+i*dy, 420, 18, 30+i, "radiobttn.def", 0, 1, 0, 0, 0));
+		dlg->AddItem(_DlgButton_::Create(22, 66+i*dy, 420, 18, 30+i, radioBttnDef, 0, 1, 0, 0, 0));
 	} 
 	int s = CALL_1(_int_, __thiscall, 0x727BE0, o_CrExpo);	
 	((_DlgButton_*)dlg->GetItem(30+s))->def_frame_index = 2;
 	((_DlgButton_*)dlg->GetItem(30+s))->press_def_frame_index = 3;
 
-	dlg->AddItem(_DlgStaticPcx8_::Create(dlg->width/2 -33, dlg->height -20 -31, 0, "Box64x30.pcx"));
-    dlg->AddItem(_DlgButton_::Create(dlg->width/2 -32, dlg->height -20 -30, 64, 30, DIID_OK, "iOkay.def", 0, 1, 1, 28, 2));
+	dlg->AddItem(_DlgStaticPcx8_::Create(dlg->width/2 -33, dlg->height -20 -31, 0, box64x30Pcx));
+    dlg->AddItem(_DlgButton_::Create(dlg->width/2 -32, dlg->height -20 -30, 64, 30, DIID_OK, iOkayDef, 0, 1, 1, 28, 2));
 
 	dlg->Run();
 	int t = CALL_1(_int_, __thiscall, 0x727BE0, o_CrExpo);
@@ -184,7 +184,7 @@ int __stdcall New_Dlg_ExpaMon_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 	if (msg->type == MT_MOUSEOVER)
 		{
 			_DlgItem_* it = dlg->FindItem(msg->x_abs, msg->y_abs);
-			char* text_bar = "";
+			char* text_bar = o_NullString;
 			if (it)	
 			{
 				switch (it->id)
@@ -192,34 +192,34 @@ int __stdcall New_Dlg_ExpaMon_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 					case 1: text_bar = Get_ITxtExp(107); break;
 					
 					case 6: text_bar = Get_ITxtExp(456); break;
-					case 8: case 9: sprintf(o_TextBuffer, "%s", *(int*)(o_Dlg_ExpaMon +76)); text_bar = o_TextBuffer; break;				
+					case 8: case 9: sprintf(o_TextBuffer, textProcS, *(int*)(o_Dlg_ExpaMon +76)); text_bar = o_TextBuffer; break;				
 					case 10: text_bar = Get_ITxtExp(123); break;
 
 					case 11: case 12: case 13: case 14: case 15: case 16: case 17: case 18:
 					case 19: case 20: case 21: case 22: case 23: case 24: case 25: case 26:
-						sprintf(o_TextBuffer, "%s", *(int*)(*(int*)(o_Dlg_ExpaMon +40)+4*(it->id-11))); 
+						sprintf(o_TextBuffer, textProcS, *(int*)(*(int*)(o_Dlg_ExpaMon +40)+4*(it->id-11))); 
 						text_bar = o_TextBuffer; 
 						break;
 
 					case 30: case 31: case 32: case 33: case 34: case 35: case 36: case 37:
 					case 38: case 39: case 40: case 41: case 42: case 43: case 44: case 45: 
-						sprintf(o_TextBuffer, "%s", *(int*)(*(int*)(o_Dlg_ExpaMon +48)+4*(it->id-30))); 
+						sprintf(o_TextBuffer, textProcS, *(int*)(*(int*)(o_Dlg_ExpaMon +48)+4*(it->id-30))); 
 						text_bar = o_TextBuffer; 
 						break;
 					
 					case 50: case 51: case 52: case 53: case 54: case 55: case 56: case 57:
 					case 58: case 59: case 60: case 61: case 62: case 63: case 64: case 65:
-						sprintf(o_TextBuffer, "%s", *(int*)(*(int*)(o_Dlg_ExpaMon +24)+4*((it->id-50)/2))); 
+						sprintf(o_TextBuffer, textProcS, *(int*)(*(int*)(o_Dlg_ExpaMon +24)+4*((it->id-50)/2))); 
 						text_bar = o_TextBuffer; 
 						break;					
 
 					case DIID_OK: 
-						sprintf(o_TextBuffer, "%s", txtresWOG->GetString(85)); 
+						sprintf(o_TextBuffer, textProcS, txtresWOG->GetString(85)); 
 						text_bar = o_TextBuffer; 
 						break;
 					
 					default: 
-						text_bar = "";
+						text_bar = o_NullString;
 						break;
 				}
 				((_DlgTextEdit_*)dlg->GetItem(2))->SetText(text_bar);
@@ -338,10 +338,10 @@ int New_Dlg_ExpaMon(signed int Mon, signed int  Num, int Expo, _ptr_ CRExpo)
 	CALL_2(void*, __thiscall, 0x50D7B0, o_MouseMgr, 0);
 
 	// Рамка кнопки OK
-    dlg->AddItem(_DlgStaticPcx8_::Create(dlg->width -31 -52, dlg->height - 31 -40, 0, "Box64x30.pcx"));
+    dlg->AddItem(_DlgStaticPcx8_::Create(dlg->width -31 -52, dlg->height - 31 -40, 0, box64x30Pcx));
 	// Добавляем кнопку OK (id = 30725)
 	_DlgButton_* bttnOK;
-	bttnOK = b_DlgButton_Create(dlg->width -30 -52, dlg->height -30 -40, 64, 30, DIID_OK, "iOkay.def", 0, 1, 1, 0, 2);
+	bttnOK = b_DlgButton_Create(dlg->width -30 -52, dlg->height -30 -40, 64, 30, DIID_OK, iOkayDef, 0, 1, 1, 0, 2);
 	// и сразу делаем выход и на ESC и ENTER
 	int hotkey = 1;		CALL_4(int, __thiscall, 0x404230, &bttnOK->hotkeys_struct, bttnOK->hotkeys_end, 1, &hotkey);
 	    hotkey = 28;	CALL_4(int, __thiscall, 0x404230, &bttnOK->hotkeys_struct, bttnOK->hotkeys_end, 1, &hotkey);
@@ -351,7 +351,7 @@ int New_Dlg_ExpaMon(signed int Mon, signed int  Num, int Expo, _ptr_ CRExpo)
 	// Добавляем кнопку просмотра улучшенного (id = 1)
 	int is_grade_bttn_on = *(int*)(o_Dlg_ExpaMon +56);
 	if (is_grade_bttn_on){
-		dlg->AddItem(_DlgStaticPcx8_::Create(dlg->width -31 -122, dlg->height - 31 -40, 0, "Box64x30.pcx"));
+		dlg->AddItem(_DlgStaticPcx8_::Create(dlg->width -31 -122, dlg->height - 31 -40, 0, box64x30Pcx));
 		_DlgButton_* bttnUpg;
 		bttnUpg = b_DlgButton_Create(dlg->width -30 -122, dlg->height -30 -40, 64, 30, 1, "DlgExpUp.def", 0, 1, 0, 0, 0);
 		// и сразу делаем выход и на U и SPACE
@@ -361,14 +361,14 @@ int New_Dlg_ExpaMon(signed int Mon, signed int  Num, int Expo, _ptr_ CRExpo)
 	}
 
 	// Подсказка (id = 2)
-	dlg->AddItem(_DlgStaticText_::Create(8, dlg->height -26, dlg->width -34, 18, "", n_SmallFont, 1, 2, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+	dlg->AddItem(_DlgStaticText_::Create(8, dlg->height -26, dlg->width -34, 18, o_NullString, n_SmallFont, 1, 2, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 
 	// заголовок диалога (id = 3)
-	sprintf(o_TextBuffer, "%s", *(int*)o_Dlg_ExpaMon);
+	sprintf(o_TextBuffer, textProcS, *(int*)o_Dlg_ExpaMon);
     dlg->AddItem(_DlgStaticText_::Create(150, 14, 500, 30, o_TextBuffer, n_BigFont, 7, 3, ALIGN_H_CENTER | ALIGN_V_TOP, 0));
 
 	// нижнее описание монстра красным (id = 4)
-	sprintf(o_TextBuffer, "%s", *(int*)(o_Dlg_ExpaMon +4));
+	sprintf(o_TextBuffer, textProcS, *(int*)(o_Dlg_ExpaMon +4));
     dlg->AddItem(_DlgStaticText_::Create(18, dlg->height - 76, dlg->width -200, 44, o_TextBuffer, n_MedFont , 27, 4, ALIGN_H_LEFT | ALIGN_V_CENTER, 0));
 
 	// картинка и рамка монстра (id = 5, 6)
@@ -381,8 +381,8 @@ int New_Dlg_ExpaMon(signed int Mon, signed int  Num, int Expo, _ptr_ CRExpo)
 	
 	// артефакт и цифры его кол-ва (id = 9)
 	if (art_num > 0){
-		dlg->AddItem(_DlgStaticDef_::Create(25, 119, 9, "Artifact.def", 156, 0, 0x12));    // рамка монстра (id = 9)
-		sprintf(o_TextBuffer, "%d", art_num);
+		dlg->AddItem(_DlgStaticDef_::Create(25, 119, 9, artifactDef, 156, 0, 0x12));    // рамка монстра (id = 9)
+		sprintf(o_TextBuffer, textProcD, art_num);
 		dlg->AddItem(_DlgStaticText_::Create(47, 142, 20, 20, o_TextBuffer, "tiny.fnt", 1, 9, ALIGN_H_RIGHT | ALIGN_V_BOTTOM, 0));
 	}
 	
@@ -402,13 +402,13 @@ int New_Dlg_ExpaMon(signed int Mon, signed int  Num, int Expo, _ptr_ CRExpo)
 	// элементы заполнения колонок (первый столбик) id = 11...(26)
 	int y0 = 50;	int yy = 16;
 	for (int i = 0; i < (str_txt+dop_str); i++){
-		sprintf(o_TextBuffer, "%s", *(int*)(*(int*)(o_Dlg_ExpaMon +36)+4*i));
+		sprintf(o_TextBuffer, textProcS, *(int*)(*(int*)(o_Dlg_ExpaMon +36)+4*i));
 		dlg->AddItem(_DlgStaticText_::Create(80, y0 + yy*i, 80, 16, o_TextBuffer, n_SmallFont, 7, 11+i, ALIGN_H_LEFT | ALIGN_V_TOP, 0));
 	}
 	int x0 = 168;	int xx = 56;
 	char text[16];
 	for (char i = 0; i < (str_txt+dop_str); i++){
-		sprintf(o_TextBuffer, "%s", *(int*)(*(int*)(o_Dlg_ExpaMon +44)+4*i));
+		sprintf(o_TextBuffer, textProcS, *(int*)(*(int*)(o_Dlg_ExpaMon +44)+4*i));
 		for (char j = 0; j < 11; j++){
 			for (char k = 0; k < 8; k++){
 				if (*(char*)(*(int*)(*(int*)(o_Dlg_ExpaMon +44)+4*i) +j*8 +k) != ' ')
@@ -431,7 +431,7 @@ int New_Dlg_ExpaMon(signed int Mon, signed int  Num, int Expo, _ptr_ CRExpo)
 	if (dop_str > 0 || art_num > 0){
 		for (int i = 0; i < (dop_str); i++){
 			dlg->AddItem(_DlgStaticDef_::Create(xd, yd, 50+i*2, n_DlgExpMon, *(int*)(*(int*)(o_Dlg_ExpaMon +20)+4*i), 0, 0x12)); 
-			sprintf(o_TextBuffer, "%s", *(int*)(*(int*)(o_Dlg_ExpaMon +16)+4*i));
+			sprintf(o_TextBuffer, textProcS, *(int*)(*(int*)(o_Dlg_ExpaMon +16)+4*i));
 			dlg->AddItem(_DlgStaticText_::Create(xd+54, yd, 330, 50, o_TextBuffer, n_SmallFont, 7, 51+i*2, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
 			if (xd == 18)
 				xd = 400;

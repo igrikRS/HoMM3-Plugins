@@ -339,7 +339,7 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 		int bttn_width = dlg->GetItem(6)->width;
 
 		if (Sphinx->Chk1Text) {
-			dlg->AddItem(_DlgStaticTextPcx8ed_::Create(bttn_x+1, bttn_y+1, bttn_width-2, 20, Sphinx->Chk1Text, n_SmallFont, "AdRollvr.pcx", 1, 19, ALIGN_H_CENTER | ALIGN_V_CENTER) );
+			dlg->AddItem(_DlgStaticTextPcx8ed_::Create(bttn_x+1, bttn_y+1, bttn_width-2, 20, Sphinx->Chk1Text, n_SmallFont, adRollvrPcx, 1, 19, ALIGN_H_CENTER | ALIGN_V_CENTER) );
 			b_YellowFrame_Create(dlg, bttn_x-1, bttn_y-1, bttn_width+2, 23, 25, OFF, o_Pal_Y);
 			b_YellowFrame_Create(dlg, bttn_x, bttn_y, bttn_width, 21, 15, ON, o_Pal_Grey);
 			dlg->GetItem(15)->full_tip_text = o_NullString;
@@ -348,7 +348,7 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 		}
 
 		if (Sphinx->Chk2Text) {
-			dlg->AddItem(_DlgStaticTextPcx8ed_::Create(bttn_x+1, bttn_y+1, bttn_width-2, 20, Sphinx->Chk2Text, n_SmallFont, "AdRollvr.pcx", 1, 20, ALIGN_H_CENTER | ALIGN_V_CENTER) );
+			dlg->AddItem(_DlgStaticTextPcx8ed_::Create(bttn_x+1, bttn_y+1, bttn_width-2, 20, Sphinx->Chk2Text, n_SmallFont, adRollvrPcx, 1, 20, ALIGN_H_CENTER | ALIGN_V_CENTER) );
 			b_YellowFrame_Create(dlg, bttn_x-1, bttn_y-1, bttn_width+2, 23, 26, OFF, o_Pal_Y);
 			b_YellowFrame_Create(dlg, bttn_x, bttn_y, bttn_width, 21, 16, ON, o_Pal_Grey);
 			dlg->GetItem(16)->full_tip_text = o_NullString;
@@ -357,7 +357,7 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 		}
 
 		if (Sphinx->Chk3Text) {
-			dlg->AddItem(_DlgStaticTextPcx8ed_::Create(bttn_x+1, bttn_y+1, bttn_width-2, 20, Sphinx->Chk3Text, n_SmallFont, "AdRollvr.pcx", 1, 21, ALIGN_H_CENTER | ALIGN_V_CENTER) );
+			dlg->AddItem(_DlgStaticTextPcx8ed_::Create(bttn_x+1, bttn_y+1, bttn_width-2, 20, Sphinx->Chk3Text, n_SmallFont, adRollvrPcx, 1, 21, ALIGN_H_CENTER | ALIGN_V_CENTER) );
 			b_YellowFrame_Create(dlg, bttn_x-1, bttn_y-1, bttn_width+2, 23, 27, OFF, o_Pal_Y);
 			b_YellowFrame_Create(dlg, bttn_x, bttn_y, bttn_width, 21, 17, ON, o_Pal_Grey);
 			dlg->GetItem(17)->full_tip_text = o_NullString;
@@ -366,7 +366,7 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 		}
 
 		if (Sphinx->Chk4Text) {
-			dlg->AddItem(_DlgStaticTextPcx8ed_::Create(bttn_x+1, bttn_y+1, bttn_width-2, 20, Sphinx->Chk4Text, n_SmallFont, "AdRollvr.pcx", 1, 22, ALIGN_H_CENTER | ALIGN_V_CENTER) );
+			dlg->AddItem(_DlgStaticTextPcx8ed_::Create(bttn_x+1, bttn_y+1, bttn_width-2, 20, Sphinx->Chk4Text, n_SmallFont, adRollvrPcx, 1, 22, ALIGN_H_CENTER | ALIGN_V_CENTER) );
 			b_YellowFrame_Create(dlg, bttn_x-1, bttn_y-1, bttn_width+2, 23, 28, OFF, o_Pal_Y);
 			b_YellowFrame_Create(dlg, bttn_x, bttn_y, bttn_width, 21, 18, ON, o_Pal_Grey);
 			dlg->GetItem(18)->full_tip_text = o_NullString;
@@ -379,14 +379,14 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 
 	if ( cansel_show )
 	{
-		dlg->AddItem(_DlgStaticPcx8_::Create(x_center +16, dlg->height -74, 0, "Box64x30.pcx"));
-		dlg->AddItem(_DlgButton_::Create(x_center +17, dlg->height -73, 64, 30, DIID_CANCEL, "iCancel.def", 0, 1, 1, 1, 2)); 
+		dlg->AddItem(_DlgStaticPcx8_::Create(x_center +16, dlg->height -74, 0, box64x30Pcx));
+		dlg->AddItem(_DlgButton_::Create(x_center +17, dlg->height -73, 64, 30, DIID_CANCEL, iCancelDef, 0, 1, 1, 1, 2)); 
 		dlg->GetItem(DIID_CANCEL)->full_tip_text = o_NullString;
 		dlg->GetItem(DIID_CANCEL)->short_tip_text = txtresWOG->GetString(12);
 		x_center -= 47; // для правильного смещения кнопки ОК
 	} 
-	dlg->AddItem(_DlgStaticPcx8_::Create(x_center -33, dlg->height -74, 0, "Box64x30.pcx"));
-	dlg->AddItem(_DlgButton_::Create(x_center -32, dlg->height -73, 64, 30, DIID_OK, "iOkay.def", 0, 1, 1, 28, 2));
+	dlg->AddItem(_DlgStaticPcx8_::Create(x_center -33, dlg->height -74, 0, box64x30Pcx));
+	dlg->AddItem(_DlgButton_::Create(x_center -32, dlg->height -73, 64, 30, DIID_OK, iOkayDef, 0, 1, 1, 28, 2));
 	dlg->GetItem(DIID_OK)->full_tip_text = o_NullString;
 	dlg->GetItem(DIID_OK)->short_tip_text = txtresWOG->GetString(11);
 
@@ -395,7 +395,7 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 	}
 
 	// (id = 115) подсказка в статус баре	
-	dlg->AddItem(_DlgStaticTextPcx8ed_::Create(8, dlg->height -18 -8, dlg->width - 16, 18, o_NullString, n_SmallFont, "AdRollvr.pcx", 1, 115, ALIGN_H_CENTER | ALIGN_V_CENTER) ); // HD_TStat.pcx
+	dlg->AddItem(_DlgStaticTextPcx8ed_::Create(8, dlg->height -18 -8, dlg->width - 16, 18, o_NullString, n_SmallFont, adRollvrPcx, 1, 115, ALIGN_H_CENTER | ALIGN_V_CENTER) ); // HD_TStat.pcx
 
 
 	Sphinx->SelItm = 0;

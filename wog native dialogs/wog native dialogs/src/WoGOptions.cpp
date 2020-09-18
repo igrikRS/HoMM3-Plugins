@@ -103,7 +103,7 @@ int Create_WoGDlgSetup_ElemOnPage(_CustomDlg_* dlg, int page, _DlgSetup_* ds)
 
 		// кнопки группы
 		for (int i=0; i<ds->Pages[page]->ItemList[j]->ItemCount; i++) {
-			sprintf(o_TextBuffer, "%s", ds->Pages[page]->ItemList[j]->ItemName[i]);
+			sprintf(o_TextBuffer, textProcS, ds->Pages[page]->ItemList[j]->ItemName[i]);
 			dlg->AddItem(_DlgStaticText_::Create(x+25, y+22 +dy*i, 238 +wx, 16, o_TextBuffer, n_SmallFont, 
 				(ds->Pages[page]->ItemList[j]->ItemState[i] >= 2) ? 1 : 2, id +i, ALIGN_H_LEFT | ALIGN_V_CENTER, 0));
 
@@ -114,7 +114,7 @@ int Create_WoGDlgSetup_ElemOnPage(_CustomDlg_* dlg, int page, _DlgSetup_* ds)
 			if (itState == 3) { defState = 5; }
 
 			dlg->AddItem(_DlgButton_::Create(x+3, y+22 +dy*i, 262 +wx, 16, id+i+100, 
-				(ds->Pages[page]->ItemList[j]->Type == 2) ? "radiobttn.def" : "checkbox.def", 
+				(ds->Pages[page]->ItemList[j]->Type == 2) ? radioBttnDef : checkboxDef, 
 				defState, (itState < 2) ? (defState+1) : defState, 0, 0, 0)); 
 			 /* dlg->AddItem(_DlgTextButton_::Create(x+3, y+22 +dy*i, 262 +wx, 16, id+i+100, 
 				 (ds->Pages[page]->ItemList[j]->Type == 2) ? "radiobttn.def" : "checkbox.def", 
@@ -196,7 +196,7 @@ int __stdcall Dlg_WoG_Options_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 
 	if (msg->type == MT_MOUSEOVER)	{
 		_DlgItem_* it = dlg->FindItem(msg->x_abs, msg->y_abs);
-		char* text_bar = "";
+		char* text_bar = o_NullString;
 		if (it)	{
 			if (it->id == 3 || it->id == 4) { text_bar = o_DlgSetup->Hint; }
 			if (it->id == 5) { text_bar = txtresWOG->GetString(86); }
@@ -361,7 +361,7 @@ void __stdcall Dlg_WoG_Options_Show(HiHook* hook, int a1)
 	_CustomDlg_* dlg = _CustomDlg_::Create(o_HD_X/2 -400, o_HD_Y/2 -300, 800, 600, DF_SCREENSHOT , Dlg_WoG_Options_Proc);
 	Set_DlgBackground_RK(dlg, 1, o_GameMgr->GetMeID());
 	
-	statbarWoGOptions = _DlgStaticTextPcx8ed_::Create(7, dlg->height -26, dlg->width -14, 18, "", n_SmallFont, "WoGOptions.pcx", 1, 2, ALIGN_H_CENTER | ALIGN_V_CENTER); 
+	statbarWoGOptions = _DlgStaticTextPcx8ed_::Create(7, dlg->height -26, dlg->width -14, 18, o_NullString, n_SmallFont, "WoGOptions.pcx", 1, 2, ALIGN_H_CENTER | ALIGN_V_CENTER); 
 	dlg->AddItem(statbarWoGOptions); // подсказка в статус баре	
 
 	dlg->AddItem(_DlgStaticText_::Create(214, 20, 370, 20, ds->Name, json_WoGOpt[0], 1, 3, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); // id = 3
@@ -375,13 +375,14 @@ void __stdcall Dlg_WoG_Options_Show(HiHook* hook, int a1)
 			ShowHide_WoGDlgSetup_ElemOnPage(dlg, i, ds, 0); // скрываем все элементы на странице
 		}
 	}
-	if (ds->ButtonsStates[5] == 1) {dlg->AddItem(_DlgButton_::Create(375, 528, 64, 30, 5, "WoGBttn.def", 15, 16, 0, HK_B, 0)); } // id = 5 // выбрать всё
-	if (ds->ButtonsStates[4] == 1) {dlg->AddItem(_DlgButton_::Create(440, 528, 64, 30, 6, "WoGBttn.def", 18, 19, 0, HK_N, 0)); } // id = 6 // сбросить всё
-	if (ds->ButtonsStates[2] == 1) {dlg->AddItem(_DlgButton_::Create(510, 528, 64, 30, 7, "WoGBttn.def", 12, 13, 0, HK_R, 0)); } // id = 7 // по умолчанию
-	if (ds->ButtonsStates[8] == 1) {dlg->AddItem(_DlgButton_::Create(580, 528, 64, 30, 8, "WoGBttn.def", 6, 7, 0, HK_L, 0)); }   // id = 8 // загрузить
-	if (ds->ButtonsStates[1] == 1) {dlg->AddItem(_DlgButton_::Create(645, 528, 64, 30, 9, "WoGBttn.def", 9, 10, 0, HK_S, 0)); }  // id = 9 // сохранить
-	if (ds->ButtonsStates[3] == 1) {dlg->AddItem(_DlgButton_::Create(305, 528, 64, 30, 10, "WoGBttn.def", 21, 22, 0, HK_M, 0)); }  // id = 10 // мультиплеер
-	if (ds->ButtonsStates[0] == 1) {dlg->AddItem(_DlgButton_::Create(715, 528, 64, 30, DIID_OK, "WoGBttn.def", 0, 1, 1, HK_ENTER, 2)); } // id = 30725
+	char* bttnName = "WoGBttn.def";
+	if (ds->ButtonsStates[5] == 1) {dlg->AddItem(_DlgButton_::Create(375, 528, 64, 30, 5, bttnName, 15, 16, 0, HK_B, 0)); } // id = 5 // выбрать всё
+	if (ds->ButtonsStates[4] == 1) {dlg->AddItem(_DlgButton_::Create(440, 528, 64, 30, 6, bttnName, 18, 19, 0, HK_N, 0)); } // id = 6 // сбросить всё
+	if (ds->ButtonsStates[2] == 1) {dlg->AddItem(_DlgButton_::Create(510, 528, 64, 30, 7, bttnName, 12, 13, 0, HK_R, 0)); } // id = 7 // по умолчанию
+	if (ds->ButtonsStates[8] == 1) {dlg->AddItem(_DlgButton_::Create(580, 528, 64, 30, 8, bttnName, 6, 7, 0, HK_L, 0)); }   // id = 8 // загрузить
+	if (ds->ButtonsStates[1] == 1) {dlg->AddItem(_DlgButton_::Create(645, 528, 64, 30, 9, bttnName, 9, 10, 0, HK_S, 0)); }  // id = 9 // сохранить
+	if (ds->ButtonsStates[3] == 1) {dlg->AddItem(_DlgButton_::Create(305, 528, 64, 30, 10, bttnName, 21, 22, 0, HK_M, 0)); }  // id = 10 // мультиплеер
+	if (ds->ButtonsStates[0] == 1) {dlg->AddItem(_DlgButton_::Create(715, 528, 64, 30, DIID_OK, bttnName, 0, 1, 1, HK_ENTER, 2)); } // id = 30725
 
 	//_DlgScroll_* wogOptScroll = _DlgScroll_::Create(26, 534, 334, 16, 11, 8, (_ptr_)Dlg_WoG_Options_Scroll, 0, 0, 0); // создать ползунок
 	//dlg->AddItem(wogOptScroll);
