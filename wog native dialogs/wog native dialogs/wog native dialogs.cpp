@@ -83,7 +83,6 @@ char* textProcS = "%s";
 #include "src\HD5_Functions.cpp"
 
 #ifdef DOP_FUNK_TO_ERA
-#include "src\NPC_AIValue.cpp"
 #include "src\TownHeroesMeet.cpp"
 #include "src\Battle_ShowKilled.cpp"
 #endif DOP_FUNK_TO_ERA
@@ -221,7 +220,6 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 			Dlg_CastleReBuild(_PI);	// диалог перестройки замка
 			HD5_Functions(_PI); 	// реализация функций, вырезанных в HD 5 версии
 #ifdef DOP_FUNK_TO_ERA
-			Dlg_NPC_AIValue(_PI);  // расчет силы командира для AI
 			Dlg_TownHeroesMeet(_PI);	// обмен героями в замке ко клавише E
 #endif DOP_FUNK_TO_ERA	
 			// char* oVersionERA = "{Game Version:}\n\nHoMM3 ERA 2.7.7 \n (with Wog Native Dialogs)";
