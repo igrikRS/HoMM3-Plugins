@@ -4,7 +4,9 @@ Patcher* _P;
 PatcherInstance* _PI;
 PatcherInstance* _RK;
 
-// by RoseKavalier ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// by RoseKavalier //////////////////////////////////////////////////////////////////////////////////
 
 int __stdcall AI_split_div0(LoHook *h, HookContext *c)
 {
@@ -94,7 +96,11 @@ int __stdcall faerie_button_RMB(LoHook *h, HookContext *c)
    return EXEC_DEFAULT;
 }
 
-// by igrik ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// by igrik /////////////////////////////////////////////////////////////////////////////////////////
+
 int __stdcall setActStack(LoHook* h, HookContext* c)
 {
 	_BattleStack_* mon = (_BattleStack_*)(int)(c->esi -656);
@@ -142,6 +148,9 @@ int __stdcall monstreShoot(LoHook* h, HookContext* c)
 	return EXEC_DEFAULT;
 } 
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
 _int_ __stdcall Y_FixBagCreatureGredeOfNeutrals(HiHook* hook, _Army_* army, _int_ creature_id)
 {
     _int_ count = 0;
@@ -157,6 +166,9 @@ _int_ __stdcall Y_FixBagCreatureGredeOfNeutrals(HiHook* hook, _Army_* army, _int
     return count;
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
 int __stdcall fixHarpyBinds(LoHook* h, HookContext* c)
 {
     if (*(int*)(c->ebx + 696)) {
@@ -165,6 +177,22 @@ int __stdcall fixHarpyBinds(LoHook* h, HookContext* c)
     }
     return EXEC_DEFAULT;
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// не считать кавалерийский бонус при полете
+_int_ __stdcall Y_AntiKavalierAndFly(LoHook* h, HookContext* c)
+{
+    if ( *(_dword_*)(c->ebx +132) >> 1 & 1 ) { // проверить флаг атакующего на полет
+        c->return_address = 0x4430A3; // обходим расчет кавалерийского бонуса (он всё равно не работает)
+        return NO_EXEC_DEFAULT;
+    }
+    return EXEC_DEFAULT;
+} 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int __stdcall ERM_Fix_EA_E(HiHook* hook, _BattleStack_* stack )
 {
@@ -193,15 +221,32 @@ int __stdcall ERM_Fix_EA_E(HiHook* hook, _BattleStack_* stack )
     return ret;
 }
 
-// не считать кавалерийский бонус при полете
-_int_ __stdcall Y_AntiKavalierAndFly(LoHook* h, HookContext* c)
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// фикс переполнения опыта существ (вызов проверки на max опыт 0x71924A)
+void __stdcall Y_WoGCrExpoSet_AddExpo(HiHook* hook, int cr_Expo) 
 {
-    if ( *(_dword_*)(c->ebx +132) >> 1 & 1 ) { // проверить флаг атакующего на полет
-        c->return_address = 0x4430A3; // обходим расчет кавалерийского бонуса (он всё равно не работает)
-        return NO_EXEC_DEFAULT;
-    }
-    return EXEC_DEFAULT;
-} 
+	int expo = IntAt(cr_Expo);
+
+	// если опыт по какой то причине перевалил 
+	// через предел (2^32)/4 и ушел в отрицательное число
+	// ставим максимальный опыт
+	if (expo < -1073741824) {
+		IntAt(cr_Expo) = 200000;
+		expo = IntAt(cr_Expo);
+	}
+
+	// если опыт был < 0 && > -1073741824, обнуляем опыт
+	if (expo < 0) { 
+		IntAt(cr_Expo) = 0; 
+	}
+	// ориг.функция проверки на превышение допустимого опыта
+	return CALL_1(void, __thiscall, hook->GetDefaultFunc(), cr_Expo);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int __stdcall Y_SetCanselWitchHut(HiHook* hook, _Hero_* hero, _int_ skill, _byte_ skill_lvl) 
 {
@@ -228,6 +273,9 @@ int __stdcall Y_SetCanselScholarlySS(LoHook* h, HookContext* c)
 	c->return_address = 0x4A4B86;
 	return NO_EXEC_DEFAULT;
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //#define Wog_FOH_Monstr (*(int*)0x27718CC)
 
@@ -256,6 +304,9 @@ int __stdcall Y_FixWoG_GetCreatureGrade(LoHook* h, HookContext* c)
 	return EXEC_DEFAULT;
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
 // отмена фикса по просьбе Berserker'a для ERA 2.8.6 и выше
 //_int_ __stdcall Y_FixNewRoundCountInTactics(LoHook* h, HookContext* c)
 //{
@@ -276,28 +327,8 @@ int __stdcall Y_FixWoG_GetCreatureGrade(LoHook* h, HookContext* c)
 //	return NO_EXEC_DEFAULT;
 //}
 
-// исправление созданий WoG'ом корявых пакованых координат
-_dword_ __stdcall Y_WoG_MixedPos_Fix(HiHook* hook, int x, int y, int z)
-{
-	_dword_ xyz = b_pack_xyz(x, y, z);
-
-	//_RK = _P->GetInstance("ERA_bug_fixes");
-	//if (_RK) {
-	//	b_MsgBox("Yes RK Plugin", 1);
-	//} else b_MsgBox("No RK Plugin", 1);
-
-	return xyz; 
-}
-
-// исправление созданий WoG'ом корявых разпакованных координат
-void __stdcall Y_WoG_UnMixedPos_Fix(HiHook* hook, _dword_ x, _dword_ y, _dword_ z, _dword_ xyz)
-{
-	*(_dword_*)x = b_unpack_x(xyz);
-	*(_dword_*)y = b_unpack_y(xyz);
-	*(_dword_*)z = b_unpack_z(xyz);
-
-	return; 
-}
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // корректировка WoG ненависти существ
 // добавляем и существ 8-го уровня
@@ -336,6 +367,74 @@ _int_ __stdcall Y_SetWogHates(LoHook* h, HookContext* c)
 	return NO_EXEC_DEFAULT;
 } 
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Решение бага ERM: триггер MA:U#/-2 приводил к тому, что любое существо при установке такой команды улучшалось в копейщика
+int __stdcall Fix_WoG_GetCreatureGrade_Expo(LoHook* h, HookContext* c)
+{
+	if ( *(int*)(c->ebp -4) < -1) {
+		*(int*)(c->ebp -4) = -1;
+	}
+	return EXEC_DEFAULT;
+} 
+
+int __stdcall Fix_WoG_GetCreatureGrade_Town(LoHook* h, HookContext* c)
+{
+	if (*(int*)0x27F93B0 < -1) {
+		*(int*)0x27F93B0 = -1;
+	}
+	return EXEC_DEFAULT;
+} 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// правка функции WoG: накопление существ и стражников в двеллингах существ
+// теперь:
+//   - существа и стражники копятся, только если двеллинг принадлежит одному из игроков
+//   - Санта-Гремлины копятся в обычном режиме
+//   - Существа 8 уровня (№№ 150-158) копятся в обычном режиме
+
+#define o_WogAccumCreatures (*(_int_*)0x277193C)
+#define o_WogAccumDefenders (*(_int_*)0x2771940)
+
+int __stdcall SOD_Dwelling_Add_Creatures(HiHook* hook, _Dwelling_* dw, _int_ isBonus)
+{
+	int countCreatures[4];
+	int countDefenders[4];
+
+	if( dw->owner_ix != -1 ) {
+		for (int i=0; i<4; i++) {
+			if (o_WogAccumCreatures) {
+				countCreatures[i] = dw->creature_counts[i];
+			}
+			if (o_WogAccumDefenders) {
+				countDefenders[i] = dw->defenders.count[i];
+			}
+		}
+	}
+
+	int result = CALL_2(int, __thiscall, hook->GetDefaultFunc(), dw, isBonus);
+
+	if( dw->owner_ix != -1 ) {
+		for (int i=0; i<4; i++) {
+			if (o_WogAccumCreatures && countCreatures[i] > 0 && countCreatures[i] <= 4000 ) {
+				dw->creature_counts[i] += countCreatures[i];
+			}
+			if (o_WogAccumDefenders && countDefenders[i] > 0 && countDefenders[i] <= 1333) {
+				dw->defenders.count[i] += countDefenders[i];
+			}
+		}
+	}
+
+	return result;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// фикс сетевой разсинхронизации стеков в бою
 void __stdcall Y_SelectNewMonsterToAct(HiHook* hook, _BattleMgr_* bm, int side, int stack_id_in_side)
 {
 	if (o_NetworkGame) {
@@ -395,15 +494,8 @@ int __stdcall Y_BM_ReceNetData(LoHook* h, HookContext* c)
 	return EXEC_DEFAULT; 
 }
 
-// корректировка описаний заклинаний в книге (не учитывались бонусы специалистов по заклинаниям)
-_int64_ __stdcall Y_DlgSpellBook_FixDecription_SpellPower(HiHook* hook, _Hero_ *hero, int spell, signed int damage, _BattleStack_ *stack)
-{
-	_int64_ power = CALL_4(_int64_, __thiscall, hook->GetDefaultFunc(), hero, spell, damage, stack);
-	power += (_int64_)hero->GetSpell_Specialisation_PowerBonuses(spell, (_int_)power, 0);
-
-	return power;
-}
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // фиксим неотображение Монолитов и Подземных врат в диалоге заклинания Просмотр Земли и Воздуха
 _bool_ isVisible_Monoliths;
@@ -458,6 +550,22 @@ int __stdcall Y_Fix_ViewEarthOrAirSpell_Add_Monoliths_Prepare(LoHook* h, HookCon
 	return EXEC_DEFAULT;
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// корректировка описаний заклинаний в книге (не учитывались бонусы специалистов по заклинаниям)
+_int64_ __stdcall Y_DlgSpellBook_FixDecription_SpellPower(HiHook* hook, _Hero_ *hero, int spell, signed int damage, _BattleStack_ *stack)
+{
+	_int64_ power = CALL_4(_int64_, __thiscall, hook->GetDefaultFunc(), hero, spell, damage, stack);
+	power += (_int64_)hero->GetSpell_Specialisation_PowerBonuses(spell, (_int_)power, 0);
+
+	return power;
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
 // фикс неправильного отображения величины урона в окне статуса битвы при касте заклинания Армагеддон
 _int_ __stdcall Y_Fix_ReportStatusMsg_CastArmageddonSpell(HiHook* hook, _BattleMgr_ *bm, _int_ damage, _int_ spell, _Hero_ *heroA, _Hero_ *heroD, _BattleStack_ *stack, _int_ a7) 
 {
@@ -468,23 +576,6 @@ _int_ __stdcall Y_Fix_ReportStatusMsg_CastArmageddonSpell(HiHook* hook, _BattleM
 	_int_ ret = CALL_7(_int_, __thiscall, hook->GetDefaultFunc(), bm, damage, spell, heroA, heroD, stack, a7);
 	return ret;
 }
-
-// Решение бага ERM: триггер MA:U#/-2 приводил к тому, что любое существо при установке такой команды улучшалось в копейщика
-int __stdcall Fix_WoG_GetCreatureGrade_Expo(LoHook* h, HookContext* c)
-{
-	if ( *(int*)(c->ebp -4) < -1) {
-		*(int*)(c->ebp -4) = -1;
-	}
-	return EXEC_DEFAULT;
-} 
-
-int __stdcall Fix_WoG_GetCreatureGrade_Town(LoHook* h, HookContext* c)
-{
-	if (*(int*)0x27F93B0 < -1) {
-		*(int*)0x27F93B0 = -1;
-	}
-	return EXEC_DEFAULT;
-} 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////            ЗАПРЕТЫ ЗАКЛИНАНИЙ             ////////////////////////////
@@ -529,40 +620,30 @@ int __stdcall Y_ArtGive_AllSpells(HiHook* hook, int spells_array, char enable)
 	return CALL_2(int, __thiscall, hook->GetDefaultFunc(), spells_array, enable);
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// фикс переполнения опыта существ (вызов проверки на max опыт 0x71924A)
-void __stdcall Y_WoGCrExpoSet_AddExpo(HiHook* hook, int cr_Expo) 
+// исправление созданий WoG'ом корявых пакованых координат
+_dword_ __stdcall Y_WoG_MixedPos_Fix(HiHook* hook, int x, int y, int z)
 {
-	int expo = IntAt(cr_Expo);
+	_dword_ xyz = b_pack_xyz(x, y, z);
 
-	// если опыт по какой то причине перевалил 
-	// через предел (2^32)/4 и ушел в отрицательное число
-	// ставим максимальный опыт
-	if (expo < -1073741824) {
-		IntAt(cr_Expo) = 200000;
-		expo = IntAt(cr_Expo);
-	}
-
-	// если опыт был < 0 && > -1073741824, обнуляем опыт
-	if (expo < 0) { 
-		IntAt(cr_Expo) = 0; 
-	}
-	// ориг.функция проверки на превышение допустимого опыта
-	return CALL_1(void, __thiscall, hook->GetDefaultFunc(), cr_Expo);
+	return xyz; 
 }
 
+// исправление созданий WoG'ом корявых разпакованных координат
+void __stdcall Y_WoG_UnMixedPos_Fix(HiHook* hook, _dword_ x, _dword_ y, _dword_ z, _dword_ xyz)
+{
+	*(_dword_*)x = b_unpack_x(xyz);
+	*(_dword_*)y = b_unpack_y(xyz);
+	*(_dword_*)z = b_unpack_z(xyz);
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
+	return; 
+}
 
 // ##############################################################################################################################
 // ##############################################################################################################################
 // ##############################################################################################################################
-
 
 
 void startPlugin(Patcher* _P, PatcherInstance* _PI)
@@ -731,18 +812,28 @@ void startPlugin(Patcher* _P, PatcherInstance* _PI)
 	//_PI->WriteDword(0x75D125, 0);
 	//_PI->WriteLoHook(0x760973, Y_FixRoundCount_WoG);
 
-	// исправление созданий WoG'ом корявых пакованых координат
-	_PI->WriteHiHook(0x711E7F, SPLICE_, EXTENDED_, CDECL_, Y_WoG_MixedPos_Fix);
-	_PI->WriteHiHook(0x711F49, SPLICE_, SAFE_, CDECL_, Y_WoG_UnMixedPos_Fix);
-
-	// корректировка WoG ненависти существ
-	// добавляем и существ 8-го уровня
-	_PI->WriteLoHook(0x766E4E, Y_SetWogHates);
-
 	// частичное исправление разсихнронизации 
 	// сетевое копирование параметров стеков в битве
 	//_PI->WriteHiHook(0x464F10, SPLICE_, EXTENDED_, THISCALL_, Y_SelectNewMonsterToAct);
 	//_PI->WriteLoHook(0x473D41, Y_BM_ReceNetData);
+
+	// исправление созданий WoG'ом корявых пакованых координат
+	_PI->WriteHiHook(0x711E7F, SPLICE_, EXTENDED_, CDECL_, Y_WoG_MixedPos_Fix);
+	_PI->WriteHiHook(0x711F49, SPLICE_, SAFE_, CDECL_, Y_WoG_UnMixedPos_Fix);
+
+	// правка функции WoG: накопление существ и стражников в двеллингах существ, теперь:
+    //   - существа и стражники копятся, только если двеллинг принадлежит одному из игроков
+    //   - Санта-Гремлины копятся в обычном режиме
+    //   - Существа 8 уровня (№№ 150-158) копятся в обычном режиме    
+	// сначала восстанавливаем оригинальный код игры   CALL 0x4B8760
+	// снимая установку хука WoG                       CALL 0x760BDB
+	_PI->WriteHexPatch(0x4C8795 +1, "C6FFFEFF"); 
+	// модифицируем еженедельную прибавку монстрам
+	_PI->WriteHiHook(0x4C8795, CALL_, EXTENDED_, THISCALL_, SOD_Dwelling_Add_Creatures);
+
+	// корректировка WoG ненависти существ
+	// добавляем и существ 8-го уровня
+	_PI->WriteLoHook(0x766E4E, Y_SetWogHates);
 
 	// вызовы драконов от артефакта сердце дракона
 	// меняем местами номера гексов, 
