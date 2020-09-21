@@ -422,7 +422,7 @@ int __stdcall SOD_Dwelling_Add_Creatures(HiHook* hook, _Dwelling_* dw, _int_ isB
 			if (o_WogAccumCreatures && countCreatures[i] > 0 && countCreatures[i] <= 4000 ) {
 				dw->creature_counts[i] += countCreatures[i];
 			}
-			if (o_WogAccumDefenders && countDefenders[i] > 0 && countDefenders[i] <= 1333) {
+			if (o_WogAccumDefenders && countDefenders[i] > 0 && countDefenders[i] <= 12000) {
 				dw->defenders.count[i] += countDefenders[i];
 			}
 		}
