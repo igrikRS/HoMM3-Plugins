@@ -46,6 +46,10 @@ char myString1[1024];
 char myString2[1024];
 char myString3[1024];
 
+#define MyString1 (char*)myString1
+#define MyString2 (char*)myString2
+#define MyString3 (char*)myString3
+
 // получение разрешения игры
 #define o_HD_X (*(_int_*)0x401448)
 #define o_HD_Y (*(_int_*)0x40144F)

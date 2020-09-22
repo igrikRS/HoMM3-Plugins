@@ -479,51 +479,51 @@ int __stdcall Y_WoGDlg_SphinxReq(HiHook* hook, int Num)
 		return CALL_1(int, __cdecl, hook->GetDefaultFunc(), Num);
 	} 
 	else 
-	{
-		_Sphinx1_ Sphinx;
-		Sphinx.SelItm = -1;
-		Sphinx.Text1 = CALL_3(char*, __cdecl, 0x77710B, Num, 0, 0x289BFF0); 
-		Sphinx.Text2 = CALL_3(char*, __cdecl, 0x77710B, 122, 0, 0x7C8E3C); 
-		Sphinx.Text3 = 0;
-		*(_byte_*)0x28AAB88 = 57; // Answer[0]='9';
-		*(_byte_*)0x28AAB89 = 57; // Answer[1]='9';
-		*(_byte_*)0x28AAB8A = 57; // Answer[2]='9';
-		*(_byte_*)0x28AAB8B = 57; // Answer[3]='9';
-		*(_byte_*)0x28AAB8C = 0;  // Answer[4]=0;
+    {
+        _Sphinx1_ Sphinx;
+        Sphinx.SelItm = -1;
+        Sphinx.Text1 = CALL_3(char*, __cdecl, 0x77710B, Num, 0, 0x289BFF0); 
+        Sphinx.Text2 = CALL_3(char*, __cdecl, 0x77710B, 122, 0, 0x7C8E3C); 
+        Sphinx.Text3 = 0;
+        *(_byte_*)0x28AAB88 = 57; // Answer[0]='9';
+        *(_byte_*)0x28AAB89 = 57; // Answer[1]='9';
+        *(_byte_*)0x28AAB8A = 57; // Answer[2]='9';
+        *(_byte_*)0x28AAB8B = 57; // Answer[3]='9';
+        *(_byte_*)0x28AAB8C = 0;  // Answer[4]=0;
 
-		Sphinx.Text4 = (char*)0x28AAB88;
-		Sphinx.Pic1Path = 0;
-		Sphinx.Pic2Path = 0;
-		Sphinx.Pic3Path = 0;
-		Sphinx.Pic4Path = 0;
-		Sphinx.Pic1Hint = 0;
-		Sphinx.Pic2Hint = 0;
-		Sphinx.Pic3Hint = 0;
-		Sphinx.Pic4Hint = 0;
-		Sphinx.Chk1Text = 0;
-		Sphinx.Chk2Text = 0;
-		Sphinx.Chk3Text = 0;
-		Sphinx.Chk4Text = 0;
-		Sphinx.Chk1Hint = 0;
-		Sphinx.Chk2Hint = 0;
-		Sphinx.Chk3Hint = 0;
-		Sphinx.Chk4Hint = 0;
-		Sphinx.ShowCancel = 0;
+        Sphinx.Text4 = (char*)0x28AAB88;
+        Sphinx.Pic1Path = 0;
+        Sphinx.Pic2Path = 0;
+        Sphinx.Pic3Path = 0;
+        Sphinx.Pic4Path = 0;
+        Sphinx.Pic1Hint = 0;
+        Sphinx.Pic2Hint = 0;
+        Sphinx.Pic3Hint = 0;
+        Sphinx.Pic4Hint = 0;
+        Sphinx.Chk1Text = 0;
+        Sphinx.Chk2Text = 0;
+        Sphinx.Chk3Text = 0;
+        Sphinx.Chk4Text = 0;
+        Sphinx.Chk1Hint = 0;
+        Sphinx.Chk2Hint = 0;
+        Sphinx.Chk3Hint = 0;
+        Sphinx.Chk4Hint = 0;
+        Sphinx.ShowCancel = 0;
 
-		// делаем глоб.ссылку на Sphinx
-		o_Sphinx1 = (_Sphinx1_*)&Sphinx;
+        // делаем глоб.ссылку на Sphinx
+        o_Sphinx1 = (_Sphinx1_*)&Sphinx;
 
-		// устанавливаем стандартный курсор мыши
-		Y_Mouse_SetCursor(0);
+        // устанавливаем стандартный курсор мыши
+        Y_Mouse_SetCursor(0);
 
-		New_Dlg_CustomReq(o_Sphinx1); // диалог
+        New_Dlg_CustomReq(o_Sphinx1); // диалог
 
-		// возвращаем курсор мыши
-		Y_Mouse_SetCursor(1);
+        // возвращаем курсор мыши
+        Y_Mouse_SetCursor(1);
 
-		CALL_3(void, __cdecl, 0x710B9B, 0x28AAB88, 512, Sphinx.Text4); // WoG_StrCopy(Answer, int 512, Sphinx.Text4)
-		return CALL_2(int, __cdecl, 0x772DFD, 0x28AAB88, CALL_3(char*, __cdecl, 0x77710B, Num, 1, 0x289BFF0));
-	}
+        CALL_3(void, __cdecl, 0x710B9B, 0x28AAB88, 512, Sphinx.Text4); // WoG_StrCopy(Answer, int 512, Sphinx.Text4)
+        return CALL_2(int, __cdecl, 0x772DFD, 0x28AAB88, CALL_3(char*, __cdecl, 0x77710B, Num, 1, 0x289BFF0));
+    }
 }
 
 
@@ -532,69 +532,76 @@ int __stdcall Y_WoGDlg_SphinxReq(HiHook* hook, int Num)
 // диалог посещения камней силы (повышение перв.навыков командира)
 int __stdcall Y_Dlg_QuickDialog(HiHook* hook, _Sphinx1_* Sphinx)
 {		
-	Y_Mouse_SetCursor(0);	
-	int ret = New_Dlg_CustomReq(Sphinx); // диалог
-	Y_Mouse_SetCursor(1);
+    Y_Mouse_SetCursor(0);	
+    int ret = New_Dlg_CustomReq(Sphinx); // диалог
+    Y_Mouse_SetCursor(1);
 
-	// -1: Esc, 1: Ok
-	return ret;
+    // -1: Esc, 1: Ok
+    return ret;
 }
 
 int WoG_FindCData(int num) {
-	return CALL_1(int, __cdecl, 0x771A13, num); 
+    return CALL_1(int, __cdecl, 0x771A13, num); 
 }
 
+// Воговская функция разделения текста на путь и название файла
 void WoG_SplitPath(char *all, char *path, char *name) {
-	return CALL_3(void, __cdecl, 0x716701, all, path, name);
+    return CALL_3(void, __cdecl, 0x716701, all, path, name);
 }
 
 
-//// диалог IF:B/P
-//int __stdcall Y_Dlg_CustomPic(HiHook* hook, int num, int startup)
-//{	
-//	int needOrigFunc = 0;
-//	int ind = WoG_FindCData(num);
-//
-//	if (ind == -1 ) {
-//		needOrigFunc = 1;
-//	} else {
-//		_CustomData_* CD = (_CustomData_*)(0x28809B8 +112*ind);
-//
-//		WoG_SplitPath(CD->Pic[0], (char*)myString1, (char*)myString2 );
-//		if ( IsSupportedFormatImage((char*)myString2) )
-//		{
-//			Y_Mouse_SetCursor(0);
-//
-//			sprintf(o_TextBuffer, "{Dlg_CustomPic} \n\n CD->Pic[0]: %s \n\n %s", (char*)myString2, (char*)myString1);
-//			b_MsgBox(o_TextBuffer, 1);
-//	
-//			_Pcx16_* o_Pic = (_Pcx16_*)Era::LoadImageAsPcx16(CD->Pic[0], (char*)myString2, 0, 0, 100, 100, 3);
-//
-//			int height = o_Pic->height;
-//			int width = o_Pic->width;
-//
-//			sprintf(o_TextBuffer, "{Dlg_CustomPic} \n\n CD->Pic[0]: %s \n\n height: %d \n\n width: %d", (char*)myString2, height, width);
-//			b_MsgBox(o_TextBuffer, 1);
-//
-//			// sprintf(o_TextBuffer, "{Dlg_CustomPic} \n\n CD->Pic[0]: %s \n\n %s \n\n %s", short_name, (char*)myString1, (char*)myString2);
-//			// b_MsgBox(o_TextBuffer, 1);
-//
-//			// WoG_GetPathFile(CD->Pic[0]);
-//			// _Pcx16_* o_Pic = (_Pcx16_*)Era::LoadImageAsPcx16(CD->Pic[0], short_name, 0, 0, 800, 600, 3); 
-//
-//
-//			
-//			// sprintf(o_TextBuffer, "{Dlg_CustomPic} \n\n CD->Pic[0]: %s (%d)", short_name, yes);
-//			// b_MsgBox(o_TextBuffer, 1);		
-//
-//			Y_Mouse_SetCursor(1);
-//		} else needOrigFunc = 1;
-//	}
-//
-//	if ( needOrigFunc )
-//		return CALL_2(int, __cdecl, hook->GetDefaultFunc(), num, startup);
-//	else return 1;
-//}
+// диалог IF:B/P
+int __stdcall Y_Dlg_CustomPic(HiHook* hook, int num, int startup)
+{	
+    int needCallOrigFunc = 0;
+    int ind = WoG_FindCData(num);
+
+    if (ind == -1 ) {
+        needCallOrigFunc = 1;
+    } else {
+        _CustomData_* CD = (_CustomData_*)(0x28809B8 +112*ind);
+
+        WoG_SplitPath(CD->Pic[0], MyString1, MyString2 );
+
+        if ( IsSupportedFormatImage( MyString2) )
+        {
+            Y_Mouse_SetCursor(0); 
+
+			sprintf(MyString1, ".\\Maps\\%s", CD->Pic[0]);
+			// MyString1 = it's path to file
+			// MyString2 = it's file name 
+
+			_Pcx16_* o_Pic = (_Pcx16_*)Era::LoadImageAsPcx16(MyString1, MyString2, 0, 0, 750, 510, /* RESIZE_ALG_DOWNSCALE */ 3);
+          
+            int picWi = o_Pic->width;
+			int picHi = o_Pic->height;
+
+			if (picWi < 64) { picWi = 64; }
+			if (picHi < 32) { picHi = 32; }
+
+			int x = picWi +30; // 750+30 = 780 max
+			int y = picHi +70; // 510+70 = 580 max
+
+			_CustomDlg_* dlg = _CustomDlg_::Create(-1, -1, x, y, DF_SCREENSHOT | DF_SHADOW, NULL);
+			Set_DlgBackground_RK(dlg, 0, o_GameMgr->GetMeID());
+
+			dlg->AddItem(_DlgStaticPcx16_::Create(15, 16, picWi, picHi, 1, o_Pic->name, 2048));
+
+			dlg->AddItem(_DlgStaticPcx8_::Create((x >> 1) -33, y -50, 2, box64x30Pcx)); 
+			dlg->AddItem(_DlgButton_::Create((x >> 1) -32, y -49, 64, 30, DIID_OK, iOkayDef, 0, 1, 1, 28, 2)); 
+
+			dlg->Run();
+			dlg->Destroy(TRUE);
+
+            Y_Mouse_SetCursor(1);
+
+        } else needCallOrigFunc = 1;
+    }
+
+    if ( needCallOrigFunc )
+        return CALL_2(int, __cdecl, hook->GetDefaultFunc(), num, startup);
+    else return 1;
+}
 
  
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -603,28 +610,28 @@ void WoG_SplitPath(char *all, char *path, char *name) {
 void Dlg_Sphinx(PatcherInstance* _PI)
 {
 
-	// Диалог IF:D/E
-	_PI->WriteCodePatch(0x772A6C, "%n", 5); // call    WoG_BeforeDialog()
-	_PI->WriteCodePatch(0x772D39, "%n", 5); // call    WOG_AfterDialog()		
-	_PI->WriteLoHook(0x772CBD, Y_Dlg_CustomReq);
-	// проверяем параметр (будем ли показывать диалог ввода текста в диалоге IF:D/E)
+    // Диалог IF:D/E
+    _PI->WriteCodePatch(0x772A6C, "%n", 5); // call    WoG_BeforeDialog()
+    _PI->WriteCodePatch(0x772D39, "%n", 5); // call    WOG_AfterDialog()		
+    _PI->WriteLoHook(0x772CBD, Y_Dlg_CustomReq);
+    // проверяем параметр (будем ли показывать диалог ввода текста в диалоге IF:D/E)
 
-	// диалог посещения камней силы командиров (убираем текст "Ваш командир")
-	_PI->WriteDword(0x770916 +1, 256);
-	// диалог посещения камней силы командиров (убираем "\\Data\\ZVS\\LIB1.RES\\NPC#.GIF")
-	_PI->WriteByte(0x770990 +2, 0x2C);
-	_PI->WriteByte(0x7709C7 +2, 0x2C);
-	_PI->WriteByte(0x7709FB +2, 0x2C);
-	_PI->WriteByte(0x770A2F +2, 0x2C);
+    // диалог посещения камней силы командиров (убираем текст "Ваш командир")
+    _PI->WriteDword(0x770916 +1, 256);
+    // диалог посещения камней силы командиров (убираем "\\Data\\ZVS\\LIB1.RES\\NPC#.GIF")
+    _PI->WriteByte(0x770990 +2, 0x2C);
+    _PI->WriteByte(0x7709C7 +2, 0x2C);
+    _PI->WriteByte(0x7709FB +2, 0x2C);
+    _PI->WriteByte(0x770A2F +2, 0x2C);
 
-	// диалог посещения камней силы командиров
-	_PI->WriteHiHook(0x772D50, SPLICE_, EXTENDED_, CDECL_, Y_Dlg_QuickDialog);
+    // диалог посещения камней силы командиров
+    _PI->WriteHiHook(0x772D50, SPLICE_, EXTENDED_, CDECL_, Y_Dlg_QuickDialog);
 
-	// диалог IF:B/P
-	// _PI->WriteHiHook(0x7732B4, SPLICE_, EXTENDED_, CDECL_, Y_Dlg_CustomPic);
+    // диалог IF:B/P
+    _PI->WriteHiHook(0x7732B4, SPLICE_, EXTENDED_, CDECL_, Y_Dlg_CustomPic);
 
-	// диалог сфинкса
-	_PI->WriteHiHook(0x772E48, SPLICE_, EXTENDED_, CDECL_, Y_WoGDlg_SphinxReq);
+    // диалог сфинкса
+    _PI->WriteHiHook(0x772E48, SPLICE_, EXTENDED_, CDECL_, Y_WoGDlg_SphinxReq);
 }
 
 
