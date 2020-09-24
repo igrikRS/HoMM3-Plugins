@@ -124,33 +124,33 @@ int __stdcall ERM_Fix_EA_E(HiHook* hook, _BattleStack_* stack )
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// фикс переполнения опыта существ (фикс проверки на max опыт)	
-_int_ __stdcall Y_WoGCrExpoSet_AddExpo(LoHook* h, HookContext* c)
-{
-	int cr_Expo = DwordAt(c->ebp -0x8);
-
-	if ( cr_Expo ) {
-		int expoOld = IntAt(cr_Expo);
-		int expoAdd = IntAt(c->ebp -0xC);
-
-		if ( expoAdd < 0 || expoAdd > 200000 ) 
-			expoAdd = 0;
-
-		// если опыт по какой то причине перевалил 
-		// через предел (2^32)/4 и ушёл в отрицательное число
-		// ставим максимальный опыт
-		if (expoOld < -1073741824) {
-			IntAt(cr_Expo) = 200000;
-		}
-
-		// если опыт был < 0 && > -1073741824, обнуляем опыт
-		if (expoOld < 0) { 
-		   IntAt(cr_Expo) = expoAdd; 
-		}
-	}
-
-    return EXEC_DEFAULT;
-} 
+//// фикс переполнения опыта существ (фикс проверки на max опыт)	
+//_int_ __stdcall Y_WoGCrExpoSet_AddExpo(LoHook* h, HookContext* c)
+//{
+//	int cr_Expo = DwordAt(c->ebp -0x8);
+//
+//	if ( cr_Expo ) {
+//		int expoOld = IntAt(cr_Expo);
+//		int expoAdd = IntAt(c->ebp -0xC);
+//
+//		if ( expoAdd < 0 || expoAdd > 200000 ) 
+//			expoAdd = 0;
+//
+//		// если опыт по какой то причине перевалил 
+//		// через предел (2^32)/4 и ушёл в отрицательное число
+//		// ставим максимальный опыт
+//		if (expoOld < -1073741824) {
+//			IntAt(cr_Expo) = 200000;
+//		}
+//
+//		// если опыт был < 0 && > -1073741824, обнуляем опыт
+//		if (expoOld < 0) { 
+//		   IntAt(cr_Expo) = expoAdd; 
+//		}
+//	}
+//
+//    return EXEC_DEFAULT;
+//} 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -401,7 +401,7 @@ void Monsters(PatcherInstance* _PI)
     _PI->WriteHiHook(0x726DE4, CALL_, EXTENDED_, CDECL_, ERM_Fix_EA_E);
 
     // фикс переполнения опыта существ (вызов проверки на max опыт)	
-	_PI->WriteLoHook(0x71924A, Y_WoGCrExpoSet_AddExpo);
+	// _PI->WriteLoHook(0x71924A, Y_WoGCrExpoSet_AddExpo);
 
     // корректировка WoG ненависти существ
     // добавляем и существ 8-го уровня
