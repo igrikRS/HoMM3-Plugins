@@ -7,12 +7,6 @@
 #include "..\..\..\include\homm3.h"
 #include "..\..\..\include\WoG_CrExpo.cpp"
 
-#define WOG_Option_174 (*(_int_*)0x4C6988)
-
-// GetCreatureGradeWOG	воговская функция
-// GetCreatureGrade		содовская функция
-
-// Объекты patcher_x86.
 Patcher* _P;
 PatcherInstance* _PI;
 
@@ -24,6 +18,18 @@ void ResetCostRes()
 		cost_res[i] = 0;
 	}
 	return;
+}
+
+_int_ GetCrGrade(_int_ monID)
+{
+	_int_ result = -1; 
+
+	if ( GetWoGOptionsStatus(174) )
+		result = GetCreatureGradeWOG(monID); // воговская функция
+	else
+		result = GetCreatureGrade(monID); // содовская функция
+
+	return result;
 }
 
 
@@ -52,19 +58,19 @@ if (!me->IsActive()) return false;
 		{
 			if( hero->army.type[i] >= 0 )
 			{
-				if ( GetCreatureGrade(hero->army.type[i]) != -1 && hero->army.type[i] != 158 && hero->army.type[i] != 56)  
+				if ( GetCrGrade(hero->army.type[i]) != -1 && hero->army.type[i] != 158 && hero->army.type[i] != 56)  
 				{
-					if( town->IsBuildingBuilt(37 + o_pCreatureInfo[GetCreatureGrade(hero->army.type[i])].level, 1) )	
+					if( town->IsBuildingBuilt(37 + o_pCreatureInfo[GetCrGrade(hero->army.type[i])].level, 1) )	
 					{
-						if ( (WOG_Option_174 == 260179083 && town->type == o_pCreatureInfo[hero->army.type[i]].town) || WOG_Option_174 == 75648139 )
+						if ( GetWoGOptionsStatus(174) || (!GetWoGOptionsStatus(174) && town->type == o_pCreatureInfo[hero->army.type[i]].town) )
 						{
-							cost_res[0] = (o_pCreatureInfo[GetCreatureGrade(hero->army.type[i])].cost.wood * hero->army.count[i]) - (o_pCreatureInfo[hero->army.type[i]].cost.wood * hero->army.count[i]);
-							cost_res[1] = (o_pCreatureInfo[GetCreatureGrade(hero->army.type[i])].cost.mercury * hero->army.count[i]) - (o_pCreatureInfo[hero->army.type[i]].cost.mercury * hero->army.count[i]);
-							cost_res[2] = (o_pCreatureInfo[GetCreatureGrade(hero->army.type[i])].cost.ore * hero->army.count[i]) - (o_pCreatureInfo[hero->army.type[i]].cost.ore * hero->army.count[i]);
-							cost_res[3] = (o_pCreatureInfo[GetCreatureGrade(hero->army.type[i])].cost.sulfur * hero->army.count[i]) - (o_pCreatureInfo[hero->army.type[i]].cost.sulfur * hero->army.count[i]);
-							cost_res[4] = (o_pCreatureInfo[GetCreatureGrade(hero->army.type[i])].cost.crystal * hero->army.count[i]) - (o_pCreatureInfo[hero->army.type[i]].cost.crystal * hero->army.count[i]);
-							cost_res[5] = (o_pCreatureInfo[GetCreatureGrade(hero->army.type[i])].cost.jems * hero->army.count[i]) - (o_pCreatureInfo[hero->army.type[i]].cost.jems * hero->army.count[i]);
-							cost_res[6] = (o_pCreatureInfo[GetCreatureGrade(hero->army.type[i])].cost.gold * hero->army.count[i]) - (o_pCreatureInfo[hero->army.type[i]].cost.gold * hero->army.count[i]);
+							cost_res[0] = (o_pCreatureInfo[GetCrGrade(hero->army.type[i])].cost.wood * hero->army.count[i]) - (o_pCreatureInfo[hero->army.type[i]].cost.wood * hero->army.count[i]);
+							cost_res[1] = (o_pCreatureInfo[GetCrGrade(hero->army.type[i])].cost.mercury * hero->army.count[i]) - (o_pCreatureInfo[hero->army.type[i]].cost.mercury * hero->army.count[i]);
+							cost_res[2] = (o_pCreatureInfo[GetCrGrade(hero->army.type[i])].cost.ore * hero->army.count[i]) - (o_pCreatureInfo[hero->army.type[i]].cost.ore * hero->army.count[i]);
+							cost_res[3] = (o_pCreatureInfo[GetCrGrade(hero->army.type[i])].cost.sulfur * hero->army.count[i]) - (o_pCreatureInfo[hero->army.type[i]].cost.sulfur * hero->army.count[i]);
+							cost_res[4] = (o_pCreatureInfo[GetCrGrade(hero->army.type[i])].cost.crystal * hero->army.count[i]) - (o_pCreatureInfo[hero->army.type[i]].cost.crystal * hero->army.count[i]);
+							cost_res[5] = (o_pCreatureInfo[GetCrGrade(hero->army.type[i])].cost.jems * hero->army.count[i]) - (o_pCreatureInfo[hero->army.type[i]].cost.jems * hero->army.count[i]);
+							cost_res[6] = (o_pCreatureInfo[GetCrGrade(hero->army.type[i])].cost.gold * hero->army.count[i]) - (o_pCreatureInfo[hero->army.type[i]].cost.gold * hero->army.count[i]);
 
 							if (me->resourses.wood >= cost_res[0] && me->resourses.mercury >= cost_res[1] && me->resourses.ore >= cost_res[2] && me->resourses.sulfur >= cost_res[3] && me->resourses.crystal >= cost_res[4] && me->resourses.jems >= cost_res[5] && me->resourses.gold >= cost_res[6])
 							{
@@ -77,7 +83,7 @@ if (!me->IsActive()) return false;
 								me->resourses.gold    -= cost_res[6];
 								
 								int expo_deGrade = CrExpoSet_GetExp(&hero->army, i);					
-								hero->army.type[i] = GetCreatureGrade(hero->army.type[i]);
+								hero->army.type[i] = GetCrGrade(hero->army.type[i]);
 								if ( expo_deGrade > 0 ) { 
 									CrExpoSet_SetExp(&hero->army, i, expo_deGrade *75 /100);
 								}								
@@ -97,19 +103,19 @@ if (!me->IsActive()) return false;
 		{
 			if( town->guards.type[i] >= 0 )
 			{
-				if ( GetCreatureGrade(town->guards.type[i]) != -1 && town->guards.type[i] != 158 && town->guards.type[i] != 56) 
+				if ( GetCrGrade(town->guards.type[i]) != -1 && town->guards.type[i] != 158 && town->guards.type[i] != 56) 
 				{
-					if( town->IsBuildingBuilt(37 + o_pCreatureInfo[GetCreatureGrade(town->guards.type[i])].level, 1) )	
+					if( town->IsBuildingBuilt(37 + o_pCreatureInfo[GetCrGrade(town->guards.type[i])].level, 1) )	
 					{
-						if ( (WOG_Option_174 == 260179083 && town->type == o_pCreatureInfo[town->guards.type[i]].town) || WOG_Option_174 == 75648139 )
+						if ( GetWoGOptionsStatus(174) || (!GetWoGOptionsStatus(174) && town->type == o_pCreatureInfo[town->guards.type[i]].town) )
 						{
-							cost_res[0] = (o_pCreatureInfo[GetCreatureGrade(town->guards.type[i])].cost.wood * town->guards.count[i]) - (o_pCreatureInfo[town->guards.type[i]].cost.wood * town->guards.count[i]);
-							cost_res[1] = (o_pCreatureInfo[GetCreatureGrade(town->guards.type[i])].cost.mercury * town->guards.count[i]) - (o_pCreatureInfo[town->guards.type[i]].cost.mercury * town->guards.count[i]);
-							cost_res[2] = (o_pCreatureInfo[GetCreatureGrade(town->guards.type[i])].cost.ore * town->guards.count[i]) - (o_pCreatureInfo[town->guards.type[i]].cost.ore * town->guards.count[i]);
-							cost_res[3] = (o_pCreatureInfo[GetCreatureGrade(town->guards.type[i])].cost.sulfur * town->guards.count[i]) - (o_pCreatureInfo[town->guards.type[i]].cost.sulfur * town->guards.count[i]);
-							cost_res[4] = (o_pCreatureInfo[GetCreatureGrade(town->guards.type[i])].cost.crystal * town->guards.count[i]) - (o_pCreatureInfo[town->guards.type[i]].cost.crystal * town->guards.count[i]);
-							cost_res[5] = (o_pCreatureInfo[GetCreatureGrade(town->guards.type[i])].cost.jems * town->guards.count[i]) - (o_pCreatureInfo[town->guards.type[i]].cost.jems * town->guards.count[i]);
-							cost_res[6] = (o_pCreatureInfo[GetCreatureGrade(town->guards.type[i])].cost.gold * town->guards.count[i]) - (o_pCreatureInfo[town->guards.type[i]].cost.gold * town->guards.count[i]);
+							cost_res[0] = (o_pCreatureInfo[GetCrGrade(town->guards.type[i])].cost.wood * town->guards.count[i]) - (o_pCreatureInfo[town->guards.type[i]].cost.wood * town->guards.count[i]);
+							cost_res[1] = (o_pCreatureInfo[GetCrGrade(town->guards.type[i])].cost.mercury * town->guards.count[i]) - (o_pCreatureInfo[town->guards.type[i]].cost.mercury * town->guards.count[i]);
+							cost_res[2] = (o_pCreatureInfo[GetCrGrade(town->guards.type[i])].cost.ore * town->guards.count[i]) - (o_pCreatureInfo[town->guards.type[i]].cost.ore * town->guards.count[i]);
+							cost_res[3] = (o_pCreatureInfo[GetCrGrade(town->guards.type[i])].cost.sulfur * town->guards.count[i]) - (o_pCreatureInfo[town->guards.type[i]].cost.sulfur * town->guards.count[i]);
+							cost_res[4] = (o_pCreatureInfo[GetCrGrade(town->guards.type[i])].cost.crystal * town->guards.count[i]) - (o_pCreatureInfo[town->guards.type[i]].cost.crystal * town->guards.count[i]);
+							cost_res[5] = (o_pCreatureInfo[GetCrGrade(town->guards.type[i])].cost.jems * town->guards.count[i]) - (o_pCreatureInfo[town->guards.type[i]].cost.jems * town->guards.count[i]);
+							cost_res[6] = (o_pCreatureInfo[GetCrGrade(town->guards.type[i])].cost.gold * town->guards.count[i]) - (o_pCreatureInfo[town->guards.type[i]].cost.gold * town->guards.count[i]);
 
 							if (me->resourses.wood >= cost_res[0] && me->resourses.mercury >= cost_res[1] && me->resourses.ore >= cost_res[2] && me->resourses.sulfur >= cost_res[3] && me->resourses.crystal >= cost_res[4] && me->resourses.jems >= cost_res[5] && me->resourses.gold >= cost_res[6])
 							{
@@ -122,7 +128,7 @@ if (!me->IsActive()) return false;
 								me->resourses.gold    -= cost_res[6];
 
 								int expo_deGrade = CrExpoSet_GetExp(&town->guards, i);					
-								town->guards.type[i] = GetCreatureGrade(town->guards.type[i]);
+								town->guards.type[i] = GetCrGrade(town->guards.type[i]);
 								if ( expo_deGrade > 0 ) { 
 									CrExpoSet_SetExp(&town->guards, i, expo_deGrade *75 /100);
 								}
@@ -153,19 +159,19 @@ _bool_ Y_AutoGradeMonInTownOne_H(_Town_* town, int type, int i)
 
 	if (me->id != hero->owner_id || hero->army.type[i] == -1 ) return false;
 
-	if ( GetCreatureGrade(hero->army.type[i]) != -1 && hero->army.type[i] != 158 )  
+	if ( GetCrGrade(hero->army.type[i]) != -1 && hero->army.type[i] != 158 )  
 	{
-		if( town->IsBuildingBuilt(37 + o_pCreatureInfo[GetCreatureGrade(hero->army.type[i])].level, 1) )	
+		if( town->IsBuildingBuilt(37 + o_pCreatureInfo[GetCrGrade(hero->army.type[i])].level, 1) )	
 		{
-			if ( (WOG_Option_174 == 260179083 && town->type == o_pCreatureInfo[hero->army.type[i]].town) || WOG_Option_174 == 75648139 )
+			if ( GetWoGOptionsStatus(174) || (!GetWoGOptionsStatus(174) && town->type == o_pCreatureInfo[hero->army.type[i]].town) )
 			{
-				cost_res[0] = (o_pCreatureInfo[GetCreatureGrade(hero->army.type[i])].cost.wood * hero->army.count[i]) - (o_pCreatureInfo[hero->army.type[i]].cost.wood * hero->army.count[i]);
-				cost_res[1] = (o_pCreatureInfo[GetCreatureGrade(hero->army.type[i])].cost.mercury * hero->army.count[i]) - (o_pCreatureInfo[hero->army.type[i]].cost.mercury * hero->army.count[i]);
-				cost_res[2] = (o_pCreatureInfo[GetCreatureGrade(hero->army.type[i])].cost.ore * hero->army.count[i]) - (o_pCreatureInfo[hero->army.type[i]].cost.ore * hero->army.count[i]);
-				cost_res[3] = (o_pCreatureInfo[GetCreatureGrade(hero->army.type[i])].cost.sulfur * hero->army.count[i]) - (o_pCreatureInfo[hero->army.type[i]].cost.sulfur * hero->army.count[i]);
-				cost_res[4] = (o_pCreatureInfo[GetCreatureGrade(hero->army.type[i])].cost.crystal * hero->army.count[i]) - (o_pCreatureInfo[hero->army.type[i]].cost.crystal * hero->army.count[i]);
-				cost_res[5] = (o_pCreatureInfo[GetCreatureGrade(hero->army.type[i])].cost.jems * hero->army.count[i]) - (o_pCreatureInfo[hero->army.type[i]].cost.jems * hero->army.count[i]);
-				cost_res[6] = (o_pCreatureInfo[GetCreatureGrade(hero->army.type[i])].cost.gold * hero->army.count[i]) - (o_pCreatureInfo[hero->army.type[i]].cost.gold * hero->army.count[i]);
+				cost_res[0] = (o_pCreatureInfo[GetCrGrade(hero->army.type[i])].cost.wood * hero->army.count[i]) - (o_pCreatureInfo[hero->army.type[i]].cost.wood * hero->army.count[i]);
+				cost_res[1] = (o_pCreatureInfo[GetCrGrade(hero->army.type[i])].cost.mercury * hero->army.count[i]) - (o_pCreatureInfo[hero->army.type[i]].cost.mercury * hero->army.count[i]);
+				cost_res[2] = (o_pCreatureInfo[GetCrGrade(hero->army.type[i])].cost.ore * hero->army.count[i]) - (o_pCreatureInfo[hero->army.type[i]].cost.ore * hero->army.count[i]);
+				cost_res[3] = (o_pCreatureInfo[GetCrGrade(hero->army.type[i])].cost.sulfur * hero->army.count[i]) - (o_pCreatureInfo[hero->army.type[i]].cost.sulfur * hero->army.count[i]);
+				cost_res[4] = (o_pCreatureInfo[GetCrGrade(hero->army.type[i])].cost.crystal * hero->army.count[i]) - (o_pCreatureInfo[hero->army.type[i]].cost.crystal * hero->army.count[i]);
+				cost_res[5] = (o_pCreatureInfo[GetCrGrade(hero->army.type[i])].cost.jems * hero->army.count[i]) - (o_pCreatureInfo[hero->army.type[i]].cost.jems * hero->army.count[i]);
+				cost_res[6] = (o_pCreatureInfo[GetCrGrade(hero->army.type[i])].cost.gold * hero->army.count[i]) - (o_pCreatureInfo[hero->army.type[i]].cost.gold * hero->army.count[i]);
 
 				if (me->resourses.wood >= cost_res[0] && me->resourses.mercury >= cost_res[1] && me->resourses.ore >= cost_res[2] && me->resourses.sulfur >= cost_res[3] && me->resourses.crystal >= cost_res[4] && me->resourses.jems >= cost_res[5] && me->resourses.gold >= cost_res[6])
 				{
@@ -178,7 +184,7 @@ _bool_ Y_AutoGradeMonInTownOne_H(_Town_* town, int type, int i)
 					me->resourses.gold    -= cost_res[6];
 
 					int expo_deGrade = CrExpoSet_GetExp(&hero->army, i);					
-					hero->army.type[i] = GetCreatureGrade(hero->army.type[i]);
+					hero->army.type[i] = GetCrGrade(hero->army.type[i]);
 					if ( expo_deGrade > 0 ) { 
 						CrExpoSet_SetExp(&hero->army, i, expo_deGrade *75 /100);
 					}
@@ -200,35 +206,38 @@ _bool_ Y_AutoGradeMonInTownOne_T(_Town_* town, char type, char i)
 
 	if (me->id != town->owner_id || town->guards.type[i] == -1 ) return false;
 
-	if ( GetCreatureGrade(town->guards.type[i]) != -1 && town->guards.type[i] != 158 )  
+	if ( GetCrGrade(town->guards.type[i]) != -1 && town->guards.type[i] != 158 )  
 	{
-		if( town->IsBuildingBuilt(37 + o_pCreatureInfo[GetCreatureGrade(town->guards.type[i])].level, 1) && town->type == o_pCreatureInfo[town->guards.type[i]].town )	
+		if( town->IsBuildingBuilt(37 + o_pCreatureInfo[GetCrGrade(town->guards.type[i])].level, 1) )	
 		{
-			cost_res[0] = (o_pCreatureInfo[GetCreatureGrade(town->guards.type[i])].cost.wood * town->guards.count[i]) - (o_pCreatureInfo[town->guards.type[i]].cost.wood * town->guards.count[i]);
-			cost_res[1] = (o_pCreatureInfo[GetCreatureGrade(town->guards.type[i])].cost.mercury * town->guards.count[i]) - (o_pCreatureInfo[town->guards.type[i]].cost.mercury * town->guards.count[i]);
-			cost_res[2] = (o_pCreatureInfo[GetCreatureGrade(town->guards.type[i])].cost.ore * town->guards.count[i]) - (o_pCreatureInfo[town->guards.type[i]].cost.ore * town->guards.count[i]);
-			cost_res[3] = (o_pCreatureInfo[GetCreatureGrade(town->guards.type[i])].cost.sulfur * town->guards.count[i]) - (o_pCreatureInfo[town->guards.type[i]].cost.sulfur * town->guards.count[i]);
-			cost_res[4] = (o_pCreatureInfo[GetCreatureGrade(town->guards.type[i])].cost.crystal * town->guards.count[i]) - (o_pCreatureInfo[town->guards.type[i]].cost.crystal * town->guards.count[i]);
-			cost_res[5] = (o_pCreatureInfo[GetCreatureGrade(town->guards.type[i])].cost.jems * town->guards.count[i]) - (o_pCreatureInfo[town->guards.type[i]].cost.jems * town->guards.count[i]);
-			cost_res[6] = (o_pCreatureInfo[GetCreatureGrade(town->guards.type[i])].cost.gold * town->guards.count[i]) - (o_pCreatureInfo[town->guards.type[i]].cost.gold * town->guards.count[i]);
-
-			if (me->resourses.wood >= cost_res[0] && me->resourses.mercury >= cost_res[1] && me->resourses.ore >= cost_res[2] && me->resourses.sulfur >= cost_res[3] && me->resourses.crystal >= cost_res[4] && me->resourses.jems >= cost_res[5] && me->resourses.gold >= cost_res[6])
+			if ( GetWoGOptionsStatus(174) || (!GetWoGOptionsStatus(174) && town->type == o_pCreatureInfo[town->guards.type[i]].town ) )
 			{
-				me->resourses.wood    -= cost_res[0];
-				me->resourses.mercury -= cost_res[1];
-				me->resourses.ore     -= cost_res[2];
-				me->resourses.sulfur  -= cost_res[3];
-				me->resourses.crystal -= cost_res[4];
-				me->resourses.jems    -= cost_res[5];
-				me->resourses.gold    -= cost_res[6];
+				cost_res[0] = (o_pCreatureInfo[GetCrGrade(town->guards.type[i])].cost.wood * town->guards.count[i]) - (o_pCreatureInfo[town->guards.type[i]].cost.wood * town->guards.count[i]);
+				cost_res[1] = (o_pCreatureInfo[GetCrGrade(town->guards.type[i])].cost.mercury * town->guards.count[i]) - (o_pCreatureInfo[town->guards.type[i]].cost.mercury * town->guards.count[i]);
+				cost_res[2] = (o_pCreatureInfo[GetCrGrade(town->guards.type[i])].cost.ore * town->guards.count[i]) - (o_pCreatureInfo[town->guards.type[i]].cost.ore * town->guards.count[i]);
+				cost_res[3] = (o_pCreatureInfo[GetCrGrade(town->guards.type[i])].cost.sulfur * town->guards.count[i]) - (o_pCreatureInfo[town->guards.type[i]].cost.sulfur * town->guards.count[i]);
+				cost_res[4] = (o_pCreatureInfo[GetCrGrade(town->guards.type[i])].cost.crystal * town->guards.count[i]) - (o_pCreatureInfo[town->guards.type[i]].cost.crystal * town->guards.count[i]);
+				cost_res[5] = (o_pCreatureInfo[GetCrGrade(town->guards.type[i])].cost.jems * town->guards.count[i]) - (o_pCreatureInfo[town->guards.type[i]].cost.jems * town->guards.count[i]);
+				cost_res[6] = (o_pCreatureInfo[GetCrGrade(town->guards.type[i])].cost.gold * town->guards.count[i]) - (o_pCreatureInfo[town->guards.type[i]].cost.gold * town->guards.count[i]);
 
-				int expo_deGrade = CrExpoSet_GetExp(&town->guards, i);					
-				town->guards.type[i] = GetCreatureGrade(town->guards.type[i]);
-				if ( expo_deGrade > 0 ) { 
-					CrExpoSet_SetExp(&town->guards, i, expo_deGrade *75 /100);
+				if (me->resourses.wood >= cost_res[0] && me->resourses.mercury >= cost_res[1] && me->resourses.ore >= cost_res[2] && me->resourses.sulfur >= cost_res[3] && me->resourses.crystal >= cost_res[4] && me->resourses.jems >= cost_res[5] && me->resourses.gold >= cost_res[6])
+				{
+					me->resourses.wood    -= cost_res[0];
+					me->resourses.mercury -= cost_res[1];
+					me->resourses.ore     -= cost_res[2];
+					me->resourses.sulfur  -= cost_res[3];
+					me->resourses.crystal -= cost_res[4];
+					me->resourses.jems    -= cost_res[5];
+					me->resourses.gold    -= cost_res[6];
+
+					int expo_deGrade = CrExpoSet_GetExp(&town->guards, i);					
+					town->guards.type[i] = GetCrGrade(town->guards.type[i]);
+					if ( expo_deGrade > 0 ) { 
+						CrExpoSet_SetExp(&town->guards, i, expo_deGrade *75 /100);
+					}
+					return true;
 				}
-				return true;
-			}	
+			}
 		}
 	}
  return false;
