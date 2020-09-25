@@ -66,11 +66,11 @@ int __stdcall b_MsgBox_Proc(HiHook* hook, _EventMsg_* msg)
 			if (msg->item_id == 30729 || msg->item_id == 30730)   
 			{	
 				if (b_MsgBox_Style_id == 7 || b_MsgBox_Style_id == 10) {
-					if ( (o_GetTime() - time_click_MsgBox) < 300 ) 
+					if ( (o_GetTime() - time_click_MsgBox) < 300 && msg->item_id == b_MsgBox_Result_id) 
 					{
 						o_TimeClick = 0;
 						time_click_MsgBox = 0;
-						o_WndMgr->result_dlg_item_id = b_MsgBox_Result_id;
+						o_WndMgr->result_dlg_item_id = msg->item_id;
 						msg->type = 512;
 						msg->subtype = 10;
 						msg->item_id = 10;

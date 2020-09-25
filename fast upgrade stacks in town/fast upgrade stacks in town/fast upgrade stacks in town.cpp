@@ -234,7 +234,7 @@ _bool_ Y_AutoGradeMonInTownOne_T(_Town_* town, char type, char i)
 // автоулучшение существ в городе по ЛКМ+A
 _int_ __stdcall Y_AutoGradeMonInTown(LoHook* h, HookContext* c)
 {
-	if (!o_IsOnlineGame && GetKeyState(65)<0 )
+	if ( GetKeyState(65)<0 )
 	{
 		_bool_ done = 0;
 		_Town_* town = o_TownMgr->town; 
