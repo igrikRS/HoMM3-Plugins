@@ -4,6 +4,8 @@
 // Thanks: baratorch, ZVS, MoP	//
 //////////////////////////////////
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "..\..\..\include\homm3.h"
 #include "..\..\..\include\HoMM3_Dlg.cpp"
 #include "..\..\..\include\HoMM3_Extra.h" 
@@ -85,6 +87,7 @@ char* textProcS = "%s";
 #include "src\WoGOptions.cpp"
 #include "src\CastleReBuild.cpp"
 #include "src\HD5_Functions.cpp"
+#include "src\BattleLogDlg.cpp"
 
 #ifdef DOP_FUNK_TO_ERA
 #include "src\TownHeroesMeet.cpp"
@@ -223,6 +226,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 			Dlg_ChooseAttack(_PI); 	// диалог выбора типа атаки монстром
 			Dlg_CastleReBuild(_PI);	// диалог перестройки замка
 			HD5_Functions(_PI); 	// реализация функций, вырезанных в HD 5 версии
+			DlgBattleLog(_PI); 	// окно диалога статуса действий и событий в битве
 #ifdef DOP_FUNK_TO_ERA
 			Dlg_TownHeroesMeet(_PI);	// обмен героями в замке ко клавише E
 #endif DOP_FUNK_TO_ERA	
