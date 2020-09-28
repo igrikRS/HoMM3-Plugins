@@ -55,7 +55,7 @@ _int_ __stdcall Y_FixBagCreatureGredeOfNeutrals(HiHook* hook, _Army_* army, _int
 {
     _int_ count = 0;
     _int_ i = 0;
-    _int_ crGrade_id = GetCreatureGrade(creature_id);
+    _int_ crGrade_id = GetCreatureUprade(creature_id);
     do {
         if (army->type[i] == creature_id || army->type[i] == crGrade_id) {
             count += army->count[i];
@@ -269,40 +269,40 @@ int __stdcall Fix_WoG_GetCreatureGrade_Town(LoHook* h, HookContext* c)
 //   - Санта-Гремлины копятся в обычном режиме
 //   - Существа 8 уровня (№№ 150-158) копятся в обычном режиме
 
-#define o_WogAccumCreatures (*(_int_*)0x277193C)
-#define o_WogAccumDefenders (*(_int_*)0x2771940)
-
-int __stdcall SOD_Dwelling_Add_Creatures(HiHook* hook, _Dwelling_* dw, _int_ isBonus)
-{
-    int countCreatures[4];
-    int countDefenders[4];
-
-    if( dw->owner_ix != -1 ) {
-        for (int i=0; i<4; i++) {
-            if (o_WogAccumCreatures) {
-                countCreatures[i] = dw->creature_counts[i];
-        }
-            if (o_WogAccumDefenders) {
-                countDefenders[i] = dw->defenders.count[i];
-            }
-        }
-    }
-
-    int result = CALL_2(int, __thiscall, hook->GetDefaultFunc(), dw, isBonus);
-
-    if( dw->owner_ix != -1 ) {
-        for (int i=0; i<4; i++) {
-            if (o_WogAccumCreatures && countCreatures[i] > 0 && countCreatures[i] <= 4000 ) {
-                dw->creature_counts[i] += countCreatures[i];
-            }
-            if (o_WogAccumDefenders && countDefenders[i] > 0 && countDefenders[i] <= 12000) {
-                dw->defenders.count[i] += countDefenders[i];
-            }
-        }
-    }
-
-    return result;
-}
+//#define o_WogAccumCreatures (*(_int_*)0x277193C)
+//#define o_WogAccumDefenders (*(_int_*)0x2771940)
+//
+//int __stdcall SOD_Dwelling_Add_Creatures(HiHook* hook, _Dwelling_* dw, _int_ isBonus)
+//{
+//    int countCreatures[4];
+//    int countDefenders[4];
+//
+//    if( dw->owner_ix != -1 ) {
+//        for (int i=0; i<4; i++) {
+//            if (o_WogAccumCreatures) {
+//                countCreatures[i] = dw->creature_counts[i];
+//        }
+//            if (o_WogAccumDefenders) {
+//                countDefenders[i] = dw->defenders.count[i];
+//            }
+//        }
+//    }
+//
+//    int result = CALL_2(int, __thiscall, hook->GetDefaultFunc(), dw, isBonus);
+//
+//    if( dw->owner_ix != -1 ) {
+//        for (int i=0; i<4; i++) {
+//            if (o_WogAccumCreatures && countCreatures[i] > 0 && countCreatures[i] <= 4000 ) {
+//                dw->creature_counts[i] += countCreatures[i];
+//            }
+//            if (o_WogAccumDefenders && countDefenders[i] > 0 && countDefenders[i] <= 12000) {
+//                dw->defenders.count[i] += countDefenders[i];
+//            }
+//        }
+//    }
+//
+//    return result;
+//}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -427,9 +427,9 @@ void Monsters(PatcherInstance* _PI)
     //   - Существа 8 уровня (№№ 150-158) копятся в обычном режиме    
     // сначала восстанавливаем оригинальный код игры   CALL 0x4B8760
     // снимая установку хука WoG                       CALL 0x760BDB
-    _PI->WriteHexPatch(0x4C8795 +1, "C6FFFEFF"); 
+    // _PI->WriteHexPatch(0x4C8795 +1, "C6FFFEFF"); 
     // модифицируем еженедельную прибавку монстрам
-    _PI->WriteHiHook(0x4C8795, CALL_, EXTENDED_, THISCALL_, SOD_Dwelling_Add_Creatures);
+    // _PI->WriteHiHook(0x4C8795, CALL_, EXTENDED_, THISCALL_, SOD_Dwelling_Add_Creatures);
 
     // частичное исправление разсихнронизации 
     // сетевое копирование параметров стеков в битве
