@@ -167,7 +167,7 @@ int __stdcall BattleLog_Proc(HiHook* hook, _BattleMgr_* bm, _EventMsg_*msg)
 {
 
 	if (msg->type == MT_MOUSEBUTTON)
-		if (msg->subtype == MST_LBUTTONDOWN)
+		if (msg->subtype == MST_LBUTTONCLICK)
 			if ( msg->item_id == 2005 )				
 				CreateNewBattleLogDlg(bm);
 
