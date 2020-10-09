@@ -116,8 +116,6 @@ void RK(Patcher* _P, PatcherInstance* _PI)
         _PI->WriteByte(0x4FD164, 183);
         _PI->WriteByte(0x505C9F, 183);
         _PI->WriteByte(0x52CD36, 183);
-        _PI->WriteJmp(0x5A365D, 0x5A3666);
-        _PI->WriteJmp(0x5A37B9, 0x5A37C2);
         _PI->WriteJmp(0x464DF1, 0x464DFB);
         _PI->WriteHexPatch(0x4FD12A, "0F BF 78 24 83 FF FF 0F 84");
         _PI->WriteHexPatch(0x505C75, "0F BF 77 24 83 FE FF 74");

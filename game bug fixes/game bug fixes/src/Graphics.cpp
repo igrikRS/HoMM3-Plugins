@@ -1,3 +1,12 @@
+int __stdcall Fix_ForceFieldShadow(LoHook *h, HookContext *c)
+{
+	if (o_BattleMgr->action_param1 == SPL_FORCE_FIELD) { // если заклинание Силовое Поле
+		IntAt(c->ebp -0x14) = 0x63AC6C; // активная сторона тут всегда должна быть 0 (0x63AC6C всегда равна нулю!)
+		c->return_address = 0x5A3699;
+		return NO_EXEC_DEFAULT;
+	}
+    return EXEC_DEFAULT;
+}
 
 
 void Graphics(PatcherInstance* _PI)
@@ -6,7 +15,8 @@ void Graphics(PatcherInstance* _PI)
     _PI->WriteHexPatch(0x5D47B3, "0F BF 57 18  8B 4F 24 B8  FF FF FF FF  90");
 
     // фикс невлезающего кол-ва существ (100-249 и т.п.) в маленьком окне героя ПКМ
-    _PI->WriteByte(0x52F7CE +1, 34);
+    _PI->WriteByte(0x52F7CE +1, 34); // герой
+    _PI->WriteByte(0x5310F1 +1, 34); // замок, гарнизон
 
     // исправить координаты кнопки Сказочных Драконов
     _PI->WriteDword(0x5F3D9F, 235);  // подложка поз.Y
@@ -52,4 +62,10 @@ void Graphics(PatcherInstance* _PI)
     _PI->WriteByte(0x722792, 0xB6); 
     _PI->WriteByte(0x723ACB, 0xB6);
     _PI->WriteByte(0x723F1C, 0xB6);
+
+	// исправление отображения графики тени Силового Поля
+    _PI->WriteLoHook(0x5A368C, Fix_ForceFieldShadow); 
+	// включить показ тени для Силового Поля (by RoseKavalier)
+    _PI->WriteJmp(0x5A365D, 0x5A3666);
+    _PI->WriteJmp(0x5A37B9, 0x5A37C2);
 }
