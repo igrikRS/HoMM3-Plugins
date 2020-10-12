@@ -49,7 +49,7 @@ void __stdcall Y_WoG_UnMixedPos_Fix(HiHook* hook, _dword_ x, _dword_ y, _dword_ 
     return; 
 }
 
-// АИ битва (просчёт)
+// фикс вылета: АИ битва (просчёт)
 // проверка на скорость монстра и когда он дойдет до защиты стрелка. 
 // Убираем из проверки существ с нулевой скоростью и боевые машины
 _int_ __stdcall Y_AIMgr_Stack_MinRoundToReachHex(HiHook* hook, _dword_ this_, _BattleStack_* stack, _int_ a3)
@@ -78,7 +78,7 @@ int __stdcall Y_FixCrash_CastSpell_38(LoHook* h, HookContext* c)
 
 // фикс вылета: при удалении препятствия в битве нет проверки на наличие стуктуры препятствия
 // (привет WoG и его стена огня у Огненных Лошадей)
-int __stdcall Y_FixCrash_RemoveObstackle(LoHook* h, HookContext* c)
+int __stdcall Y_FixCrash_RemoveObstacle(LoHook* h, HookContext* c)
 {
    // проверяем на пустую структуру боевого пропятствия
    // чтобы пропустить код обращения к ней и как следствие крит.краш.игры
@@ -135,7 +135,7 @@ void GameLogic(PatcherInstance* _PI)
 
 	// фикс вылета: при удалении препятствия в битве, когда его стуктура таблицы равна нуля 
 	// (привет WoG и его стена огня у Огненных Лошадей)
-	_PI->WriteLoHook(0x46681B, Y_FixCrash_RemoveObstackle);
+	_PI->WriteLoHook(0x46681B, Y_FixCrash_RemoveObstacle);
 
 
 
