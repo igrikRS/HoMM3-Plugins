@@ -149,7 +149,9 @@ int __stdcall Y_Hook_MainLoop(LoHook* h, HookContext* c)
 	json_Npc[2] = GetEraJSON("wnd.dlg_commander.bttn_lvlup_hint");
 	json_Npc[3] = GetEraJSON("wnd.dlg_commander.bttn_dismiss_rmc");
 
-	Dlg_WoGOptions(_PI); 			// диалог WoG Опций
+	// теперь создаём свои хуки после всех патчей вога
+	Dlg_WoGOptions(_PI);   // диалог WoG Опций 
+	Dlg_NPC(_PI); 		   // диалог командира	
 
 #ifdef DOP_FUNK_TO_ERA
 	json_Combat[0] = GetEraJSON("wnd.combat.finish_question");
@@ -218,7 +220,6 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 
 			Dlg_ChangeBmp(_PI);	// все замены кадров
 			Dlg_ExpaMon(_PI); 	// диалог Экспы монстров
-			Dlg_NPC(_PI); 		// диалог командира	
 			Dlg_Curse(_PI);     // диалог проклятий и благословлений
 			Dlg_DropArt(_PI);   // диалог сброса артефактов на землю	
 			Dlg_Sphinx(_PI); 	// диалог сфинкса и IF:D/E

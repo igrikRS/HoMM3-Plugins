@@ -494,46 +494,119 @@ _int_ __stdcall Y_Dlg_NPC_ShowAgain_IfGetArtHero(LoHook* h, HookContext* c)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////// создание кнопки командира ////////////////////////////////////////////////////////
 
+// воговские константы (содовские константы нужно будет копировать в нижеуказанные)
+#define WoG_DlgHero_msg (*(_EventMsg_**)0x28604CC)
+#define WoG_DlgHero_hero (*(_Hero_**)0x2860470)
+#define WoG_DlgHero_art (*(_Artifact_*)0x2860820)
+
+// опция командиров (0-вкл, 1-выкл)
+#define WoG_NoNPC (*(_int_*)0x277192C)
+// id кнопки командира
+#define NPC_BttnID 4445
+
+
 _CustomDlg_* __stdcall Y_HeroDlg_Create(HiHook* hook, _CustomDlg_* dlg)
 {
 	CALL_1(_CustomDlg_*, __thiscall, hook->GetDefaultFunc(), dlg);
 
-	if ( *(int*)0x28620C0 != -1 ) { // если НЕ командиры отключены (-1)
-		dlg->AddItem(_DlgButton_::Create(316, 17, 4445, "bttnNPC.def", 0, 1, 0, 0));
-	}
+	if (!WoG_NoNPC) // если командиры включены (обратная проверка!)
+		dlg->AddItem(_DlgButton_::Create(316, 17, NPC_BttnID, "bttnNPC.def", 0, 1, 0, 0));
 
 	return dlg;
 }
 
 int __stdcall Y_HeroDlg_Proc(HiHook* hook, _CustomDlg_* dlg, _EventMsg_* msg)
 {
+	// реализуем клики мышью в окне героя
+    if (msg->type == MT_MOUSEBUTTON) {
+		if (msg->subtype == MST_LBUTTONDOWN || 
+			msg->subtype == MST_LBUTTONCLICK ||
+			msg->subtype == MST_RBUTTONDOWN) {
 
-	if ( *(int*)0x28620C0 == -1 ) { // если командиры отключены (-1)
-		return CALL_2(int, __thiscall, hook->GetDefaultFunc(), dlg, msg);
-	}
+			// сохраняем координаты клика
+			_int32_ x_abs = msg->x_abs;
+			_int32_ y_abs = msg->y_abs;
 
-	if (msg->type == MT_MOUSEOVER) {
-		_DlgItem_* it = dlg->FindItem(msg->x_abs, msg->y_abs);
+			// теперь специально для WoGа модифицируем координаты мыши (без них он с HD не работает, скотина)
+			if (o_HD_X > ORIG_X) // 1180-800
+				msg->x_abs -= ((o_HD_X - ORIG_X) >> 1); 
 
-		if (it && it->id == 4445)	{
-			// sprintf(o_TextBuffer, json_Npc[0]); 
-			_DlgMsg_ m;	CALL_2(void, __thiscall, 0x5FF3A0, dlg, m.Set(512, 3, 115, 0, 0, 0, (int)json_Npc[0], 0)); 
-			dlg->Redraw(TRUE, 114, 115);
-			return 1;		
-		}  
-	} 
+			if (o_HD_Y > ORIG_Y) // 664-600
+				msg->y_abs -= ((o_HD_Y - ORIG_Y) >> 1);
 
-	if (msg->type == MT_MOUSEBUTTON) {
-		if (msg->item_id == 4445) {
-			if (msg->subtype == MST_RBUTTONDOWN || msg->subtype == MST_LBUTTONCLICK) {
-				msg->item_id = 0;
-				msg->x_abs = 400 + (o_HD_X -800)/2;
-				msg->y_abs = 40 + (o_HD_Y -600)/2;
-				if (msg->subtype == MST_LBUTTONCLICK) 
-					msg->subtype = MST_LBUTTONDOWN; 
+			// производим копирование указателя на текущего героя в воговский указатель
+			WoG_DlgHero_hero = o_HeroDlg_Hero; // вот зачем такие махинации?!! Агрр....
+			WoG_DlgHero_msg = msg;
+			WoG_DlgHero_art = o_CurArt; 
+
+			// выполняем воговский триггер клика в окне героя (!?CM2)
+			// wog 0x76EC85: call sub_74F7DE MouseClickHero(CNPC_ms,CNPC_hp)
+			if ( CALL_2(signed int, __cdecl, 0x74F7DE, WoG_DlgHero_msg, WoG_DlgHero_hero) ) {
+				// if true: CM:R0 or Hero dlg is redraw
+				o_WndMgr->f_3C = -1;
+				return 1;
 			}
-		}
+
+			// описываем реализацию передачи артефактов в слоты существ (0-6)
+			if (msg->item_id >= 68 && msg->item_id <= 74 ) {
+				if ( o_CurArt.id != -1 ) {
+					// CrExpoSet::DropArt2Stack(CNPC_ms,CNPC_hp,CNPC_DropArt)
+                    // перенос артефакта в слот существ (на данный момент только Знамя Полководца (id 156))
+					if ( CALL_3(signed int, __cdecl, 0x72521B, WoG_DlgHero_msg, WoG_DlgHero_hero, WoG_DlgHero_art.id) ) {
+						o_CurArt.id = -1;
+						o_CurArt.mod = -1;
+						b_MouseMgr_SetCursor(0, 0);
+					}
+					// HeroDlg->WogRedrawCreatureSlots(-1);
+					CALL_1(void, __cdecl, 0x716E81, -1);
+
+					o_WndMgr->f_3C = -1;
+					return 1;
+				}
+			}
+
+			// реализуем нажатие на кнопку окна командира (и просто клик, и клик с артом в руке)
+			// обработает это всё wog функция 0x76E865 RealClickNPC(CNPC_ms,CNPC_hp,CNPC_DropArt)
+			if ( !WoG_NoNPC && msg->item_id == NPC_BttnID ) {
+				if ( msg->subtype == MST_RBUTTONDOWN || msg->subtype == MST_LBUTTONCLICK ) {
+
+					if ( msg->subtype == MST_LBUTTONCLICK )
+						msg->subtype = MST_LBUTTONDOWN; 
+					// приходится делать так, ибо установлена проверка на тип клика в 0x76E8A6
+					// можно конечно и запатчить её, но вдруг кто-то захочет открыть окно командира через UN:C
+					// короче оставляем так ...
+
+					if ( CALL_3(signed int, __cdecl, 0x76E865, WoG_DlgHero_msg, WoG_DlgHero_hero, WoG_DlgHero_art.id) ) {
+						// ниже просто копируем код вога
+						o_CurArt.id = -1;
+						o_CurArt.mod = -1;
+						b_MouseMgr_SetCursor(0, 0);
+
+						o_WndMgr->f_3C = -1;
+						return 1;
+					}
+				}
+			}
+
+			// возвращаем координаты клика
+			msg->x_abs = x_abs;
+			msg->y_abs = y_abs;
+        }
+    }
+
+	// ведение мыши в окне героя: реализуем хинт кнопки командира
+	if (!WoG_NoNPC) { // если командиры включены (обратная проверка!) 
+		if (msg->type == MT_MOUSEOVER) {
+			_DlgItem_* it = dlg->FindItem(msg->x_abs, msg->y_abs);
+
+			if (it && it->id == NPC_BttnID)	{
+				_DlgMsg_ m;	CALL_2(void, __thiscall, 0x5FF3A0, dlg, m.Set(512, 3, 115, 0, 0, 0, (int)json_Npc[0], 0)); 
+				dlg->Redraw(TRUE, 114, 115);
+				return 1;		
+			}  
+		} 
 	}
+
 	return CALL_2(int, __thiscall, hook->GetDefaultFunc(), dlg, msg);
 }
 
@@ -543,17 +616,19 @@ int __stdcall Y_HeroDlg_Proc(HiHook* hook, _CustomDlg_* dlg, _EventMsg_* msg)
 void Dlg_NPC(PatcherInstance* _PI)
 {
 	// диалог командира
-	//_PI->WriteHiHook(0x76A46E, SPLICE_, EXTENDED_, THISCALL_, Y_Dlg_CommanderWoG);	
-	//_PI->WriteLoHook(0x7736EF, Y_DlgNPC_SetResult);
 	_PI->WriteHiHook(0x7736E8, SPLICE_, EXTENDED_, CDECL_, Y_Dlg_NPC_Show);
 	_PI->WriteHiHook(0x76A46E, SPLICE_, EXTENDED_, THISCALL_, Y_Dlg_NPC_Prepare);
 	_PI->WriteLoHook(0x76EAA5, Y_Dlg_NPC_ShowAgain_IfGetArtHero);
 
 	// добавление кнопки командира
-	_PI->WriteDword((0x76ED72 +3), 400);  
-	_PI->WriteDword((0x76ED8A +3), 400);
-	_PI->WriteByte((0x76EDA0 +3), 40);	
-	_PI->WriteByte((0x76EDB3 +3), 40); 
+	//_PI->WriteDword(0x76ED72 +3, 400);  
+	//_PI->WriteDword(0x76ED8A +3, 400);
+	//_PI->WriteByte(0x76EDA0 +3, 40);	
+	//_PI->WriteByte(0x76EDB3 +3, 40); 
 	_PI->WriteHiHook(0x4DE980, SPLICE_, EXTENDED_, THISCALL_, Y_HeroDlg_Create);
 	_PI->WriteHiHook(0x4DD540, SPLICE_, EXTENDED_, THISCALL_, Y_HeroDlg_Proc);
+
+	// вырезаем Воговских хук для создания функционала командира
+	// путём восстанавления оригинального кода SOD
+	_PI->WriteHexPatch(0x4DD632, "C742 3C FFFFFFFF");
 }
