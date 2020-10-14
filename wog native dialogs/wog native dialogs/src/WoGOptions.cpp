@@ -399,7 +399,9 @@ void __stdcall Dlg_WoG_Options_Show(HiHook* hook, int a1)
 // #############################################################################################
 // ##################################  создание кнопки WoG Options #############################
 
-int __stdcall Y_NewScenarioDlg_Proc(HiHook* hook, _CustomDlg_* this_, _EventMsg_* msg)
+int focusedItemID;
+
+int __stdcall Y_NewScenarioDlg_Proc(HiHook* hook, _NewScenarioDlg_* this_, _EventMsg_* msg)
 {
 	if ( (msg->type == MT_MOUSEBUTTON) && (msg->subtype == MST_LBUTTONCLICK) && (msg->item_id == 4444) ){
 		msg->item_id = 0;
@@ -407,13 +409,36 @@ int __stdcall Y_NewScenarioDlg_Proc(HiHook* hook, _CustomDlg_* this_, _EventMsg_
 		msg->y_abs = 110; 
 		// CALL_0(void, __cdecl, 0x7790E1);
 	}
+
+	if (msg->type == MT_MOUSEOVER) {
+		_DlgItem_* it = this_->FindItem(msg->x_abs, msg->y_abs);
+		if (it)	{
+			focusedItemID = it->id;
+		}
+	}
+
+	// прокрутка списка героев и городов
+	if (msg->type == WM_MOUSEWHEEL)	{
+		Y_NewScenarioDlg_SetScrolledShoose(this_, msg);
+	}
+
 	return CALL_2(int, __thiscall, hook->GetDefaultFunc(), this_, msg);
+}
+
+// блокировка скроллбара, если курсор не на нём
+int __stdcall Y_NewScenarioDlg_BlockScrollBar(HiHook* hook, void* this_)
+{
+	if (focusedItemID != 338)
+		return 0;
+
+	return CALL_1(int, __thiscall, hook->GetDefaultFunc(), this_);
 }
 
 void __stdcall Y_NewScenarioDlg_Create(HiHook* hook, _NewScenarioDlg_* this_, int type)
 {
 	CALL_2(void, __thiscall, hook->GetDefaultFunc(), this_, type);
 	this_->AddItem(_DlgTextButton_::Create(622, 105, 4444, "GSPBUT2.DEF", json_WoGOpt[1], n_SmallFont, 0, 1, 0, 0, 1));
+	focusedItemID = 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -428,6 +453,8 @@ void Dlg_WoGOptions(PatcherInstance* _PI)
 	_PI->WriteByte((0x779147 + 3), 110);
 	_PI->WriteHiHook(0x579CE0, SPLICE_, EXTENDED_, THISCALL_, Y_NewScenarioDlg_Create);
 	_PI->WriteHiHook(0x587FD0, SPLICE_, EXTENDED_, THISCALL_, Y_NewScenarioDlg_Proc);
+	_PI->WriteHiHook(0x57CB70, SPLICE_, EXTENDED_, THISCALL_, Y_NewScenarioDlg_BlockScrollBar);
 	// диалог WoG Опций
 	 _PI->WriteHiHook(0x779213, CALL_, EXTENDED_, THISCALL_, Dlg_WoG_Options_Show);
+
 }

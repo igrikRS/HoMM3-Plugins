@@ -621,10 +621,6 @@ void Dlg_NPC(PatcherInstance* _PI)
 	_PI->WriteLoHook(0x76EAA5, Y_Dlg_NPC_ShowAgain_IfGetArtHero);
 
 	// добавление кнопки командира
-	//_PI->WriteDword(0x76ED72 +3, 400);  
-	//_PI->WriteDword(0x76ED8A +3, 400);
-	//_PI->WriteByte(0x76EDA0 +3, 40);	
-	//_PI->WriteByte(0x76EDB3 +3, 40); 
 	_PI->WriteHiHook(0x4DE980, SPLICE_, EXTENDED_, THISCALL_, Y_HeroDlg_Create);
 	_PI->WriteHiHook(0x4DD540, SPLICE_, EXTENDED_, THISCALL_, Y_HeroDlg_Proc);
 

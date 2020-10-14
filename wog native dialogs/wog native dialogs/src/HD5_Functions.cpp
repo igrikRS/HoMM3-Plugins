@@ -221,7 +221,6 @@ int __stdcall Y_EndBattle(LoHook* h, HookContext* c)
 	return EXEC_DEFAULT;
 } 
 
-
 void StartHD5Functions()
 {
 	// дабблклик в окне повышения уровня героя

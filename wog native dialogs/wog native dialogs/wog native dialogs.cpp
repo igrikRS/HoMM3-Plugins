@@ -84,6 +84,7 @@ char* textProcS = "%s";
 #include "src\Sphinx.cpp"
 #include "src\IFG.cpp"
 #include "src\ChooseAttack.cpp"
+#include "src\ScenarioScroll.cpp"
 #include "src\WoGOptions.cpp"
 #include "src\CastleReBuild.cpp"
 #include "src\HD5_Functions.cpp"
