@@ -14,6 +14,8 @@
 #define o_Dlg_Case8 (*(_int_*)0x846B00)
 char* n_DlgExpMon = "DlgExpMon.def";
 
+#define CURMON (*(_int_*)0x7278B6)
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////// дополнительный диалог с флагом опыта /// /////////////////////////////////////////
@@ -40,8 +42,8 @@ int New_Dlg_ExpaMon_Case8(int style)
 	dlg->AddItem(_DlgStaticText_::Create(24, 150, dlg->width -48, 20, o_pCreatureInfo[o_Mon].name_single, n_MedFont, 1, 22, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 	
 
-	int runk = CALL_2(_int_, __cdecl, 0x727F20, 1000, o_Expo); 
-	sprintf(o_TextBuffer, "%s (%d)", Get_ITxtExp(2+runk), runk);
+	int rank = CALL_2(_int_, __cdecl, 0x727F20, CURMON, o_Expo); 
+	sprintf(o_TextBuffer, "%s (%d)", Get_ITxtExp(2+rank), rank);
 	dlg->AddItem(_DlgStaticText_::Create(24, 170, dlg->width -48, 20, o_TextBuffer, n_MedFont, 1, 23, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 
 
@@ -49,12 +51,12 @@ int New_Dlg_ExpaMon_Case8(int style)
 	dlg->AddItem(_DlgStaticText_::Create(24, 190, dlg->width -48, 20, o_TextBuffer, n_MedFont, 1, 24, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 
 
-	sprintf(o_TextBuffer, textProcD, CALL_3(_int_, __cdecl, 0x727FB0, 1000, runk +1, 0) - o_Expo); 
+	sprintf(o_TextBuffer, textProcD, CALL_3(_int_, __cdecl, 0x727FB0, CURMON, rank +1, 0) - o_Expo); 
 	dlg->AddItem(_DlgStaticText_::Create(24, 210, dlg->width -48, 20, o_TextBuffer, n_MedFont, 1, 25, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 
 
-	int t1 = CALL_1(_int_, __cdecl, 0x7283D0, 1000); 
-	int t2 = CALL_1(_int_, __cdecl, 0x727E20, 1000) * t1 / 100;
+	int t1 = CALL_1(_int_, __cdecl, 0x7283D0, CURMON); 
+	int t2 = CALL_1(_int_, __cdecl, 0x727E20, CURMON) * t1 / 100;
 	sprintf(o_TextBuffer, "%d%% (%d)", t1, t2);
 	dlg->AddItem(_DlgStaticText_::Create(24, 230, dlg->width -48, 20, o_TextBuffer, n_MedFont, 1, 26, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 
@@ -63,23 +65,23 @@ int New_Dlg_ExpaMon_Case8(int style)
 	dlg->AddItem(_DlgStaticText_::Create(24, 250, dlg->width -48, 20, o_TextBuffer, n_MedFont, 1, 27, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 
 
-	t1 = CALL_3(_int_, __cdecl, 0x727FB0, 1000, runk, 0);
+	t1 = CALL_3(_int_, __cdecl, 0x727FB0, CURMON, rank, 0);
 	t2 = 999999;
 	if( t1 ){ t2 = o_Num * o_Expo / t1 - o_Num; }	
 	sprintf(o_TextBuffer, textProcD, t2); 
 	dlg->AddItem(_DlgStaticText_::Create(24, 270, dlg->width -48, 20, o_TextBuffer, n_MedFont, 1, 28, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 
-	sprintf(o_TextBuffer, "%hf", CALL_1(double, __cdecl, 0x727C00, 1000)); 
+	sprintf(o_TextBuffer, "%hf", CALL_1(double, __cdecl, 0x727C00, CURMON)); 
 	dlg->AddItem(_DlgStaticText_::Create(24, 290, dlg->width -48, 20, o_TextBuffer, n_MedFont, 1, 29, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 
-	sprintf(o_TextBuffer, "%hf", CALL_1(double, __cdecl, 0x727E00, 1000)); 
+	sprintf(o_TextBuffer, "%hf", CALL_1(double, __cdecl, 0x727E00, CURMON)); 
 	dlg->AddItem(_DlgStaticText_::Create(24, 310, dlg->width -48, 20, o_TextBuffer, n_MedFont, 1, 30, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 
-	t1 = CALL_1(_int_, __cdecl, 0x7283B0, 1000);
+	t1 = CALL_1(_int_, __cdecl, 0x7283B0, CURMON);
 	sprintf(o_TextBuffer, textProcD, t1); 
 	dlg->AddItem(_DlgStaticText_::Create(24, 330, dlg->width -48, 20, o_TextBuffer, n_MedFont, 1, 31, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0));
 
-	t2 = CALL_3(_int_, __cdecl, 0x727FB0, 1000, 10, 0);
+	t2 = CALL_3(_int_, __cdecl, 0x727FB0, CURMON, 10, 0);
 	int t3 = 999999; 
 	if ( t2 ){
 		int t4 = o_Num * (t2 + t1);
@@ -391,8 +393,11 @@ int __stdcall Y_NewDlg_CreatureExpo(HiHook* hook, _CreatureExpo_* crexpo)
 	}
 
 	// желтая рамка обрамления ранга
-	int rank = CALL_2(int, __cdecl, 0x727F20, 1000, o_Expo);
+	int rank = CALL_2(int, __cdecl, 0x727F20, CURMON, o_Expo);
 	b_YellowFrame_Create(dlg, 164+ 56*rank, 50, 56, 16*linesCount, 100, ON, o_Pal_Y);
+
+	// сохраняем ранг в переменную диалога
+	dlg->custom_data[1] = rank;
 
 	// верхние названия	рангов 
 	for (int i = 0; i <= 10; i++){
@@ -459,5 +464,5 @@ int __stdcall Y_NewDlg_CreatureExpo(HiHook* hook, _CreatureExpo_* crexpo)
 void Dlg_ExpaMon(PatcherInstance* _PI)
 {
 	// диалог Экспы монстров
-	_PI->WriteHiHook(0x773B9D, SPLICE_, EXTENDED_, CDECL_, Y_NewDlg_CreatureExpo);
+	_PI->WriteHiHook(0x773B9D, SPLICE_, EXTENDED_, CDECL_, Y_NewDlg_CreatureExpo);	
 }
