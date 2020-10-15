@@ -7,7 +7,18 @@ PatcherInstance* _PI;
 #define BATTON_ID 240
 
 // константы боевых скоростей
-const float battleSpeedCoef[10] = { 1.00f, 0.61f, 0.43f, 0.21f, 0.090f, 0.075f, 0.060f, 0.045f, 0.030f, 0.010f };
+// const float battleSpeedCoef[10] = { 1.00f, 0.61f, 0.43f, 0.21f, 0.090f, 0.075f, 0.060f, 0.045f, 0.030f, 0.010f };
+
+// * new battle speed coefficients from SOD_SP
+float battleSpeedCoef[10] =
+{
+	1.000f, 0.630f, 0.400f, // original speed coefficients
+	0.300f,                 // new speed coefficient
+	0.200f, 0.100f,	        // old SoD_SP turbo speed coefficients
+	0.075f,                 // new speed coefficient
+	0.050f,                 // old SoD_SP turbo speed coefficient
+	0.025f, 0.010f          // new speed coefficients
+};
 
 int __stdcall Y_Dlg_BattleOptions_Proc(HiHook* hook, _EventMsg_* msg)
 {
