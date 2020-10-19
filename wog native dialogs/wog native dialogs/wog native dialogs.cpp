@@ -56,7 +56,11 @@ char myString3[1024];
 #define o_HD_X (*(_int_*)0x401448)
 #define o_HD_Y (*(_int_*)0x40144F)
 
+// Воговская переменная локализации
 #define isRusLang (*(_int_*)0x80321C)
+
+// версия ERA
+int ERA_VERSION = NULL;
 
 char* radioBttnDef = "radiobttn.def";
 char* checkboxDef = "checkbox.def";
@@ -76,6 +80,7 @@ char* textProcS = "%s";
 #define adRollvrPcx (*(char**)0x401F03) // "AdRollvr.pcx"
 
 // подключение всех диалогов по отдельности
+#include "src\MsgBox.cpp"
 #include "src\ChangeBmp.cpp"
 #include "src\NPC.cpp"
 #include "src\CrExpo.cpp"
@@ -188,6 +193,8 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 
 			// подтягиваем ERA
 			Era::ConnectEra();
+			// и сразу получаем версию ERA
+			ERA_VERSION = Era::GetVersionNum();
 
 			// // загружаем HD данные
 			// _HD = _P->GetInstance("HD.WoG"); 
@@ -219,6 +226,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
+			Dlg_MsgBox(_PI);    // новый и расширенный Callback диалога MsgBox
 			Dlg_ChangeBmp(_PI);	// все замены кадров
 			Dlg_ExpaMon(_PI); 	// диалог Экспы монстров
 			Dlg_Curse(_PI);     // диалог проклятий и благословлений

@@ -57,36 +57,6 @@ int __stdcall Y_Lo_Dlg_HeroLvlUp_Create(LoHook* h, HookContext* c)
 
 // #############################################################################################
 
-int __stdcall b_MsgBox_Proc(HiHook* hook, _EventMsg_* msg)
-{	
-	if (msg->type == MT_MOUSEBUTTON)
-	{
-		if (msg->subtype == MST_LBUTTONDOWN)
-		{
-			if (msg->item_id == 30729 || msg->item_id == 30730)   
-			{	
-				if (b_MsgBox_Style_id == 7 || b_MsgBox_Style_id == 10) {
-					if ( (o_GetTime() - time_click_MsgBox) < 300 && msg->item_id == b_MsgBox_Result_id) 
-					{
-						o_TimeClick = 0;
-						time_click_MsgBox = 0;
-						o_WndMgr->result_dlg_item_id = msg->item_id;
-						msg->type = 512;
-						msg->subtype = 10;
-						msg->item_id = 10;
-						e_ClickSound();
-						return 2;
-					}  else	time_click_MsgBox = o_GetTime();
-				}
-			}
-		}
-	}
-
-	return CALL_1(int, __thiscall, hook->GetDefaultFunc(), msg);
-}
-
-// #############################################################################################
-
 int __stdcall Y_Dlg_Recuit_Proc(HiHook* hook, _Struct_* this_, _EventMsg_* msg)
 {
 	int ret = CALL_2(int, __thiscall, hook->GetDefaultFunc(), this_, msg);
@@ -227,9 +197,6 @@ void StartHD5Functions()
 	_PI->WriteHiHook(0x4F9E10, SPLICE_, EXTENDED_, THISCALL_, Y_Dlg_HeroLvlUp_Proc);
 	// _PI->WriteHiHook(0x4F8F10, SPLICE_, EXTENDED_, THISCALL_, Y_Dlg_HeroLvlUp_Create);
 	_PI->WriteLoHook(0x4F8F15, Y_Lo_Dlg_HeroLvlUp_Create);
-
-	// двойной клик в b_MsgBox()
-	_PI->WriteHiHook(0x4F0F60, SPLICE_, EXTENDED_, THISCALL_, b_MsgBox_Proc);
 
 	// установить ползунок в MAX положение при покупке монстров
 	_PI->WriteHiHook(0x550D40, SPLICE_, EXTENDED_, THISCALL_, Y_Dlg_Recuit_Proc);

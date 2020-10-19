@@ -44,6 +44,9 @@ _bool_ Dlg_CustomReq_Ban = false;
 
 bool IsSupportedFormatImage(char* image_name) 
 {
+	if ( ERA_VERSION < 2940 )
+		return false;
+
 	bool ret = false;
 	char im_name[256];
 	MemCopy(im_name, image_name, 256);		
@@ -563,7 +566,7 @@ int __stdcall Y_Dlg_CustomPic(HiHook* hook, int num, int startup)
 
         WoG_SplitPath(CD->Pic[0], MyString1, MyString2 );
 
-        if ( IsSupportedFormatImage( MyString2) )
+        if ( IsSupportedFormatImage( MyString2 ) )
         {
             Y_Mouse_SetCursor(0); 
 
