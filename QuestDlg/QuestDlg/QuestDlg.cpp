@@ -235,13 +235,10 @@ void __fastcall Dlg_QuestLog_Scroll(int step, _CustomDlg_* dlg)
 
 int ShowComplexDialog(char* text, int pixArr)
 {
-	// _PI->WriteDword(0x4F7E4A +3, 4); // организуем ПКМ
-	int ret = CALL_5(int, __fastcall, 0x4F7D20, text, pixArr, -1, -1, 4 << 16);
-	// _PI->WriteDword(0x4F7E4A +3, 1); // восстанавливаем
-	return ret;
+	return CALL_5(int, __fastcall, 0x4F7D20, text, pixArr, -1, -1, MBX_RMC << 16);;
 }
 
-// вынести сюда отображение ShowComplexDialog(квест)
+
 int PreShowRMC_ComplexQuestDialog(_H3Quest_* quest, char* quest_text)
 {
 	// добавляем текст последнего дня
