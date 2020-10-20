@@ -235,7 +235,7 @@ void __fastcall Dlg_QuestLog_Scroll(int step, _CustomDlg_* dlg)
 
 int ShowComplexDialog(char* text, int pixArr)
 {
-	return CALL_5(int, __fastcall, 0x4F7D20, text, pixArr, -1, -1, MBX_RMC << 16);;
+	return CALL_5(int, __fastcall, 0x4F7D20, text, pixArr, -1, -1, MBX_RMC << 16);
 }
 
 
@@ -356,8 +356,7 @@ int __stdcall Dlg_QuestLog_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 			if (msg->subtype == MST_LBUTTONDOWN ) 
 			{ // при нажатии ЛКМ
 				// поиск по всей карте определенного квеста 
-				// (мне такой способ нихера не нравится)
-				// int guard_id = dlg->custom_data[1];
+				//(мне такой способ нихера не нравится)
 				_GameMgr_* gm = o_GameMgr;		
 				int need_find = it->field_3C;
 				int start_dataSH = (int)gm->Map.QuestSeerHuts.Data;
@@ -366,20 +365,14 @@ int __stdcall Dlg_QuestLog_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 				for (int z = 0; z < gm->Map.has_underground +1; z++) {
 					for (int x = 0; x < gm->Map.size; x++) {
 						for (int y = 0; y < gm->Map.size; y++) {
-							_MapItem_* mapIt = (int)&gm->Map.GetItem(x, y, z);
+							_MapItem_* mapIt = gm->Map.GetItem(x, y, z);
 
-							if (!mapIt) {
-								sprintf(o_TextBuffer, "x/y/z: %d/%d/%d \n mapIt: %d", x, y, z, mapIt);
-								b_MsgBox(o_TextBuffer, 1);
-							}
-							// if (mapIt) {
+							if (mapIt) {
 								int obj_id_real = mapIt->object_type;
 
-								//if (obj_id_real == 34) { 
-								//	obj_id_real = mapIt->GetReal__object_type();
-									//sprintf(o_TextBuffer, "obj_id_real: %d/%d (%d/%d/%d)", obj_id_real, mapIt->os_type, x, y, z);
-									//b_MsgBox(o_TextBuffer, 1);
-								//}
+								if (obj_id_real == 34) { 
+									obj_id_real = mapIt->GetReal__object_type();
+								}
 
 								if ( obj_id_real == 83) {
 									if (need_find == (19*mapIt->setup + start_dataSH) ) { // вот тут надо думать: mapIt->setup когда стоит герой неправильно считывается
@@ -403,7 +396,7 @@ int __stdcall Dlg_QuestLog_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 											break;
 									}
 								}
-							// } // end if mapIt
+							} // end if mapIt
 						}
 					}
 				}
