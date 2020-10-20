@@ -188,4 +188,9 @@ void Dlg_MsgBox(PatcherInstance* _PI)
 	_PI->WriteHiHook(0x4F1650, SPLICE_, EXTENDED_, THISCALL_, Y_New_MsgBox_Proc);
 	// установка дефолтной желтой рамки (как буд-то она уже выбранна)
 	_PI->WriteLoHook(0x4F7B46, Y_New_MsgBox_SetDefaultFrameEnabled);
+	// правильное смещение для жёлтых рамок
+	_PI->WriteByte(0x4F7985 +2, 1); // увеличение ширины
+	_PI->WriteByte(0x4F7988 +2, 1); // увеличение высоты
+	// увеличение высоты скролл текста
+	_PI->WriteDword(0x4F662F +1, o_HD_Y-440);
 }

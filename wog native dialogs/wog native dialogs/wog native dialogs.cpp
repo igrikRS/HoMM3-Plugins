@@ -158,6 +158,7 @@ int __stdcall Y_Hook_MainLoop(LoHook* h, HookContext* c)
 	// теперь создаём свои хуки после всех патчей вога
 	Dlg_WoGOptions(_PI);   // диалог WoG Опций 
 	Dlg_NPC(_PI); 		   // диалог командира	
+	Dlg_MsgBox(_PI);       // новый и расширенный Callback диалога MsgBox
 
 #ifdef DOP_FUNK_TO_ERA
 	json_Combat[0] = GetEraJSON("wnd.combat.finish_question");
@@ -226,7 +227,6 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-			Dlg_MsgBox(_PI);    // новый и расширенный Callback диалога MsgBox
 			Dlg_ChangeBmp(_PI);	// все замены кадров
 			Dlg_ExpaMon(_PI); 	// диалог Экспы монстров
 			Dlg_Curse(_PI);     // диалог проклятий и благословлений

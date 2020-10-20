@@ -366,37 +366,44 @@ int __stdcall Dlg_QuestLog_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 				for (int z = 0; z < gm->Map.has_underground +1; z++) {
 					for (int x = 0; x < gm->Map.size; x++) {
 						for (int y = 0; y < gm->Map.size; y++) {
-							_MapItem_* mapIt = gm->Map.GetItem(x, y, z);
-							int obj_id_real = mapIt->object_type;
+							_MapItem_* mapIt = (int)&gm->Map.GetItem(x, y, z);
 
-							if (obj_id_real == 34) { 
-								obj_id_real = mapIt->GetReal__object_type();
-								//sprintf(o_TextBuffer, "obj_id_real: %d/%d (%d/%d/%d)", obj_id_real, mapIt->os_type, x, y, z);
-								//b_MsgBox(o_TextBuffer, 1);
+							if (!mapIt) {
+								sprintf(o_TextBuffer, "x/y/z: %d/%d/%d \n mapIt: %d", x, y, z, mapIt);
+								b_MsgBox(o_TextBuffer, 1);
 							}
+							// if (mapIt) {
+								int obj_id_real = mapIt->object_type;
 
-							if ( obj_id_real == 83) {
-								if (need_find == (19*mapIt->setup + start_dataSH) ) { // вот тут надо думать: mapIt->setup когда стоит герой неправильно считывается
-									// вычисляем правильную центровку с учетом HD
-									int hex_x = (o_HD_X -192) >> 6; // разделить на 64
-									int hex_y = (o_HD_Y -56) >> 6;
-									quest_show_coords[0] = 1;
-									quest_show_coords[1] = b_pack_xyz(x -hex_x, y-hex_y, z);
-										break;
+								//if (obj_id_real == 34) { 
+								//	obj_id_real = mapIt->GetReal__object_type();
+									//sprintf(o_TextBuffer, "obj_id_real: %d/%d (%d/%d/%d)", obj_id_real, mapIt->os_type, x, y, z);
+									//b_MsgBox(o_TextBuffer, 1);
+								//}
+
+								if ( obj_id_real == 83) {
+									if (need_find == (19*mapIt->setup + start_dataSH) ) { // вот тут надо думать: mapIt->setup когда стоит герой неправильно считывается
+										// вычисляем правильную центровку с учетом HD
+										int hex_x = (o_HD_X -192) >> 6; // разделить на 64
+										int hex_y = (o_HD_Y -56) >> 6;
+										quest_show_coords[0] = 1;
+										quest_show_coords[1] = b_pack_xyz(x -hex_x, y-hex_y, z);
+											break;
+									}
 								}
-							}
 
-							if ( obj_id_real == 215) {
-								if (need_find == (5*mapIt->setup + start_dataGG) ) {
-									// вычисляем правильную центровку с учетом HD
-									int hex_x = (o_HD_X -192) >> 6; // разделить на 64
-									int hex_y = (o_HD_Y -56) >> 6;
-									quest_show_coords[0] = 1;
-									quest_show_coords[1] = b_pack_xyz(x -hex_x, y-hex_y, z);
+								if ( obj_id_real == 215) {
+									if (need_find == (5*mapIt->setup + start_dataGG) ) {
+										// вычисляем правильную центровку с учетом HD
+										int hex_x = (o_HD_X -192) >> 6; // разделить на 64
+										int hex_y = (o_HD_Y -56) >> 6;
+										quest_show_coords[0] = 1;
+										quest_show_coords[1] = b_pack_xyz(x -hex_x, y-hex_y, z);
 
-										break;
+											break;
+									}
 								}
-							}
+							// } // end if mapIt
 						}
 					}
 				}
