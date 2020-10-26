@@ -119,7 +119,7 @@ _int_ __stdcall Y_AutoGradeMonInTown(LoHook* h, HookContext* c)
 		_Player_* me = o_GameMgr->GetMe();
 		if (me->IsActive()) 
 		{
-			_Town_* town = o_TownMgr->town; 
+			_Town_* town = o_TownMgr->town;
 			int clickID = c->edi; 
 
 			if (TryToUpgrade(town, me, clickID)) {

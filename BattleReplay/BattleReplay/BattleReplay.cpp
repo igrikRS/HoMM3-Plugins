@@ -5,6 +5,9 @@ PatcherInstance* _PI;
 
 #define hdv(type, name) _P->VarValue<type>((_cstr_)(name))
 
+#define BACall_Day (*(_int_*)0x79F0B8)
+#define BACall_Turn (*(_int_*)0x79F0BC)
+
 #define o_TimeClick (*(_int_*)0x6977D4)
 _bool_ isNeedReplay, ifCanReplay;
 
@@ -76,7 +79,23 @@ int __stdcall Y_Dlg_BattleResults_Proc(HiHook* hook, _EventMsg_* msg)
 ////////////////////////////////////////////////////////////////////////// 
 ////////////////////////////////////////////////////////////////////////// 
 
+int __stdcall Y_SetBattleSave(LoHook* h, HookContext* c)
+{
+	_GameMgr_* gm = o_GameMgr;
+	_Hero_* atacker = *(_Hero_**)0x2860248;
 
+	int meID = gm->GetMe()->id;
+	int attackerID = atacker->owner_id;
+
+	if ( meID == attackerID ) {
+		CALL_6(char, __thiscall, 0x4BEB60, gm, "BATTLE!", 1, 0, 1, 0);
+	}
+
+
+	return EXEC_DEFAULT; 
+}
+////////////////////////////////////////////////////////////////////////// 
+////////////////////////////////////////////////////////////////////////// 
 int __stdcall Y_ReplayBattle(HiHook* hook, _AdvMgr_* advMng, _dword_ MixedPos, _Hero_* HrA, _Army_* MArrA, _int_ OwnerD, _dword_ townD, _Hero_* HrD, _Army_* MArrD, _int_ Pv3, _dword_ Pv2, _dword_ Pv1)
 {	
 	int ret = 0; 
@@ -140,7 +159,7 @@ int __stdcall Y_ReplayBattle(HiHook* hook, _AdvMgr_* advMng, _dword_ MixedPos, _
 		MemCopy(armyDS, MArrD, 56);
 	}
 
-
+	// начало цикла повтора битвы
 	do {
 		if (HrA) {
 			MemCopy(HrA, HrAS, 1170);
@@ -164,14 +183,18 @@ int __stdcall Y_ReplayBattle(HiHook* hook, _AdvMgr_* advMng, _dword_ MixedPos, _
 			MemCopy(MArrD, armyDS, 56);
 		}
 
-		if (isNeedReplay) {
+		if (isNeedReplay) {				
+			o_QuickBattle = 0;						
+			hdv(_bool_, "HD.QuickCombat") = 0;	
 			ERM_FU_CALL(870520); // аналог !!FU87052:P (важно! можно испортить все переменные)
-			o_QuickBattle = 0;
-			hdv(_bool_, "HD.QuickCombat") = 0;
-			
+			// CALL_0(void, __cdecl, 0x75A5EF); // G2B_Prepare()
 		}
-		
-		o_BattleMgr->round = 0; // фикс призывов от опыта стеков (вызов существ в 1м раунде битвы)
+
+		// фикс призывов от опыта стеков (вызов существ в 1м раунде битвы)
+		o_BattleMgr->round = 0; 
+		BACall_Day = -1;
+		BACall_Turn = -1; 
+
 		ret = CALL_11(int, __thiscall, hook->GetDefaultFunc(), advMng, MixedPos, HrA, MArrA, OwnerD, townD, HrD, MArrD, Pv3, Pv2, Pv1);
 
 		if ( isNeedReplay ) {
@@ -224,8 +247,13 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 			_PI->WriteLoHook(0x4B0A9F, Y_SkipRedrawAdvMap); // пропускаем обновление мира сразу после битвы
 			_PI->WriteLoHook(0x4ADFE8, Y_SkipALL);          // пропускаем всё сразу после битвы
 
+			_PI->WriteLoHook(0x75AE24, Y_SetBattleSave);    // создание BATTLE SAVE
+
 			_PI->WriteHexPatch(0x75AEB0, "E8 AB22D5FF 90 90");	// CALL 0x4AD160 (BATTLE) + 2NOPs
 			_PI->WriteHiHook(0x75AEB0, CALL_, SAFE_, THISCALL_, Y_ReplayBattle);
+			
+			
+			
 
 			// Есть баг: Астральный дух возвращает существ перед первой переигровкой
 			// исправить так: JMP в 0x76C632 -> 0x76C72B

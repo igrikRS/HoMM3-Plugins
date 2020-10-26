@@ -68,6 +68,8 @@ void __fastcall SimpleTextScrolled(int step, _CustomDlg_* dlg)
 
 void CreateNewBattleLogDlg(_BattleMgr_* bm)
 {
+	e_ClickSound();
+
 	Y_Mouse_SetCursor(0);
 
 	int x = 640;
@@ -168,7 +170,7 @@ int __stdcall BattleLog_Proc(HiHook* hook, _BattleMgr_* bm, _EventMsg_*msg)
 
 	if (msg->type == MT_MOUSEBUTTON)
 		if (msg->subtype == MST_LBUTTONCLICK)
-			if ( msg->item_id == 2005 )				
+			if ( msg->item_id == 2005 )	
 				CreateNewBattleLogDlg(bm);
 
 	if (msg->type == MT_KEYDOWN)
@@ -179,6 +181,13 @@ int __stdcall BattleLog_Proc(HiHook* hook, _BattleMgr_* bm, _EventMsg_*msg)
 }
 
 
+void __stdcall BattleLog_ReportNewRound(HiHook* hook, _dword_ battleDlg, const char* textRound, int a3, char a4)
+{
+	sprintf(myString3, "%s {(%d)}", textRound, o_BattleMgr->round);
+	CALL_4(void, __thiscall, hook->GetDefaultFunc(), battleDlg, myString3, a3, a4);
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -186,4 +195,7 @@ void DlgBattleLog(PatcherInstance* _PI)
 {
 	// диалог статуса действий и событий в битве
 	_PI->WriteHiHook(0x473A00, SPLICE_, EXTENDED_, THISCALL_, BattleLog_Proc);
+
+	// отображение номера раунда в битве
+	_PI->WriteHiHook(0x475B19, CALL_, EXTENDED_, THISCALL_, BattleLog_ReportNewRound);
 }

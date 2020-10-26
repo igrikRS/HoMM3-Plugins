@@ -12,7 +12,7 @@
 #include "..\..\..\include\WogClasses.h"
 
 #include "..\..\..\include\era.h"
-// using namespace Era;
+using namespace Era;
 
 Patcher* _P;
 PatcherInstance* _PI;
@@ -36,7 +36,7 @@ char* json_Combat[2];
 
 // функция получения JSON строк методом ERA
 char* GetEraJSON(const char* json_string_name) {
-	return Era::tr(json_string_name);
+	return tr(json_string_name);
 }
 
 // глобальная переменная для функции изменения 
@@ -91,6 +91,7 @@ char* textProcS = "%s";
 #include "src\ChooseAttack.cpp"
 #include "src\ScenarioScroll.cpp"
 #include "src\WoGOptions.cpp"
+#include "src\WoGOptionsStrings.cpp"
 #include "src\CastleReBuild.cpp"
 #include "src\HD5_Functions.cpp"
 #include "src\BattleLogDlg.cpp"
@@ -107,7 +108,7 @@ int __stdcall Y_Dlg_MainMenu_Create(HiHook* hook, _Dlg_* dlg)
 {
 	int ret = CALL_1(int, __thiscall, hook->GetDefaultFunc(), dlg);
 
-	const char* ERA_version = Era::GetEraVersion();
+	const char* ERA_version = GetEraVersion();
 	sprintf(o_TextBuffer, "HoMM3 ERA %s", ERA_version );
 	dlg->AddItem(_DlgStaticText_::Create(596, 576, 200, 20, o_TextBuffer, n_MedFont, 7, 545, ALIGN_H_RIGHT | ALIGN_V_BOTTOM, 0)); 
 
@@ -193,9 +194,9 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 			_PI = _P->CreateInstance("WoG Native Dialogs"); 
 
 			// подтягиваем ERA
-			Era::ConnectEra();
+			ConnectEra();
 			// и сразу получаем версию ERA
-			ERA_VERSION = Era::GetVersionNum();
+			ERA_VERSION = GetVersionNum();
 
 			// // загружаем HD данные
 			// _HD = _P->GetInstance("HD.WoG"); 
@@ -227,6 +228,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
+			WoGOptionsStrings(_PI);	// вырезаем текстовик "zsetup00.txt"
 			Dlg_ChangeBmp(_PI);	// все замены кадров
 			Dlg_ExpaMon(_PI); 	// диалог Экспы монстров
 			Dlg_Curse(_PI);     // диалог проклятий и благословлений

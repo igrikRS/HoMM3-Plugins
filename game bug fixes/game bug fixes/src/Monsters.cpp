@@ -307,65 +307,65 @@ int __stdcall Fix_WoG_GetCreatureGrade_Town(LoHook* h, HookContext* c)
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// фикс сетевой разсинхронизации стеков в бою
-void __stdcall Y_SelectNewMonsterToAct(HiHook* hook, _BattleMgr_* bm, int side, int stack_id_in_side)
-{
-    if (o_NetworkGame) {
-        if ( o_GameMgr->IsPlayerHuman(bm->owner_id[1]) ) { 
-            if ( o_GameMgr->IsPlayerHuman(bm->owner_id[0]) ) { 
-                _int32_ net[14197];  // 56748 +40 = 56788 / 4 = 14197
-                net[0] = -1;
-                net[1] = NULL;
-                net[2] = 1987;
-                net[3] = 56788;
-                net[4] = 0;
-                net[5] = side; 
-                net[6] = stack_id_in_side;
-
-                int bmStart = (int)o_BattleMgr +21708 -40;
-                for (int i=10; i<14197; i++) {
-                	net[i] = *(int*)(bmStart +i*4);
-                }
-
-                _int32_ isGood = CALL_4(_int32_, __fastcall, 0x5549E0, (int)&net, *(int*)(0x697790 +4*bm->current_side), 0, 1); 
-                if ( !isGood ) 
-                	CALL_1(char, __thiscall, 0x4F3D20, 0);
-
-                delete[] net;
-            }
-        }
-    }
-    CALL_3(void, __thiscall, hook->GetDefaultFunc(), bm, side, stack_id_in_side);
-}
-
-int __stdcall Y_BM_ReceNetData(LoHook* h, HookContext* c)
-{
-    int id = *(int*)(c->esi +8);
-    if ( id == 1987 ) {
-
-        _int32_ netData = c->esi; // netData содержит прямой адрес переданного массива net[14197] 
-
-        int bmStart = (int)o_BattleMgr +21708; // начало стеков
-        int netDSt = netData +40;
-        for (int i=0; i<42; i++) {
-            for (int k=0; k<1352; k++) { 
-                if (k>=40 && k<44) continue;
-                if (k>=116 && k<172) continue;
-                if (k>=272 && k<404) continue;				
-                if (k>=1056 && k<1108) continue;
-                if (k>=1264) continue;
-
-                *(char*)(bmStart +i*1352 +k) = *(char*)(netDSt +i*1352 +k);
-            }
-        }
-
-        CALL_3(void, __thiscall, 0x464F10, o_BattleMgr, *(int*)(netData +20), *(int*)(netData +24));
-
-        CALL_1(void*, __thiscall, 0x555D00, netData); // деструктор
-    }
-
-    return EXEC_DEFAULT; 
-}
+//// фикс сетевой разсинхронизации стеков в бою
+//void __stdcall Y_SelectNewMonsterToAct(HiHook* hook, _BattleMgr_* bm, int side, int stack_id_in_side)
+//{
+//    if (o_NetworkGame) {
+//        if ( o_GameMgr->IsPlayerHuman(bm->owner_id[1]) ) { 
+//            if ( o_GameMgr->IsPlayerHuman(bm->owner_id[0]) ) { 
+//                _int32_ net[14197];  // 56748 +40 = 56788 / 4 = 14197
+//                net[0] = -1;
+//                net[1] = NULL;
+//                net[2] = 1987;
+//                net[3] = 56788;
+//                net[4] = 0;
+//                net[5] = side; 
+//                net[6] = stack_id_in_side;
+//
+//                int bmStart = (int)o_BattleMgr +21708 -40;
+//                for (int i=10; i<14197; i++) {
+//                	net[i] = *(int*)(bmStart +i*4);
+//                }
+//
+//                _int32_ isGood = CALL_4(_int32_, __fastcall, 0x5549E0, (int)&net, *(int*)(0x697790 +4*bm->current_side), 0, 1); 
+//                if ( !isGood ) 
+//                	CALL_1(char, __thiscall, 0x4F3D20, 0);
+//
+//                delete[] net;
+//            }
+//        }
+//    }
+//    CALL_3(void, __thiscall, hook->GetDefaultFunc(), bm, side, stack_id_in_side);
+//}
+//
+//int __stdcall Y_BM_ReceNetData(LoHook* h, HookContext* c)
+//{
+//    int id = *(int*)(c->esi +8);
+//    if ( id == 1987 ) {
+//
+//        _int32_ netData = c->esi; // netData содержит прямой адрес переданного массива net[14197] 
+//
+//        int bmStart = (int)o_BattleMgr +21708; // начало стеков
+//        int netDSt = netData +40;
+//        for (int i=0; i<42; i++) {
+//            for (int k=0; k<1352; k++) { 
+//                if (k>=40 && k<44) continue;
+//                if (k>=116 && k<172) continue;
+//                if (k>=272 && k<404) continue;				
+//                if (k>=1056 && k<1108) continue;
+//                if (k>=1264) continue;
+//
+//                *(char*)(bmStart +i*1352 +k) = *(char*)(netDSt +i*1352 +k);
+//            }
+//        }
+//
+//        CALL_3(void, __thiscall, 0x464F10, o_BattleMgr, *(int*)(netData +20), *(int*)(netData +24));
+//
+//        CALL_1(void*, __thiscall, 0x555D00, netData); // деструктор
+//    }
+//
+//    return EXEC_DEFAULT; 
+//}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////
