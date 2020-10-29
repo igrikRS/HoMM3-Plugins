@@ -48,6 +48,7 @@ char myString1[1024];
 char myString2[1024];
 char myString3[1024];
 
+#define MyString  (char*)myString1
 #define MyString1 (char*)myString1
 #define MyString2 (char*)myString2
 #define MyString3 (char*)myString3

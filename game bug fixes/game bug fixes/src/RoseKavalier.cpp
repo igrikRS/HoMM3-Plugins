@@ -80,6 +80,23 @@ int __stdcall FaerieButton_RMB(LoHook *h, HookContext *c)
     return EXEC_DEFAULT;
 }
 
+
+/*
+ * Wait Phase Bug [2].
+ * Because Wait Phase Bug [1] restores access to a function at all times,
+ * portion of its code must be skipped during Wait Phase.
+ */
+
+int __stdcall RK_WaitPhaseBug(LoHook *h, HookContext *c)
+{
+	if (o_BattleMgr->isWaitFaza) // мы должны предотвратить триггер регена существ или регена элексира жизни
+		c->flags.ZF = TRUE;      // потому что он не должен был действовать в этой фазе
+
+
+	return EXEC_DEFAULT;
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -106,6 +123,10 @@ void RK(Patcher* _P, PatcherInstance* _PI)
 
         // работающая кнопка Отмена в Арене			
         _PI->WriteByte(0x49E4EC +1, 99); 
+		
+		// функцию регена в фазе ожидания (я не совсем понимаю зачем)
+		// _PI->WriteLoHook(0x446BCD, RK_WaitPhaseBug); // Wait Phase Bug part 2 (WTF?)
+		// _PI->WriteJmp(0x464DF1, 0x464DFB);  // Wait Phase Bug part 1 (WTF?)
 
         // ХЗ  что это (возможно операции со стеками)
         _PI->WriteByte(0x49C021, 183);
@@ -115,8 +136,8 @@ void RK(Patcher* _P, PatcherInstance* _PI)
         _PI->WriteByte(0x4C9662, 183);
         _PI->WriteByte(0x4FD164, 183);
         _PI->WriteByte(0x505C9F, 183);
-        _PI->WriteByte(0x52CD36, 183);
-        _PI->WriteJmp(0x464DF1, 0x464DFB);
+        _PI->WriteByte(0x52CD36, 183);		
+		
         _PI->WriteHexPatch(0x4FD12A, "0F BF 78 24 83 FF FF 0F 84");
         _PI->WriteHexPatch(0x505C75, "0F BF 77 24 83 FE FF 74");
         _PI->WriteHexPatch(0x52CD26, "0F BF 7F 24 83 FF FF 74");

@@ -1,10 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////// заполнение строк диалога WoG Опций из JSON файла ///////////////////////////
 
-// Особая благодарность Берсеркеру!
-// Он помог найти и исправить сложный вылет при отсутвствии файла ZSETUP00.TXT :-)
-
-
 #define o_WogOptions ((_DlgSetup_*)0x2918390)
 #define o_ChooseFile ((_ChooseFile_*)0x7B3614)
 
@@ -26,45 +22,53 @@ char* optionsIntro = "wog_options.main.intro";
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
+void SetupJsonText( char* target, const char* jsonName)
+{
+	char* jsonText = GetEraJSON(jsonName);
+
+	if ( strcmp(jsonName, jsonText) ) {
+		strcpy(target, jsonText);
+	}
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
 // функия заполнения строк: 
 // имеет всего один вызов из 0x77941A
 void __stdcall WOG_ProcessAll(HiHook* h)
 {
-	// НЕ вызываем орининальную функцию
-	// CALL_0(void, __cdecl, h->GetDefaultFunc() );  // потом обязательно закоментировать
+	// не вырезаем оригинальную функцию (обратная совместимость)
+	CALL_0(void, __cdecl, h->GetDefaultFunc() ); 
 
 	// получаем структуру диалога ВОГ Опций
 	_DlgSetup_* ds = o_WogOptions;
 
-	// вызываем функцию BuildAll();
-	CALL_0(void, __cdecl, 0x7787CE); 
-
-	// А теперь сами реализуем заполнение строк
-	ds->Name = GetEraJSON(optionsName);
-	ds->Hint = GetEraJSON(optionsHint);
-	ds->PopUp = GetEraJSON(optionsPopUp);
-	ds->Intro = GetEraJSON(optionsIntro);
+	SetupJsonText(ds->Name, optionsName);
+	SetupJsonText(ds->Hint, optionsHint);
+	SetupJsonText(ds->PopUp, optionsPopUp);
+	SetupJsonText(ds->Intro, optionsIntro);
 
 	for (int i = 0; i < 8; i++) {
 		sprintf(strPage, textPage, i, name);
-		ds->Pages[i]->Name = GetEraJSON(strPage);
+		SetupJsonText(ds->Pages[i]->Name, strPage);
 
 		sprintf(strPage, textPage, i, hint);
-		ds->Pages[i]->Hint = GetEraJSON(strPage);
+		SetupJsonText(ds->Pages[i]->Hint, strPage);
 
 		sprintf(strPage, textPage, i, popUp);
-		ds->Pages[i]->PopUp = GetEraJSON(strPage);
+		SetupJsonText(ds->Pages[i]->PopUp, strPage);
 
 		sprintf(strPage, textPage, i, list);
 		for(int j = 0; j < 4; j++){
 			sprintf(strList, strPage, j, name);
-			ds->Pages[i]->ItemList[j]->Name = GetEraJSON(strList);
+			SetupJsonText(ds->Pages[i]->ItemList[j]->Name, strList);
 
 			sprintf(strList, strPage, j, hint);
-			ds->Pages[i]->ItemList[j]->Hint = GetEraJSON(strList);
+			SetupJsonText(ds->Pages[i]->ItemList[j]->Hint, strList);
 
 			sprintf(strList, strPage, j, popUp);
-			ds->Pages[i]->ItemList[j]->PopUp = GetEraJSON(strList);
+			SetupJsonText(ds->Pages[i]->ItemList[j]->PopUp, strList);
 		}
 	}
 }
@@ -76,37 +80,38 @@ int __stdcall Dlg_SaveDatFile1(LoHook* h, HookContext* c)
 {
     _ChooseFile_* cf = o_ChooseFile;
 
-	cf->Caption = GetEraJSON("dlg_datfile.captionsave");
-	cf->Description = GetEraJSON("dlg_datfile.descrsave");
-	cf->Mask = GetEraJSON("dlg_datfile.filemask");
+	SetupJsonText(cf->Caption, "dlg_datfile.captionsave");
+	SetupJsonText(cf->Description, "dlg_datfile.descrsave");
+	SetupJsonText(cf->Mask, "dlg_datfile.filemask");
 
 	return EXEC_DEFAULT;
 } 
 
-int __stdcall Dlg_SaveDatFile2(LoHook* h, HookContext* c)
-{
-	c->eax = (int)GetEraJSON("dlg_datfile.cannotsave");
-
-	return EXEC_DEFAULT;
-} 
+//int __stdcall Dlg_SaveDatFile2(LoHook* h, HookContext* c)
+//{
+//	c->eax = (int)GetEraJSON("dlg_datfile.cannotsave");
+//
+//	return EXEC_DEFAULT;
+//} 
 
 int __stdcall Dlg_LoadDatFile1(LoHook* h, HookContext* c)
 {
     _ChooseFile_* cf = o_ChooseFile;
 
-	cf->Caption = GetEraJSON("dlg_datfile.captionload");
-	cf->Description = GetEraJSON("dlg_datfile.descrload");
-	cf->Mask = GetEraJSON("dlg_datfile.filemask");
+	SetupJsonText(cf->Caption, "dlg_datfile.captionload");
+	SetupJsonText(cf->Description, "dlg_datfile.descrload");
+	SetupJsonText(cf->Mask, "dlg_datfile.filemask");
 
 	return EXEC_DEFAULT;
 } 
 
-int __stdcall Dlg_LoadDatFile2(LoHook* h, HookContext* c)
-{
-	c->eax = (int)GetEraJSON("dlg_datfile.cannotload");
-
-	return EXEC_DEFAULT;
-} 
+//int __stdcall Dlg_LoadDatFile2(LoHook* h, HookContext* c)
+//{
+//	// c->eax = (int)GetEraJSON("dlg_datfile.cannotload");
+//	SetupJsonText((char*)c->eax, "dlg_datfile.cannotload");
+//
+//	return EXEC_DEFAULT;
+//} 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,19 +123,11 @@ void WoGOptionsStrings(PatcherInstance* _PI)
 		_PI->WriteHiHook(0x778A9D, SPLICE_, EXTENDED_, CDECL_, WOG_ProcessAll);
 
 		// save
-		_PI->WriteCodePatch(0x77793D, "%n", 75); // 75 nops 
-		_PI->WriteCodePatch(0x7779ED, "%n", 17); // 17 nops 
-		_PI->WriteLoHook(0x777983, Dlg_SaveDatFile1);
-		_PI->WriteLoHook(0x7779F9, Dlg_SaveDatFile2);
+		_PI->WriteLoHook(0x7779A9, Dlg_SaveDatFile1);
 
 		// load
-		_PI->WriteCodePatch(0x777A87, "%n", 75); // 75 nops 
-		_PI->WriteCodePatch(0x777B6E, "%n", 17); // 17 nops 
-		_PI->WriteLoHook(0x777ACD, Dlg_LoadDatFile1);
-		_PI->WriteLoHook(0x777B7A, Dlg_SaveDatFile2);
+		_PI->WriteLoHook(0x777AF3, Dlg_LoadDatFile1);
 
-		// вырезаем загрузку файла "ZSETUP00.TXT"
-		_PI->WriteCodePatch(0x7792ED, "%n", 37); 
 	}
 
 	return;
