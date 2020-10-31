@@ -1,5 +1,8 @@
 #include "..\..\..\include\homm3.h"
 
+#include "..\..\..\include\era.h"
+using namespace Era;
+
 Patcher* _P;
 PatcherInstance* _PI;
 
@@ -183,22 +186,24 @@ int __stdcall Y_ReplayBattle(HiHook* hook, _AdvMgr_* advMng, _dword_ MixedPos, _
 			MemCopy(MArrD, armyDS, 56);
 		}
 
-		if (isNeedReplay) {				
+		if (isNeedReplay) {	//благодоря этой проверке пропускаем первый вызов битвы
+			// фикс призывов от опыта стеков (вызов существ в 1м раунде битвы)
+			o_BattleMgr->round = 0; 
+			BACall_Day = -1;
+			BACall_Turn = -1; 
+
 			o_QuickBattle = 0;						
 			hdv(_bool_, "HD.QuickCombat") = 0;	
-			ERM_FU_CALL(870520); // аналог !!FU87052:P (важно! можно испортить все переменные)
-			// CALL_0(void, __cdecl, 0x75A5EF); // G2B_Prepare()
+			ERM_FU_CALL(870520); 
+			FireEvent("OnBeforeBattleReplay", NULL, 0);
 		}
-
-		// фикс призывов от опыта стеков (вызов существ в 1м раунде битвы)
-		o_BattleMgr->round = 0; 
-		BACall_Day = -1;
-		BACall_Turn = -1; 
-
+		
+		// непосредственный вызов битвы
 		ret = CALL_11(int, __thiscall, hook->GetDefaultFunc(), advMng, MixedPos, HrA, MArrA, OwnerD, townD, HrD, MArrD, Pv3, Pv2, Pv1);
 
 		if ( isNeedReplay ) {
-			ERM_FU_CALL(870530); // аналог !!FU87053:P (важно! можно испортить все переменные)
+			FireEvent("OnAfterBattleReplay", NULL, 0);
+			ERM_FU_CALL(870530); 
 		}
 	} while ( isNeedReplay );
 
@@ -221,6 +226,28 @@ int __stdcall Y_ReplayBattle(HiHook* hook, _AdvMgr_* advMng, _dword_ MixedPos, _
 }
 
 
+void HooksInit()
+{
+    _PI->WriteHiHook(0x46FE20, SPLICE_, EXTENDED_, THISCALL_, Y_Dlg_BattleResults_Create);
+    _PI->WriteHiHook(0x4716E0, SPLICE_, EXTENDED_, THISCALL_, Y_Dlg_BattleResults_Proc);
+
+    _PI->WriteLoHook(0x477254, Y_SkipAddExp);       // пропускаем добавление опыта выигравшему
+    _PI->WriteLoHook(0x4B0A9F, Y_SkipRedrawAdvMap); // пропускаем обновление мира сразу после битвы
+    _PI->WriteLoHook(0x4ADFE8, Y_SkipALL);          // пропускаем всё сразу после битвы
+
+    _PI->WriteLoHook(0x75AE24, Y_SetBattleSave);    // создание BATTLE SAVE
+
+    _PI->WriteHexPatch(0x75AEB0, "E8 AB22D5FF 90 90");	// CALL 0x4AD160 (BATTLE) + 2NOPs
+    _PI->WriteHiHook(0x75AEB0, CALL_, SAFE_, THISCALL_, Y_ReplayBattle);				
+
+    // Есть баг: Астральный дух возвращает существ перед первой переигровкой
+    // исправить так: JMP в 0x76C632 -> 0x76C72B
+    // а пропущенный код выполнить (придется писать ручками) после всех переигровок
+    // АЛЬТЕРНАТИВНОЕ РЕШЕНИЕ (как по мне - лучше)
+    // hihook на функцию 0x76C616 c полным пропуском оной во время переигровок
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -240,27 +267,10 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 			_P = GetPatcher();
 			_PI = _P->CreateInstance("ERA_Battle_Replay"); 
 
-			_PI->WriteHiHook(0x46FE20, SPLICE_, EXTENDED_, THISCALL_, Y_Dlg_BattleResults_Create);
-			_PI->WriteHiHook(0x4716E0, SPLICE_, EXTENDED_, THISCALL_, Y_Dlg_BattleResults_Proc);
+			// подтягиваем ERA
+			ConnectEra();
 
-			_PI->WriteLoHook(0x477254, Y_SkipAddExp);       // пропускаем добавление опыта выигравшему
-			_PI->WriteLoHook(0x4B0A9F, Y_SkipRedrawAdvMap); // пропускаем обновление мира сразу после битвы
-			_PI->WriteLoHook(0x4ADFE8, Y_SkipALL);          // пропускаем всё сразу после битвы
-
-			_PI->WriteLoHook(0x75AE24, Y_SetBattleSave);    // создание BATTLE SAVE
-
-			_PI->WriteHexPatch(0x75AEB0, "E8 AB22D5FF 90 90");	// CALL 0x4AD160 (BATTLE) + 2NOPs
-			_PI->WriteHiHook(0x75AEB0, CALL_, SAFE_, THISCALL_, Y_ReplayBattle);
-			
-			
-			
-
-			// Есть баг: Астральный дух возвращает существ перед первой переигровкой
-			// исправить так: JMP в 0x76C632 -> 0x76C72B
-			// а пропущенный код выполнить (придется писать ручками) после всех переигровок
-			// АЛЬТЕРНАТИВНОЕ РЕШЕНИЕ (как по мне - лучше)
-			// hihook на функцию 0x76C616 c полным пропуском оной во время переигровок
-			
+			HooksInit();
 
         }
         break;
