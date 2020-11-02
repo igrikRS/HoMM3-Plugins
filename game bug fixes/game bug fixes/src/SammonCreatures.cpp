@@ -114,6 +114,8 @@ int aroundGexes2[2][8] = {
 	{1, 1, 1, 1, 1, 4, 4, 4}, 
 	{4, 4, 4, 4, 4, 1, 1, 1} };
 
+// визуальние объяснение механики вызова клонов тут:
+// http://wforum.heroes35.net/showthread.php?tid=5717&pid=118391#pid118391
 
 // главная функция исправления бага вызываемых клонов в ВОГе
 int __stdcall Y_FixClone(LoHook* h, HookContext* c)
@@ -141,7 +143,7 @@ int __stdcall Y_FixClone(LoHook* h, HookContext* c)
 		summonWides = 2; // двойной гекс у вызываемого стека
 
 	int pos1; // это будет первый гекс вызываемого стека
-	int	pos2; // это будет второй гекс вызываемого стека
+	int pos2; // это будет второй гекс вызываемого стека
 
 	for (int i = 0; i < 8; i++) {
 		int around1 = aroundGexes1[side][i]; // получаем номер соседнего гекса
@@ -204,9 +206,8 @@ int __stdcall Y_FixClone(LoHook* h, HookContext* c)
 	}
 	
 	// обходим все расчёты ВОГа
-	// ведь я их реализовал сам
 	c->return_address = 0x71E3F5;
-    return NO_EXEC_DEFAULT;
+	return NO_EXEC_DEFAULT;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////

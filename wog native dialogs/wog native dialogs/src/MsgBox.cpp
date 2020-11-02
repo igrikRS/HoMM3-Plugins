@@ -27,6 +27,7 @@
 #define MSG_10_IT7    30736
 
 int my_TimeClick_MsgBox;
+int b_MsgBox_MaskItems;
 
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
@@ -112,10 +113,14 @@ signed int __stdcall Y_New_MsgBox_Proc(HiHook* hook, _EventMsg_* msg)
 				 case MSG_10_IT7:
 					 if (b_MsgBox_Style_id == 7 || b_MsgBox_Style_id == 10)
 					 {
-						 b_MsgBox_Result_id = msg->item_id;
-						 F_MsgBox_ResetYellowFrames(dlg, msg->item_id);
-						 dlg->GetItem(MSG_1_OK)->SetEnabled(1);
-						 dlg->Redraw(1);
+						 // проверяем маску ERA: разрешён ли элемент для выбора
+						 if ( b_MsgBox_MaskItems >> ( msg->item_id - MSG_10_IT0 ) & 1 ) 
+						 {
+							 b_MsgBox_Result_id = msg->item_id;
+							 F_MsgBox_ResetYellowFrames(dlg, msg->item_id);
+							 dlg->GetItem(MSG_1_OK)->SetEnabled(1);
+							 dlg->Redraw(1);
+						 }
 					 }
 					 break;
 
@@ -138,9 +143,6 @@ signed int __stdcall Y_New_MsgBox_Proc(HiHook* hook, _EventMsg_* msg)
 		}
 	}
 
-	//sprintf(myString1, "result: %d", result );
-	//b_MsgBoxC(myString1, 6, 100, 100);
-
 	// оригинальную функцию НЕ вызываем	
 	return result;
 }
@@ -148,30 +150,41 @@ signed int __stdcall Y_New_MsgBox_Proc(HiHook* hook, _EventMsg_* msg)
 // установка дефолтной жёлтой рамки
 int __stdcall Y_New_MsgBox_SetDefaultFrameEnabled(LoHook* h, HookContext* c)
 {
+	// дефолтная маска: читаем маску, которую передала нам ERA 
+	b_MsgBox_MaskItems = Era::GetMaskMsgBoxItId();
+
 	if (b_MsgBox_Style_id == 7 || b_MsgBox_Style_id == 10)
 	{	
 		if ( ERA_VERSION < 3009 )
 			return EXEC_DEFAULT;
 
 		// получаем дефолтный активный элемент
-		int itemID = Era::GetDefaultMsgBoxItId();
+		int itemID = Era::GetDefaultMsgBoxItId(); 
+
+
 		if ( itemID >= 0 && itemID <= 7 )
 		{
-			// создаём правильный id элемента
-			itemID += MSG_10_IT0;
-			// получаем структуры акт.элемента и кнопки ОК
-			_DlgItem_* it = P_Dlg_MsgBox->GetItem(itemID);
-			_DlgItem_* ok = P_Dlg_MsgBox->GetItem(MSG_1_OK);
+			// проверяем дефолтный элемент на разрешенную маску
+			if (b_MsgBox_MaskItems >> itemID & 1)
+			{
+				// создаём правильный id элемента
+				itemID += MSG_10_IT0;
 
-			if ( it ) 
-			{	
-				// подсвечиваем акт.элемент
-				it->SendCommand(5, 4);
-				// заносит результат в результирующую глобальную переменную
-				b_MsgBox_Result_id = itemID;
+				// получаем структуры акт.элемента и кнопки ОК
+				_DlgItem_* it = P_Dlg_MsgBox->GetItem(itemID);
+				_DlgItem_* ok = P_Dlg_MsgBox->GetItem(MSG_1_OK);
 
-				if (ok) // включаем кнопку ОК
-					ok->SetEnabled(1);
+				if ( it ) 
+				{	
+					// подсвечиваем акт.элемент
+					it->SendCommand(5, 4);
+
+					// заносит результат в результирующую глобальную переменную
+					b_MsgBox_Result_id = itemID;
+
+					if (ok) // включаем кнопку ОК
+						ok->SetEnabled(1);
+				}
 			}
 		}
 	}
