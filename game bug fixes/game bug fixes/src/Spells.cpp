@@ -121,44 +121,6 @@ int __stdcall Y_ArtGive_AllSpells(HiHook* hook, int spells_array, char enable)
     return CALL_2(int, __thiscall, hook->GetDefaultFunc(), spells_array, enable);
 }
 
-// фикс заклинания клон при использовании на двухклеточных существах
-int __stdcall Y_FixClone_CreatureDoubleWide(LoHook* h, HookContext* c)
-{
-    int mainHexID = c->ecx;
-    int aroundMainHexID = c->edx;
-    _BattleStack_* stack = *(_BattleStack_**)(c->ebp +8);
-
-    // если одноклеточное существо - выполняем оригинальный код
-    if (!(stack->creature.flags & BCF_2HEX_WIDE) )
-        return EXEC_DEFAULT;
-
-    // если выход за границы - выполняем оригинальный код
-    if (mainHexID < 0 || mainHexID > 187)
-        return EXEC_DEFAULT;
-
-    // если это гекс самого существа - выполняем оригинальный код
-    if (aroundMainHexID >= 6)
-        return EXEC_DEFAULT;
-
-    // проверяем поворот гекса (1-атакующий, 0-защитник)
-    if (stack->orientation) { 
-        if (aroundMainHexID == 4) // если задний гекс нападающего
-            mainHexID--; // главный гекс делаем гекс под жопой монстра
-    } else { 
-        if (aroundMainHexID == 1) // если задний гекс защитника
-            mainHexID++; // главный гекс делаем гекс под жопой монстра
-    }
-
-    // если выход за границы - возвращаем нет найденого гекса
-    if(mainHexID < 0 || mainHexID > 187)
-        c->eax = -1;
-    else {
-        c->eax = o_BattleMgr->adjacentSquares[mainHexID].hexAdjacent[aroundMainHexID];
-    }
-
-    c->return_address = 0x5A709A;
-    return NO_EXEC_DEFAULT;
-} 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -189,11 +151,7 @@ void Spells(PatcherInstance* _PI)
     _PI->WriteHiHook(0x4D9720, CALL_, EXTENDED_, THISCALL_, Y_ArtGive_AllSpells);
     //_PI->WriteHiHook(0x4D9673, CALL_, EXTENDED_, THISCALL_, Y_ArtGive_AllSpells);
 
-    // фикс заклинания клон при использовании на двухклеточных существах
-    _PI->WriteLoHook(0x5A7095, Y_FixClone_CreatureDoubleWide);
-
     // возможность заходить в гильдию магов без наличия книги и денег у героя-гостя
     _PI->WriteHexPatch(0x5CEA83, "EB74");
     _PI->WriteHexPatch(0x5CEACD, "2800");
-
 }

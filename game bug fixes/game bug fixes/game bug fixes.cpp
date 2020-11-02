@@ -3,12 +3,16 @@
 Patcher* _P;
 PatcherInstance* _PI;
 
+char myString[1024];
+#define MyString  (char*)myString
+
 #include "src\RoseKavalier.cpp"
 #include "src\Ben.cpp"
 #include "src\Npc.cpp"
 #include "src\Monsters.cpp"
 #include "src\Graphics.cpp"
 #include "src\Spells.cpp"
+#include "src\SammonCreatures.cpp"
 #include "src\GameLogic.cpp"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -35,6 +39,7 @@ BOOL APIENTRY DllMain( HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpRese
             Monsters(_PI);
             Graphics(_PI);
             Spells(_PI);
+            WOG_SammonCreatures(_PI);
             GameLogic(_PI);
 
         }
