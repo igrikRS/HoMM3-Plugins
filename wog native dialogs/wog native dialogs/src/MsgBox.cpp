@@ -27,7 +27,7 @@
 #define MSG_10_IT7    30736
 
 int my_TimeClick_MsgBox;
-int b_MsgBox_MaskItems;
+// int b_MsgBox_MaskItems;
 
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
@@ -114,13 +114,15 @@ signed int __stdcall Y_New_MsgBox_Proc(HiHook* hook, _EventMsg_* msg)
 					 if (b_MsgBox_Style_id == 7 || b_MsgBox_Style_id == 10)
 					 {
 						 // проверяем маску ERA: разрешён ли элемент для выбора
-						 if ( b_MsgBox_MaskItems >> ( msg->item_id - MSG_10_IT0 ) & 1 ) 
+						 int bitMask = dlg->GetItem(1525)->field_28;
+						 
+						 if ( bitMask >> ( msg->item_id - MSG_10_IT0 ) & 1 ) 
 						 {
 							 b_MsgBox_Result_id = msg->item_id;
 							 F_MsgBox_ResetYellowFrames(dlg, msg->item_id);
 							 dlg->GetItem(MSG_1_OK)->SetEnabled(1);
 							 dlg->Redraw(1);
-						 }
+						}
 					 }
 					 break;
 
@@ -150,8 +152,11 @@ signed int __stdcall Y_New_MsgBox_Proc(HiHook* hook, _EventMsg_* msg)
 // установка дефолтной жёлтой рамки
 int __stdcall Y_New_MsgBox_SetDefaultFrameEnabled(LoHook* h, HookContext* c)
 {
+	_Dlg_* dlg = P_Dlg_MsgBox;
+
 	// дефолтная маска: читаем маску, которую передала нам ERA 
-	b_MsgBox_MaskItems = Era::GetMaskMsgBoxItId();
+	int bitMask = Era::GetMaskMsgBoxItId();
+	dlg->GetItem(1525)->field_28 = bitMask;	
 
 	if (b_MsgBox_Style_id == 7 || b_MsgBox_Style_id == 10)
 	{	
@@ -161,11 +166,10 @@ int __stdcall Y_New_MsgBox_SetDefaultFrameEnabled(LoHook* h, HookContext* c)
 		// получаем дефолтный активный элемент
 		int itemID = Era::GetDefaultMsgBoxItId(); 
 
-
 		if ( itemID >= 0 && itemID <= 7 )
 		{
 			// проверяем дефолтный элемент на разрешенную маску
-			if (b_MsgBox_MaskItems >> itemID & 1)
+			if ( bitMask >> itemID & 1)
 			{
 				// создаём правильный id элемента
 				itemID += MSG_10_IT0;
@@ -190,7 +194,16 @@ int __stdcall Y_New_MsgBox_SetDefaultFrameEnabled(LoHook* h, HookContext* c)
 	}
 	// выполнить затёртый хуком код
 	return EXEC_DEFAULT;
-} 
+}
+
+// создание элемента для запихивания битовой маски в него
+signed int __stdcall Y_New_MsgBox_GetBitMask(HiHook* hook, _GameMgr_* gm)
+{	
+	_Dlg_* dlg = P_Dlg_MsgBox;
+	dlg->AddItem(_DlgItem_::Create(0, 0, 0, 0, 1525, 1));	
+
+	return CALL_1(signed int, __thiscall, hook->GetDefaultFunc(), gm);
+}
 
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
@@ -206,4 +219,6 @@ void Dlg_MsgBox(PatcherInstance* _PI)
 	_PI->WriteByte(0x4F7988 +2, 1); // увеличение высоты
 	// увеличение высоты скролл текста
 	_PI->WriteDword(0x4F662F +1, o_HD_Y-440);
+	// создание элемента для запихивания битовой маски в него
+	_PI->WriteHiHook(0x4F71BB, CALL_, EXTENDED_, THISCALL_, Y_New_MsgBox_GetBitMask);
 }

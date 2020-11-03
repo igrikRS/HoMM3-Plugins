@@ -212,14 +212,14 @@ int __stdcall Y_New_CommanderDlg_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 					int this_id = msg->item_id - 66; // всегда +1
 
 					if (last_id == this_id && ((o_GetTime() - time_click) < 300 ) ) { // реализация дабл_клика по выбранному навыку
-						// e_ClickSound();
+						e_ClickSound();
 						return dlg->Close(msg);
 					} else {
 						((_DlgStaticDef_*)dlg->GetItem(66 + last_id))->def_frame_index = (int)dlgNPC->Next[last_id -1];
 						((_DlgStaticDef_*)dlg->GetItem(msg->item_id))->def_frame_index = (int)dlgNPC->NextActive[this_id -1];
 						((_DlgStaticDef_*)dlg->GetItem(msg->item_id))->RedrawScreen();
 						dlgNPC->DlgLeft = this_id;
-						e_ClickSound();
+						// e_ClickSound();
 					}
 					time_click = o_GetTime();
 				}
