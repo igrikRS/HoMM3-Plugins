@@ -206,7 +206,7 @@ int __stdcall Y_New_CommanderDlg_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 		{
 			if (dlgNPC->Request == 2) // повышение уровня с выбором навыков
 			{ 
-				if ( msg->item_id >= 67 && msg->item_id <= 72 ) 
+				if ( msg->item_id >= 67 && msg->item_id <= 72 )
 				{
 					int last_id = dlgNPC->DlgLeft; // всегда +1
 					int this_id = msg->item_id - 66; // всегда +1

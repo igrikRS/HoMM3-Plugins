@@ -2,18 +2,18 @@
 
 bool inTownDlg;
 
-int __stdcall Y_DlgTown_Proc(HiHook* hook, _TownMgr_* tm, _EventMsg_* click)
+int __stdcall Y_DlgTown_Proc(HiHook* hook, _TownMgr_* tm, _EventMsg_* msg)
 {
-    int result = CALL_2(int, __thiscall, hook->GetDefaultFunc(), tm, click);
+    int result = CALL_2(int, __thiscall, hook->GetDefaultFunc(), tm, msg);
 
     inTownDlg = false;
 
     if (result) 
     {
-        if (click->type == MT_KEYDOWN && click->subtype == HK_E) 
+        if (msg->type == MT_KEYDOWN && msg->subtype == HK_E) 
         {
 
-            _DlgTextEdit_* editText = (_DlgTextEdit_*)tm->dlg->GetItem(7001); 
+            _DlgTextEdit_* editText = (_DlgTextEdit_*)tm->dlg->GetItem(7001);
 
             if (editText) 
             {
