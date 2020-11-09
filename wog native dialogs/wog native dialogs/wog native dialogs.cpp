@@ -39,7 +39,7 @@ char* GetEraJSON(const char* json_string_name) {
 	return tr(json_string_name);
 }
 
-// глобальная переменная для функции изменения 
+// глобальная переменная для функции изменения
 // и запоминания параметров курсора мыши
 int saveCursor[3];
 

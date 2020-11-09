@@ -4,59 +4,57 @@ bool inTownDlg;
 
 int __stdcall Y_DlgTown_Proc(HiHook* hook, _TownMgr_* tm, _EventMsg_* click)
 {
-	int result = CALL_2(int, __thiscall, hook->GetDefaultFunc(), tm, click);
-	inTownDlg = false;
+    int result = CALL_2(int, __thiscall, hook->GetDefaultFunc(), tm, click);
 
-	if (result) {
-		if (click->type == MT_KEYDOWN && click->subtype == HK_E) {
+    inTownDlg = false;
 
-			_DlgTextEdit_* editText = (_DlgTextEdit_*)tm->dlg->GetItem(7001); 
-				
-			if (editText) {
-				if (!editText->enteringText) {
+    if (result) 
+    {
+        if (click->type == MT_KEYDOWN && click->subtype == HK_E) 
+        {
 
-					int heroU_id = tm->town->up_hero_id;
-					int heroD_id = tm->town->down_hero_id;
+            _DlgTextEdit_* editText = (_DlgTextEdit_*)tm->dlg->GetItem(7001); 
 
-					if ( heroU_id != -1 && heroD_id != -1) {
-						_Hero_* heroU = o_GameMgr->GetHero(heroU_id);
-						_Hero_* heroD = o_GameMgr->GetHero(heroD_id);
+            if (editText) 
+            {
+                if (!editText->enteringText) 
+                {
 
-						inTownDlg = true;
+                    int heroU_id = tm->town->up_hero_id;
+                    int heroD_id = tm->town->down_hero_id;
 
-						 if ( *(int*)((int)o_ExecMgr +4) != (int)o_WndMgr ) {
-							*(int*)((int)o_TownMgr +4) = (int)o_AdvMgr;
-							*(int*)((int)o_TownMgr +8) = (int)o_WndMgr;
+                    if ( heroU_id != -1 && heroD_id != -1) 
+                    {
+                        _Hero_* heroU = o_GameMgr->GetHero(heroU_id);
+                        _Hero_* heroD = o_GameMgr->GetHero(heroD_id);
 
-							*(int*)((int)o_AdvMgr +4) = NULL;
-							*(int*)((int)o_AdvMgr +8) = (int)o_WndMgr;            
+                        inTownDlg = true;
 
-							*(int*)((int)o_WndMgr +4) = (int)o_TownMgr;
-							*(int*)((int)o_WndMgr +8) = (int)o_MouseMgr;
-						 }
+                        if ( o_ExecMgr->next != (_Manager_*)o_WndMgr )
+                        {
+                            o_TownMgr->mgr.SetManagers(o_AdvMgr, o_WndMgr);
+                            o_AdvMgr->mgr.SetManagers(NULL, o_WndMgr);
+                            o_WndMgr->mgr.SetManagers(o_TownMgr, o_MouseMgr);
+                        }
 
-						hdv(_bool_, "HotA.SwapMgrCalledFromTown") = 1;
+                        hdv(_bool_, "HotA.SwapMgrCalledFromTown") = 1;
 
-						// tm->dlg->GetItem(30720)->SetEnabled(false); // отключаем кнопку OK в городе
+                        heroU->TeachScholar(heroD);
+                        o_AdvMgr->SwapHeroes(heroU, heroD);
 
-						CALL_2(void, __fastcall, 0x4A25B0, heroU, heroD);
-						CALL_3(void, __thiscall, 0x4AAA60, o_TownMgr, heroU, heroD);
+                        hdv(_bool_, "HotA.SwapMgrCalledFromTown") = 0;
 
-						// tm->dlg->GetItem(30720)->SetEnabled(true); // включаем кнопку OK в городе
+                        o_TownMgr->UnHighlightArmy();       
+                        o_TownMgr->Redraw();   
 
-						hdv(_bool_, "HotA.SwapMgrCalledFromTown") = 0;
+                        inTownDlg = false;
+                    }
+                }
+            }
+        }
+    }
 
-						CALL_1(void, __thiscall, 0x5D5930, o_TownMgr);       
-						CALL_1(void, __thiscall, 0x5D5810, o_TownMgr);   
-
-						inTownDlg = false;
-					}
-				}
-			}
-		}
-	}
-
-   return result;
+    return result;
 }
 
 int __stdcall Y_Dlg_HeroesMeet(LoHook* h, HookContext* c)
