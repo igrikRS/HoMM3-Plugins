@@ -137,11 +137,6 @@ int __stdcall Y_FixClone(LoHook* h, HookContext* c)
 		mainPosition2 += stack->orientation ? 1 : -1; 
 		// определяем второй гекс (этот гекс спереди существа)
 
-	// получаем размер вызываемого существа
-	int summonWides = 1;
-	if ( o_CreatureInfo[type].flags & BCF_2HEX_WIDE )
-		summonWides = 2; // двойной гекс у вызываемого стека
-
 	int pos1; // это будет первый гекс вызываемого стека
 	int pos2; // это будет второй гекс вызываемого стека
 
@@ -167,7 +162,7 @@ int __stdcall Y_FixClone(LoHook* h, HookContext* c)
 		pos2 = pos1; 
 
 		// если главная позиция найдена, а стек - двухгесовый:
-		if (pos1 != -1 && summonWides) {
+		if (pos1 != -1 && o_CreatureInfo[type].flags & BCF_2HEX_WIDE ) {
 			// ищем номер второго гекса, куда вызывается существо
 			int around2 = aroundGexes2[side][i]; 
 
@@ -190,7 +185,7 @@ int __stdcall Y_FixClone(LoHook* h, HookContext* c)
 				int temp = pos2;
 				pos2 = pos1;
 				pos1 = temp;
-			}
+			}            
 		}
 
 		// если гексы найдены - останавливаем поиск:
