@@ -154,4 +154,8 @@ void Spells(PatcherInstance* _PI)
     // возможность заходить в гильдию магов без наличия книги и денег у героя-гостя
     _PI->WriteHexPatch(0x5CEA83, "EB74");
     _PI->WriteHexPatch(0x5CEACD, "2800");
+
+    // заклинание забывчивось на Продвинутом уровне действует на один целевой отряд (баг СОДа)
+    // o_Spell[SPL_FORGETFULNESS].flags |= SPF_HAS_MASS_ON_EXPERT;
+
 }

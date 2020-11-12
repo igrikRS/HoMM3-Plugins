@@ -18,6 +18,21 @@ char myString[1024];
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void HooksInit(Patcher* _P, PatcherInstance* _PI)
+{
+    RK(_P, _PI);
+    Ben(_PI);
+    Npc(_PI);
+    Monsters(_PI);
+    Graphics(_PI);
+    Spells(_PI);
+    WOG_SammonCreatures(_PI);
+    GameLogic(_PI);    
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 static _bool_ bug_fixes_On = false;
 
 BOOL APIENTRY DllMain( HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved )
@@ -33,14 +48,8 @@ BOOL APIENTRY DllMain( HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpRese
             _P = GetPatcher();
             _PI = _P->CreateInstance("game bug fixes extended"); 
 
-            RK(_P, _PI);
-            Ben(_PI);
-            Npc(_PI);
-            Monsters(_PI);
-            Graphics(_PI);
-            Spells(_PI);
-            WOG_SammonCreatures(_PI);
-            GameLogic(_PI);
+            if (_PI)
+                HooksInit(_P, _PI);
 
         }
     break;
