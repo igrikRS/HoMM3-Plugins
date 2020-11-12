@@ -1,3 +1,4 @@
+// исправление отображения графики тени Силового Поля
 int __stdcall Fix_ForceFieldShadow(LoHook *h, HookContext *c)
 {
 	if (o_BattleMgr->action_param1 == SPL_FORCE_FIELD) { // если заклинание Силовое Поле
@@ -8,6 +9,17 @@ int __stdcall Fix_ForceFieldShadow(LoHook *h, HookContext *c)
     return EXEC_DEFAULT;
 }
 
+// восстановление параметра тени курсора в бою
+// при автобитве этот параметр обнуляется, но не восстанавливается
+// значит восстановим вручную
+int __stdcall Y_RestoreBattleShadow(LoHook *h, HookContext *c)
+{
+    o_BATTLE_CursorShadow = DwordAt(c->ebp -0x1C);
+    return EXEC_DEFAULT;
+}
+
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
 
 void Graphics(PatcherInstance* _PI)
 {
@@ -42,7 +54,6 @@ void Graphics(PatcherInstance* _PI)
     // смещение портрета героя в диалоге повышения уровня героя
     _PI->WriteDword(0x4F90CB +1, 0xAA);
 
-
     // исправление ошибки ERM в командре IF:N1, теперь командра работает 
     // со всеми локальными, глобальными и отрицательными переменными z, а не только с z1
     _PI->WriteByte(0x749093, 0xB0);
@@ -65,6 +76,9 @@ void Graphics(PatcherInstance* _PI)
     _PI->WriteByte(0x722792, 0xB6); 
     _PI->WriteByte(0x723ACB, 0xB6);
     _PI->WriteByte(0x723F1C, 0xB6);
+
+    // исправление включения тени, которое не выполняется при автобитве
+    _PI->WriteLoHook(0x462C6C, Y_RestoreBattleShadow);
 
 	// исправление отображения графики тени Силового Поля
     _PI->WriteLoHook(0x5A368C, Fix_ForceFieldShadow); 
