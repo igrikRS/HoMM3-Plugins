@@ -20,25 +20,6 @@ _bool_ isNeedReplay, ifCanReplay;
 ////////////////////////////////////////////////////////////////////////// 
 ////////////////////////////////////////////////////////////////////////// 
 
-int __stdcall Y_SetBattleSave(LoHook* h, HookContext* c)
-{
-	_GameMgr_* gm = o_GameMgr;
-	_Hero_* atacker = *(_Hero_**)0x2860248;
-
-	int meID = gm->GetMe()->id;
-	int attackerID = atacker->owner_id;
-
-	if ( meID == attackerID ) {
-		CALL_6(char, __thiscall, 0x4BEB60, gm, "BATTLE!", 1, 0, 1, 0);
-	}
-
-
-	return EXEC_DEFAULT; 
-}
-
-////////////////////////////////////////////////////////////////////////// 
-////////////////////////////////////////////////////////////////////////// 
-
 int __stdcall Y_ReplayBattle(HiHook* hook, _AdvMgr_* advMng, _dword_ MixedPos, _Hero_* HrA, _Army_* MArrA, _int_ OwnerD, _dword_ townD, _Hero_* HrD, _Army_* MArrD, _int_ Pv3, _dword_ Pv2, _dword_ Pv1)
 {	
 	int ret = 0; 
@@ -349,10 +330,7 @@ void HooksInit()
     _PI->WriteLoHook(0x4173E2, Y_SkipRedrawAdvMap);  
 
     // пропускаем всё сразу после битвы
-    _PI->WriteLoHook(0x4ADFE8, Y_AfterBattle_SkipAll); 
-
-    // перед битвой содаём сейв "BATTLE!"
-    _PI->WriteLoHook(0x75AE24, Y_SetBattleSave);   
+    _PI->WriteLoHook(0x4ADFE8, Y_AfterBattle_SkipAll);  
 
     // убираем воговский вызов CALL_BATTLE (0x4AD160)
     _PI->WriteHexPatch(0x75AEB0, "E8 AB22D5FF 90 90");
@@ -386,7 +364,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 			plugin_On = 1;    
 
 			_P = GetPatcher();
-			_PI = _P->CreateInstance("ERA_Battle_Replay"); 
+			_PI = _P->CreateInstance("igrik.BattleReplay"); 
 
 			// подтягиваем ERA
 			ConnectEra();
