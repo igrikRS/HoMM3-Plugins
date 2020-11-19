@@ -156,11 +156,14 @@ int __stdcall ERM_Fix_EA_E(HiHook* hook, _BattleStack_* stack )
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //#define Wog_FOH_Monstr (*(int*)0x27718CC)
+#define WoG_CreatureUpgradeTable (*(int*)0x724A95)
+
+// Решаем проблему когда бонусы специалистов не считаются Супер существам
 int __stdcall Y_FixWoG_GetCreatureGrade(LoHook* h, HookContext* c)
 {
     int ID = *(int*)(c->ebp +8);
     int mon_id = c->ecx; 
-    int mon_idGr =  *(int*)(0xA49590 +  mon_id*4);
+    int mon_idGr =  *(int*)(WoG_CreatureUpgradeTable + mon_id*4);
 
     if (mon_idGr == -2) {
         return EXEC_DEFAULT;
@@ -168,7 +171,7 @@ int __stdcall Y_FixWoG_GetCreatureGrade(LoHook* h, HookContext* c)
         mon_idGr = CALL_1(int, __fastcall, 0x47AAD0, mon_id);
     }
 
-    int mon_idGr2 = *(int*)(0xA49590 +  mon_idGr*4);
+    int mon_idGr2 = *(int*)(WoG_CreatureUpgradeTable + mon_idGr*4);
 
     if (mon_idGr2 == -2) {
         return EXEC_DEFAULT;
