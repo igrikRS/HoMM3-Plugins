@@ -262,6 +262,9 @@ void My_Dlg_BattleResults(_BattleMgr_* bm, int sideWinner, int sideLooser, int t
         
     }
 
+    // очищаем список артефактов
+    artsList.DeleteAll();
+
     // и уничтожаем диалог полностью 
     o_Delete(dlg);
 }
@@ -272,14 +275,9 @@ void __stdcall Y_BattleMgr_SetWinner(HiHook* hook, _BattleMgr_* bm, int sideWinn
     // StopBINKVideoAndWait_AIL
     CALL_0(void, __cdecl, 0x4635C0);  
 
-    if ( !bm->ShouldNotRenderBattle() ) {
+    if ( !bm->ShouldNotRenderBattle() )
         CALL_4(void, __thiscall, 0x4729D0, bm->dlg, o_NullString, 0, 0);
 
-        // скрываем кнопки прокрутки баттлога (баг HD?)
-        _DlgItem_* bttn_2006 = bm->dlg->GetItem(2006);
-        if (bttn_2006) bttn_2006->Hide();
-        bm->dlg->Redraw(1);
-    }
 
     // работаем с курсором мыши
     o_MouseMgr->Field<int>(0x38) = 0;
@@ -299,7 +297,7 @@ void __stdcall Y_BattleMgr_SetWinner(HiHook* hook, _BattleMgr_* bm, int sideWinn
         && o_GameMgr->PlayerIsInGameHuman(bm->owner_id[sideWinner]) )
     {
         My_Dlg_BattleResults(bm, sideWinner, sideWinner, time);
-    } else if ( !o_AutoSolo ) {
+    } else if ( !o_AutoSolo && bm->isHuman[0] ) {
         My_Dlg_BattleResults(bm, sideWinner, 1 - sideWinner, time);
     }  
   
