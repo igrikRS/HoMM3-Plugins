@@ -30,12 +30,24 @@ int __stdcall Y_DlgTown_Proc(HiHook* hook, _TownMgr_* tm, _EventMsg_* msg)
 
                         inTownDlg = true;
 
-                        if ( o_ExecMgr->next != (_Manager_*)o_WndMgr )
+                        // if ( o_ExecMgr->next != (_Manager_*)o_WndMgr )
+                        // {
+                        //     o_TownMgr->mgr.SetManagers(o_AdvMgr, o_WndMgr);
+                        //     o_AdvMgr->mgr.SetManagers(NULL, o_WndMgr);
+                        //     o_WndMgr->mgr.SetManagers(o_TownMgr, o_MouseMgr);
+                        // }
+
+                        if ( *(int*)((int)o_ExecMgr +4) != (int)o_WndMgr ) 
                         {
-                            o_TownMgr->mgr.SetManagers(o_AdvMgr, o_WndMgr);
-                            o_AdvMgr->mgr.SetManagers(NULL, o_WndMgr);
-                            o_WndMgr->mgr.SetManagers(o_TownMgr, o_MouseMgr);
-                        }
+                            *(int*)((int)o_TownMgr +4) = (int)o_AdvMgr;
+                            *(int*)((int)o_TownMgr +8) = (int)o_WndMgr;
+
+                            *(int*)((int)o_AdvMgr +4) = NULL;
+                            *(int*)((int)o_AdvMgr +8) = (int)o_WndMgr;            
+
+                            *(int*)((int)o_WndMgr +4) = (int)o_TownMgr;
+                            *(int*)((int)o_WndMgr +8) = (int)o_MouseMgr;
+                        }                       
 
                         hdv(_bool_, "HotA.SwapMgrCalledFromTown") = 1;
 
