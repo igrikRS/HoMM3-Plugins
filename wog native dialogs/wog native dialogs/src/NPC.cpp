@@ -497,7 +497,7 @@ _int_ __stdcall Y_Dlg_NPC_ShowAgain_IfGetArtHero(LoHook* h, HookContext* c)
 // воговские константы (содовские константы нужно будет копировать в нижеуказанные)
 #define WoG_DlgHero_msg (*(_EventMsg_**)0x28604CC)
 #define WoG_DlgHero_hero (*(_Hero_**)0x2860470)
-#define WoG_DlgHero_art (*(_Artifact_*)0x2860820)
+#define WoG_DlgHero_art (*(_int_*)0x2860820)
 
 // опция командиров (0-вкл, 1-выкл)
 #define WoG_NoNPC (*(_int_*)0x277192C)
@@ -537,7 +537,7 @@ int __stdcall Y_HeroDlg_Proc(HiHook* hook, _CustomDlg_* dlg, _EventMsg_* msg)
 			// производим копирование указателя на текущего героя в воговский указатель
 			WoG_DlgHero_hero = o_HeroDlg_Hero; // вот зачем такие махинации?!! Агрр....
 			WoG_DlgHero_msg = msg;
-			WoG_DlgHero_art = o_CurArt; 
+			WoG_DlgHero_art = o_CurArt.id; 
 
 			// выполняем воговский триггер клика в окне героя (!?CM2)
 			// wog 0x76EC85: call sub_74F7DE MouseClickHero(CNPC_ms,CNPC_hp)
@@ -552,7 +552,7 @@ int __stdcall Y_HeroDlg_Proc(HiHook* hook, _CustomDlg_* dlg, _EventMsg_* msg)
 				if ( o_CurArt.id != -1 ) {
 					// CrExpoSet::DropArt2Stack(CNPC_ms,CNPC_hp,CNPC_DropArt)
                     // перенос артефакта в слот существ (на данный момент только Знамя Полководца (id 156))
-					if ( CALL_3(signed int, __cdecl, 0x72521B, WoG_DlgHero_msg, WoG_DlgHero_hero, WoG_DlgHero_art.id) ) {
+					if ( CALL_3(signed int, __cdecl, 0x72521B, WoG_DlgHero_msg, WoG_DlgHero_hero, WoG_DlgHero_art) ) {
 						o_CurArt.id = -1;
 						o_CurArt.mod = -1;
 						b_MouseMgr_SetCursor(0, 0);
@@ -576,7 +576,7 @@ int __stdcall Y_HeroDlg_Proc(HiHook* hook, _CustomDlg_* dlg, _EventMsg_* msg)
 					// можно конечно и запатчить её, но вдруг кто-то захочет открыть окно командира через UN:C
 					// короче оставляем так ...
 
-					if ( CALL_3(signed int, __cdecl, 0x76E865, WoG_DlgHero_msg, WoG_DlgHero_hero, WoG_DlgHero_art.id) ) {
+					if ( CALL_3(signed int, __cdecl, 0x76E865, WoG_DlgHero_msg, WoG_DlgHero_hero, WoG_DlgHero_art) ) {
 						// ниже просто копируем код вога
 						o_CurArt.id = -1;
 						o_CurArt.mod = -1;
