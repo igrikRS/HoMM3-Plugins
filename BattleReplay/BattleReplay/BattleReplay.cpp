@@ -6,6 +6,9 @@ using namespace Era;
 Patcher* _P;
 PatcherInstance* _PI;
 
+char myString[1024];
+#define MyString (char*)myString
+
 #define hdv(type, name) _P->VarValue<type>((_cstr_)(name))
 
 #define BACall_Day (*(_int_*)0x79F0B8)
