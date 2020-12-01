@@ -251,15 +251,14 @@ void My_Dlg_BattleResults(_BattleMgr_* bm, int sideWinner, int sideLooser, int t
     // и список забранных артефактов у побеждённого героя
     if ( !isNeedReplay && sideWinner != -1 && sideWinner == sideLooser && bm->hero[sideWinner] ) {
 
+        // Hero_GiveExperience
+        CALL_4(int, __thiscall, 0x4E3620, bm->hero[sideWinner], expirience, bm->isHuman[sideWinner] == 0, 1);
+
         // BattleMgr_EagleEye_ShowGiveSpell
         CALL_3(void, __thiscall, 0x476910, bm, sideWinner, time); 
 
         // BattleMgr_TakeArtsFromKilledHero
-        CALL_2(void, __stdcall, 0x476BE0, &artsList, time);
-
-        // Hero_GiveExperience
-        CALL_4(int, __thiscall, 0x4E3620, bm->hero[sideWinner], expirience, bm->isHuman[sideWinner] == 0, 1);
-        
+        CALL_2(void, __stdcall, 0x476BE0, &artsList, time);  
     }
 
     // очищаем список артефактов
@@ -293,16 +292,23 @@ void __stdcall Y_BattleMgr_SetWinner(HiHook* hook, _BattleMgr_* bm, int sideWinn
     if ( o_AutoSolo )
         o_TimeClick = o_GetTime() + 2000;
 
+    // сторона: победитель (только игрок-человек)
     if ( sideWinner != -1 && bm->owner_id[sideWinner] != -1 
         && o_GameMgr->PlayerIsInGameHuman(bm->owner_id[sideWinner]) )
     {
         My_Dlg_BattleResults(bm, sideWinner, sideWinner, time);
-    } else if ( !o_AutoSolo && bm->isHuman[0] ) {
+    } 
+    // сторона: проигравший (только игрок-человек)
+    else if ( !o_AutoSolo && o_GameMgr->PlayerIsInGameHuman(bm->owner_id[1 - sideWinner])  ) 
+    {
         My_Dlg_BattleResults(bm, sideWinner, 1 - sideWinner, time);
     }  
   
-    if ( !isNeedReplay )
-        CALL_2(void, __thiscall, hook->GetDefaultFunc(), bm, sideWinner);
+    // если не нужно переигрывать битву
+    // тут также находится и передача артов, опыта и заклинаний только игроку-компьютеру
+    if ( !isNeedReplay ) {
+        CALL_2(void, __thiscall, hook->GetDefaultFunc(), bm, sideWinner);        
+    }
 
     // обнуляем время показа диалога
     o_TimeClick = 0;  
