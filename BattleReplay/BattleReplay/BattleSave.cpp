@@ -12,19 +12,15 @@ int __stdcall Y_SetBattleSave(LoHook* h, HookContext* c)
 {	
 	_Hero_* atacker = *(_Hero_**)0x2860248;
 
-    if (atacker) {
+    if (atacker) 
+    {
 
 	    int meID = o_GameMgr->GetMe()->id;
 	    int attackerID = atacker->owner_id;
 
-	    if ( meID == attackerID ) {
-
-            o_AdvMgr->HeroActive_DeMobilize();
-
+	    if ( meID == attackerID ) 
 		    CALL_6(char, __thiscall, 0x4BEB60, o_GameMgr, "BATTLE!", 1, 0, 1, 0);
 
-            o_AdvMgr->HeroActive_Mobilize();
-	    }
     }
 
 	return EXEC_DEFAULT; 
