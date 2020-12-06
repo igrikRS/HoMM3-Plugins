@@ -30,9 +30,18 @@ _bool_ isNeedReplay, ifCanReplay;
 ////////////////////////////////////////////////////////////////////////// 
 ////////////////////////////////////////////////////////////////////////// 
 
+int __stdcall Y_SkipAddExp(LoHook* h, HookContext* c)
+{  // 0x477254 (первый выполняемый хук)
+	if (isNeedReplay) { 
+		c->return_address = 0x477303;
+		return NO_EXEC_DEFAULT;
+	}
+	return EXEC_DEFAULT; 
+}
+
 int __stdcall Y_SkipRedrawAdvMap(LoHook* h, HookContext* c)
-{ // 0x4173E2
-    if (isNeedReplay) {
+{ // 0x4173E2 (второй выполняемый хук)
+    if (isNeedReplay) { 
         c->return_address = 0x41742D;
         return NO_EXEC_DEFAULT;
     }
@@ -40,22 +49,14 @@ int __stdcall Y_SkipRedrawAdvMap(LoHook* h, HookContext* c)
 }
 
 int __stdcall Y_AfterBattle_SkipAll(LoHook* h, HookContext* c)
-{  // 0x4ADFE8
-    if (isNeedReplay) {
+{  // 0x4ADFE8 (последний выполняемый хук)
+    if (isNeedReplay) { 
         c->return_address = 0x4AE67C;
         return NO_EXEC_DEFAULT;
     }
     return EXEC_DEFAULT; 
 }
 
-int __stdcall Y_SkipAddExp(LoHook* h, HookContext* c)
-{  // 0x477254
-	if (isNeedReplay) {
-		c->return_address = 0x477303;
-		return NO_EXEC_DEFAULT;
-	}
-	return EXEC_DEFAULT; 
-}
 
 ////////////////////////////////////////////////////////////////////////// 
 ////////////////////////////////////////////////////////////////////////// 
@@ -189,7 +190,10 @@ int __stdcall Y_ReplayBattle(HiHook* hook, _AdvMgr_* advMng, _dword_ MixedPos, _
 			ERM_FU_CALL(870520); 
 			FireEvent("OnBeforeBattleReplay", NULL, 0);
 		}
-		
+		// нужен, если выходим в главное меню 
+        // через кнопку HD в диалоге настроек битвы
+        isNeedReplay = false;
+
 		// непосредственный вызов битвы
 		ret = CALL_11(int, __thiscall, hook->GetDefaultFunc(), advMng, MixedPos, HrA, MArrA, OwnerD, townD, HrD, MArrD, Pv3, Pv2, Pv1);
 
