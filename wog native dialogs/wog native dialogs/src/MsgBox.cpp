@@ -7,7 +7,6 @@
 // Теперь же работают все рамки: 30729-30736
 // И в довесок реализован даббл.клик выбора
 
-
 #define P_Dlg_MsgBox (*(_Dlg_**)0x6995E0)
 
 #define MSG_10_OK     30720
@@ -27,7 +26,6 @@
 #define MSG_10_IT7    30736
 
 int my_TimeClick_MsgBox;
-// int b_MsgBox_MaskItems;
 
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
@@ -64,7 +62,78 @@ int F_MsgBox_Return(_EventMsg_* msg, int itemID)
 	return 2;
 }
 
-// собственно сам сallback
+//////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
+
+// *** по неоднократной просьбе Berserker'a ***
+// функция поиска следующего элемента от текущего активного
+// при выборе клавишами влево(-1) или вправо(+1).
+// поддерживает циклический (круговой) выбор элементов
+
+int Y_New_MsgBox_GetNextItem(int way, int currentItem)
+{
+    _Dlg_* dlg = P_Dlg_MsgBox;
+
+    // получаем список (в битах) разрешённых элементов
+    int bitAccess = dlg->GetItem(1525)->field_28;
+    if ( bitAccess == -1 ) bitAccess = 255;
+
+    // получаем список (в битах) существующих элементов
+    int bitExist = 0;
+    for (int i = 0; i <= 7; i++)
+    {
+		_DlgItem_* it = dlg->GetItem(i + MSG_10_IT0);
+
+		if ( it ) // элемент существует - создаём его бит доступности
+			bitExist |= (1 << i);
+    }
+
+    // прокрутка вправо (поиск следующего элемента)
+    if ( way == 1 )
+    {
+        int nextItem = 0;
+        if (currentItem != -1)
+            nextItem = currentItem + 1; 
+        
+        for (int i = 0; i <= 7; i++)
+        {
+            int temp = i + nextItem;
+            if ( temp > 7) temp -= 8;
+
+            if ( bitExist >> temp & 1 ) 
+                if ( bitAccess >> temp & 1 ) 
+                    return temp;
+        }
+    }
+
+    // прокрутка влево (поиск предыдущего элемента)
+    if ( way == -1 )
+    {
+        int nextItem = 0;
+        if (currentItem != -1)
+            nextItem = currentItem - 1 + 1; 
+        
+        for (int i = 7; i >= 0; i--)
+        {
+            int temp = i + nextItem; 
+            if ( temp > 7) temp -= 8; 
+
+            if ( bitExist >> temp & 1 ) 
+                if ( bitAccess >> temp & 1 ) 
+                    return temp;
+        }
+    } 
+
+    // элемент не найден
+    return -1;
+
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
+
+// Callback диалога MsgBox (ПКМ обрабатывается в другом месте)
+
 signed int __stdcall Y_New_MsgBox_Proc(HiHook* hook, _EventMsg_* msg)
 {	
 	if ( o_TimeClick ) 
@@ -75,8 +144,38 @@ signed int __stdcall Y_New_MsgBox_Proc(HiHook* hook, _EventMsg_* msg)
 			return F_MsgBox_Return(msg, 9999);
 
 	} 
+
+    if (msg->type == MT_KEYDOWN)
+	{
+        // если тип сообщения: с выбором элементов
+        if (b_MsgBox_Style_id == 7 || b_MsgBox_Style_id == 10) 
+        {    
+            // *** по неоднократной просьбе Berserker'a ***
+            // прокрутка элементов списка по стрелкам влево/вправо
+            if (msg->subtype == 75 /* <<--- */ || msg->subtype == 77 /* --->> */ ) 
+            {    
+                // получаем текущий выбранный элемент в диалоге
+                int currentItem = b_MsgBox_Result_id;
+
+                // если элемент есть, нужно передать его id в виде 0-7
+                if (currentItem != -1) 
+                    currentItem -= MSG_10_IT0;
+
+                // функция нахождения следующего существующего и доступного элемента
+                int nextItem = Y_New_MsgBox_GetNextItem( msg->subtype -76, currentItem );
+
+                // если элемент найден - делаем его активным
+                if (nextItem != -1) { 
+                    msg->type = MT_MOUSEBUTTON;
+                    msg->subtype = MST_LBUTTONCLICK;
+                    msg->item_id = nextItem + MSG_10_IT0;
+                }
+            }
+        }
+    }
 	
 	int result = 1;	
+
 	if (msg->type == MT_MOUSEBUTTON)
 	{
 		if (msg->subtype == MST_LBUTTONCLICK)
@@ -114,9 +213,9 @@ signed int __stdcall Y_New_MsgBox_Proc(HiHook* hook, _EventMsg_* msg)
 					 if (b_MsgBox_Style_id == 7 || b_MsgBox_Style_id == 10)
 					 {
 						 // проверяем маску ERA: разрешён ли элемент для выбора
-						 int bitMask = dlg->GetItem(1525)->field_28;
+						 int bitAccess = dlg->GetItem(1525)->field_28;
 						 
-						 if ( bitMask >> ( msg->item_id - MSG_10_IT0 ) & 1 ) 
+						 if ( bitAccess >> ( msg->item_id - MSG_10_IT0 ) & 1 ) 
 						 {
 							 b_MsgBox_Result_id = msg->item_id;
 							 F_MsgBox_ResetYellowFrames(dlg, msg->item_id);
@@ -149,14 +248,17 @@ signed int __stdcall Y_New_MsgBox_Proc(HiHook* hook, _EventMsg_* msg)
 	return result;
 }
 
-// установка дефолтной жёлтой рамки
+//////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
+
+// установка жёлтой рамки (создание активного элемента по умолчанию для ERA 3)
 int __stdcall Y_New_MsgBox_SetDefaultFrameEnabled(LoHook* h, HookContext* c)
 {
 	_Dlg_* dlg = P_Dlg_MsgBox;
 
 	// дефолтная маска: читаем маску, которую передала нам ERA 
-	int bitMask = Era::GetMaskMsgBoxItId();
-	dlg->GetItem(1525)->field_28 = bitMask;	
+	int bitAccess = Era::GetMaskMsgBoxItId();
+	dlg->GetItem(1525)->field_28 = bitAccess;	
 
 	if (b_MsgBox_Style_id == 7 || b_MsgBox_Style_id == 10)
 	{	
@@ -169,7 +271,7 @@ int __stdcall Y_New_MsgBox_SetDefaultFrameEnabled(LoHook* h, HookContext* c)
 		if ( itemID >= 0 && itemID <= 7 )
 		{
 			// проверяем дефолтный элемент на разрешенную маску
-			if ( bitMask >> itemID & 1)
+			if ( bitAccess >> itemID & 1)
 			{
 				// создаём правильный id элемента
 				itemID += MSG_10_IT0;
@@ -196,7 +298,8 @@ int __stdcall Y_New_MsgBox_SetDefaultFrameEnabled(LoHook* h, HookContext* c)
 	return EXEC_DEFAULT;
 }
 
-// создание элемента для запихивания битовой маски в него
+// для ERA 3: создание специального элемента диалога, 
+// который будет хранить битовую маски "разрешенных к выбору элементов"
 signed int __stdcall Y_New_MsgBox_GetBitMask(HiHook* hook, _GameMgr_* gm)
 {	
 	_Dlg_* dlg = P_Dlg_MsgBox;
@@ -212,13 +315,17 @@ void Dlg_MsgBox(PatcherInstance* _PI)
 {
 	// новый Callback диалога MsgBox
 	_PI->WriteHiHook(0x4F1650, SPLICE_, EXTENDED_, THISCALL_, Y_New_MsgBox_Proc);
+
 	// установка дефолтной желтой рамки (как буд-то она уже выбранна)
 	_PI->WriteLoHook(0x4F7B46, Y_New_MsgBox_SetDefaultFrameEnabled);
-	// правильное смещение для жёлтых рамок
+
+	// создание элемента для хранения "разрешенных к выбору элементов"
+	_PI->WriteHiHook(0x4F71BB, CALL_, EXTENDED_, THISCALL_, Y_New_MsgBox_GetBitMask);
+
+    // правильное смещение для жёлтых рамок
 	_PI->WriteByte(0x4F7985 +2, 1); // увеличение ширины
 	_PI->WriteByte(0x4F7988 +2, 1); // увеличение высоты
-	// увеличение высоты скролл текста
+
+    // увеличение высоты скролл текста
 	_PI->WriteDword(0x4F662F +1, o_HD_Y-440);
-	// создание элемента для запихивания битовой маски в него
-	_PI->WriteHiHook(0x4F71BB, CALL_, EXTENDED_, THISCALL_, Y_New_MsgBox_GetBitMask);
 }
