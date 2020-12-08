@@ -163,6 +163,19 @@ int __stdcall Y_WoGDlg_ChooseArt(HiHook* hook, int a1, _Hero_* hero, int Remove)
 	return ret;
 }
 
+// делаем диалог сброса и оставление монстров по CRTL+ПКМ 
+int __stdcall WoG_PlaceCreature_RMC_Crtl(LoHook* h, HookContext* c)
+{
+    if ( GetKeyState(VK_CTRL) < 0 )
+	    return EXEC_DEFAULT;
+    else
+    {
+        c->return_address = 0x7575A3;
+        return NO_EXEC_DEFAULT;
+    }
+} 
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -170,4 +183,7 @@ void Dlg_DropArt(PatcherInstance* _PI)
 {
 	// диалог сброса артефактов на землю
 	_PI->WriteHiHook(0x7548BC, SPLICE_, EXTENDED_, THISCALL_, Y_WoGDlg_ChooseArt);
+
+    // делаем диалог сброса и оставление монстров по CRTL+ПКМ    
+    _PI->WriteLoHook(0x7570EB, WoG_PlaceCreature_RMC_Crtl);	
 }
