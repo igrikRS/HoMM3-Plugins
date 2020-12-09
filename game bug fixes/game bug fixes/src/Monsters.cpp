@@ -266,109 +266,25 @@ int __stdcall Fix_WoG_GetCreatureGrade_Town(LoHook* h, HookContext* c)
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// правка функции WoG: накопление существ и стражников в двеллингах существ
-// теперь:
-//   - существа и стражники копятся, только если двеллинг принадлежит одному из игроков
-//   - Санта-Гремлины копятся в обычном режиме
-//   - Существа 8 уровня (№№ 150-158) копятся в обычном режиме
+#define WOG_HeroEntered2Object (*(_Hero_**)0x803300)
 
-//#define o_WogAccumCreatures (*(_int_*)0x277193C)
-//#define o_WogAccumDefenders (*(_int_*)0x2771940)
-//
-//int __stdcall SOD_Dwelling_Add_Creatures(HiHook* hook, _Dwelling_* dw, _int_ isBonus)
-//{
-//    int countCreatures[4];
-//    int countDefenders[4];
-//
-//    if( dw->owner_ix != -1 ) {
-//        for (int i=0; i<4; i++) {
-//            if (o_WogAccumCreatures) {
-//                countCreatures[i] = dw->creature_counts[i];
-//        }
-//            if (o_WogAccumDefenders) {
-//                countDefenders[i] = dw->defenders.count[i];
-//            }
-//        }
-//    }
-//
-//    int result = CALL_2(int, __thiscall, hook->GetDefaultFunc(), dw, isBonus);
-//
-//    if( dw->owner_ix != -1 ) {
-//        for (int i=0; i<4; i++) {
-//            if (o_WogAccumCreatures && countCreatures[i] > 0 && countCreatures[i] <= 4000 ) {
-//                dw->creature_counts[i] += countCreatures[i];
-//            }
-//            if (o_WogAccumDefenders && countDefenders[i] > 0 && countDefenders[i] <= 12000) {
-//                dw->defenders.count[i] += countDefenders[i];
-//            }
-//        }
-//    }
-//
-//    return result;
-//}
+// показ лычек опыта в диалоге присоедиения монстров (он же диалог гарнизона)
+int __stdcall Y_Dlg_AddCreatures_Init_Add(HiHook* hook, _Hero_* hero, int creatureType, int creatureCount)
+{
+    if ( hero ) 
+        WOG_HeroEntered2Object = hero;
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////
+    return CALL_3(int, __fastcall, hook->GetDefaultFunc(), hero, creatureType, creatureCount);
+}
 
-//// фикс сетевой разсинхронизации стеков в бою
-//void __stdcall Y_SelectNewMonsterToAct(HiHook* hook, _BattleMgr_* bm, int side, int stack_id_in_side)
-//{
-//    if (o_NetworkGame) {
-//        if ( o_GameMgr->IsPlayerHuman(bm->owner_id[1]) ) { 
-//            if ( o_GameMgr->IsPlayerHuman(bm->owner_id[0]) ) { 
-//                _int32_ net[14197];  // 56748 +40 = 56788 / 4 = 14197
-//                net[0] = -1;
-//                net[1] = NULL;
-//                net[2] = 1987;
-//                net[3] = 56788;
-//                net[4] = 0;
-//                net[5] = side; 
-//                net[6] = stack_id_in_side;
-//
-//                int bmStart = (int)o_BattleMgr +21708 -40;
-//                for (int i=10; i<14197; i++) {
-//                	net[i] = *(int*)(bmStart +i*4);
-//                }
-//
-//                _int32_ isGood = CALL_4(_int32_, __fastcall, 0x5549E0, (int)&net, *(int*)(0x697790 +4*bm->current_side), 0, 1); 
-//                if ( !isGood ) 
-//                	CALL_1(char, __thiscall, 0x4F3D20, 0);
-//
-//                delete[] net;
-//            }
-//        }
-//    }
-//    CALL_3(void, __thiscall, hook->GetDefaultFunc(), bm, side, stack_id_in_side);
-//}
-//
-//int __stdcall Y_BM_ReceNetData(LoHook* h, HookContext* c)
-//{
-//    int id = *(int*)(c->esi +8);
-//    if ( id == 1987 ) {
-//
-//        _int32_ netData = c->esi; // netData содержит прямой адрес переданного массива net[14197] 
-//
-//        int bmStart = (int)o_BattleMgr +21708; // начало стеков
-//        int netDSt = netData +40;
-//        for (int i=0; i<42; i++) {
-//            for (int k=0; k<1352; k++) { 
-//                if (k>=40 && k<44) continue;
-//                if (k>=116 && k<172) continue;
-//                if (k>=272 && k<404) continue;				
-//                if (k>=1056 && k<1108) continue;
-//                if (k>=1264) continue;
-//
-//                *(char*)(bmStart +i*1352 +k) = *(char*)(netDSt +i*1352 +k);
-//            }
-//        }
-//
-//        CALL_3(void, __thiscall, 0x464F10, o_BattleMgr, *(int*)(netData +20), *(int*)(netData +24));
-//
-//        CALL_1(void*, __thiscall, 0x555D00, netData); // деструктор
-//    }
-//
-//    return EXEC_DEFAULT; 
-//}
+// показ лычек опыта в диалоге оставления монстров на карте (он же диалог гарнизона)
+int __stdcall Y_Dlg_AddCreatures_Init_Leave(HiHook* hook, _Hero_* hero, _Army_* army, int creatureType)
+{
+    if ( hero ) 
+        WOG_HeroEntered2Object = hero;
+
+    return CALL_3(int, __fastcall, hook->GetDefaultFunc(), hero, army, creatureType);
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -428,18 +344,14 @@ void Monsters(PatcherInstance* _PI)
     // _PI->WriteHiHook(0x4E64FA, CALL_, EXTENDED_, FASTCALL_, Y_FixWoG_GetCreatureGrade);
     _PI->WriteLoHook(0x4E64D1, Y_FixWoG_GetCreatureGrade);
 
-    // правка функции WoG: накопление существ и стражников в двеллингах существ, теперь:
-    //   - существа и стражники копятся, только если двеллинг принадлежит одному из игроков
-    //   - Санта-Гремлины копятся в обычном режиме
-    //   - Существа 8 уровня (№№ 150-158) копятся в обычном режиме    
-    // сначала восстанавливаем оригинальный код игры   CALL 0x4B8760
-    // снимая установку хука WoG                       CALL 0x760BDB
-    // _PI->WriteHexPatch(0x4C8795 +1, "C6FFFEFF"); 
-    // модифицируем еженедельную прибавку монстрам
-    // _PI->WriteHiHook(0x4C8795, CALL_, EXTENDED_, THISCALL_, SOD_Dwelling_Add_Creatures);
 
-    // частичное исправление разсихнронизации 
-    // сетевое копирование параметров стеков в битве
-    // _PI->WriteHiHook(0x464F10, SPLICE_, EXTENDED_, THISCALL_, Y_SelectNewMonsterToAct);
-    // _PI->WriteLoHook(0x473D41, Y_BM_ReceNetData);
+    // показ лычек опыта в диалоге присоединения и оставления монстров на карте
+    _PI->WriteHiHook(0x5D15D0, SPLICE_, EXTENDED_, FASTCALL_, Y_Dlg_AddCreatures_Init_Add); 
+    _PI->WriteHiHook(0x5D16B0, SPLICE_, EXTENDED_, FASTCALL_, Y_Dlg_AddCreatures_Init_Leave);
+
+    // убираем отображение двух ошибок от опыта существ
+    // 0x717B37 TError(15, 222, aCrexpoUnknownS);
+    // 0x717FAB TError(15, 286, aCrexpoUnknow_0);    
+    _PI->WriteCodePatch(0x717B37, "%n", 20); // 20 nops
+    _PI->WriteCodePatch(0x717FAB, "%n", 20); // 20 nops
 }
