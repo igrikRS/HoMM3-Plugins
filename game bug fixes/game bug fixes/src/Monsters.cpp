@@ -354,4 +354,9 @@ void Monsters(PatcherInstance* _PI)
     // 0x717FAB TError(15, 286, aCrexpoUnknow_0);    
     _PI->WriteCodePatch(0x717B37, "%n", 20); // 20 nops
     _PI->WriteCodePatch(0x717FAB, "%n", 20); // 20 nops
+
+    // меняем картинки оставления монстров и для эстетики
+    // и для того, чтобы визуально понимать, что мы вносили правку
+    _PI->WriteByte(0x757365 +1, 35); // 35 - Меч Правосудия
+    _PI->WriteByte(0x757369 +1, 13); // 13 - Архангел
 }
