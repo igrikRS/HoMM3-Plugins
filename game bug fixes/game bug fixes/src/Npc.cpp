@@ -21,28 +21,36 @@ _int64_ getAIValue_NPC(int heroID){
     int speedNPC = Get_NpcSkillPower(npc, 5);								
     int isShoot = npc->specBon[0] & 0x10 ? 2 : 1;
 
-    value = (_int64_)((attNPC * damageNPC * speedNPC * isShoot + defNPC * hpNPC) >> 2);
+    value = (_int64_)((attNPC * damageNPC * speedNPC * isShoot + defNPC * hpNPC) >> 2); 
+
     return value;
 }
 
 bool check_AIValue_isNotHero = false;
 
-_int64_ __stdcall get_AIValue_Hook(HiHook* hook, int army)
+_int_ __stdcall get_AIValue_Hook(HiHook* hook, int army)
 {
-    _int64_ value;
+    _int_ value;
 
     int armyNPC = army;
 
-    value = CALL_1(_int64_, __thiscall, hook->GetDefaultFunc(), army);
+    value = CALL_1(_int_, __thiscall, hook->GetDefaultFunc(), army);
 
     if (!check_AIValue_isNotHero) {
         int heroID = *(int*)(armyNPC -119);
 
         if ( heroID >= 0 && heroID < 156)
-            value += getAIValue_NPC(heroID);
+            value += (_int_)getAIValue_NPC(heroID);
 
     } 
+
     check_AIValue_isNotHero = false;
+
+    if ( value < 0 || value >= (INT_MAX -500) ) { 
+        int random = Randint(550, 600);
+        value = INT_MAX - random;
+    }
+
     return value; 
 }
 
@@ -65,6 +73,37 @@ int __stdcall get_Fight_Value_Hook(LoHook* h, HookContext* c)
     return EXEC_DEFAULT;
 } 
 
+
+
+// фикс переполнения AI_Value, когда армия у ИИ слишком большая
+_int32_ __stdcall AI_ArmyExchanging_GetAddStack_Value_And_Place(HiHook* h, int this_, int a2, __int16 a3, int a4, char a5)
+{
+    _int32_ value = CALL_5(_int32_, __thiscall, h->GetDefaultFunc(), this_, a2, a3, a4, a5);
+
+    //if (value < -(2 << 20) ) {
+    //    //if ( value > -(INT_MAX >> 2) )
+    //    //    value = 0;
+    //    //else {
+    //    //    int random = Randint(550, 600);
+    //    //    value = INT_MAX - random;
+    //    //}
+
+    //    int random = Randint(1000, 2500);
+    //    value = -random;
+
+    //    //if (o_ActivePlayer->selected_hero_id == 24)
+    //    //{
+    //    //    countCalls++;
+    //    //    sprintf(MyString, "%d) value: %d", countCalls, value);
+    //    //    b_MsgBox(MyString, 5);
+    //    //}
+    //}
+
+    return value;
+}
+
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -79,6 +118,9 @@ void Npc(PatcherInstance* _PI)
     _PI->WriteLoHook(0x42758F, get_AIValue_And_NPC_Error);
     _PI->WriteLoHook(0x42CA6B, get_AIValue_And_NPC_Error);
     _PI->WriteLoHook(0x52846A, get_AIValue_And_NPC_Error);	
+
+    // фикс переполнения AI_Value, когда армия у ИИ слишком большая
+    _PI->WriteHiHook(0x42C830, SPLICE_, EXTENDED_, THISCALL_, AI_ArmyExchanging_GetAddStack_Value_And_Place);
 
     // исправление бага блока командира, когда защита падала из-за флага "в защите"
     _PI->WriteCodePatch(0x76E7D7, "%n", 24); // 15 nop 

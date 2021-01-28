@@ -221,6 +221,13 @@ int __stdcall Y_ReplayBattle(HiHook* hook, _AdvMgr_* advMng, _dword_ MixedPos, _
 	return ret; 
 }
 
+// Астральный дух возвращает существ только после всех переигровок
+void __stdcall Y_NPC_Astral_AfterBattle(HiHook* hook)
+{
+    if (!isNeedReplay)
+        CALL_0(void, __cdecl, hook->GetDefaultFunc() );
+}
+
 ////////////////////////////////////////////////////////////////////////// 
 ////////////////////////////////////////////////////////////////////////// 
 
@@ -247,10 +254,8 @@ void HooksInit()
     _PI->WriteHiHook(0x75AEB0, CALL_, SAFE_, THISCALL_, Y_ReplayBattle);				
 
     // Есть баг: Астральный дух возвращает существ перед первой переигровкой
-    // исправить так: JMP в 0x76C632 -> 0x76C72B
-    // а пропущенный код выполнить (придется писать ручками) после всех переигровок
-    // АЛЬТЕРНАТИВНОЕ РЕШЕНИЕ (как по мне - лучше)
-    // hihook на функцию 0x76C616 c полным пропуском оной во время переигровок
+    // С этим хуком Астральный дух возвращает существ только после всех переигровок
+    _PI->WriteHiHook(0x76C616, SPLICE_, EXTENDED_, CDECL_, Y_NPC_Astral_AfterBattle);
 }
 
 
