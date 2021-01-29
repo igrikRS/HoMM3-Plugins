@@ -19,21 +19,8 @@ int UseWin32InputControl(int newState)
 }
 
 
-void Y_Mouse_SetCursor(int type)
-{
-	if (type) {
-		b_MouseMgr_SetCursor(saveCursor[1], saveCursor[0]);
-		WOG_DisableMouse = saveCursor[2];
-	} else {
-		saveCursor[2] = WOG_DisableMouse;
-		WOG_DisableMouse = 0; // отключаем блок изменения кадров курсора
-		// запоминаем кадр курсора мыши
-		saveCursor[0] = o_MouseMgr->Field<_int_>(+0x4C); // type
-		saveCursor[1] = o_MouseMgr->Field<_int_>(+0x50); // frame
-		b_MouseMgr_SetCursor(0,0);
-		CALL_2(void*, __thiscall, 0x50D7B0, o_MouseMgr, 0);
-	}
-}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define OPTION_ID 911
 
