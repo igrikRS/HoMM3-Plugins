@@ -128,6 +128,7 @@ int __stdcall Y_ReplayBattle(HiHook* hook, _AdvMgr_* advMng, _dword_ MixedPos, _
 	_Army_* armyDS = 0;
 
 	if (HrA) {
+        o_AdvMgr->HeroActive_DeMobilize();
 		HrAS = (_Hero_*)o_New(1170);
 		MemCopy(HrAS, HrA, 1170);
 		npcA = GetNpc(HrA->id);                       
