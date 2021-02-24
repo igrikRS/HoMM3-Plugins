@@ -79,9 +79,15 @@ int __stdcall Y_Dlg_BattleResults_Proc(HiHook* hook, _EventMsg_* msg)
 		if (msg->type == MT_MOUSEBUTTON && msg->type != MT_KEYDOWN) {
 			if (msg->subtype == MST_LBUTTONCLICK) {
 				if (msg->item_id == DLG_CANCEL) {
-					o_TimeClick = 15000; 
-					msg->item_id == DLG_OK;
-					isNeedReplay = true;
+                    o_WndMgr->result_dlg_item_id == DLG_CANCEL;
+                    isNeedReplay = true;
+
+					o_TimeClick = 0; 					
+                    msg->type = 512;
+                    msg->subtype = 10;
+                    msg->item_id = 10;					
+
+                    return 2;
 				}
 			}
 		}
@@ -188,8 +194,10 @@ int __stdcall Y_ReplayBattle(HiHook* hook, _AdvMgr_* advMng, _dword_ MixedPos, _
 
 			o_QuickBattle = 0;						
 			hdv(_bool_, "HD.QuickCombat") = 0;	
-			ERM_FU_CALL(870520); 
-			FireEvent("OnBeforeBattleReplay", NULL, 0);
+			
+            // Сообщаем о переигровке ERM'у
+			FireEvent("OnBattleReplay", NULL, 0);
+            // ERM_FU_CALL(870520); устаревший вызов функции
 		}
 		// нужен, если выходим в главное меню 
         // через кнопку HD в диалоге настроек битвы
@@ -198,9 +206,9 @@ int __stdcall Y_ReplayBattle(HiHook* hook, _AdvMgr_* advMng, _dword_ MixedPos, _
 		// непосредственный вызов битвы
 		ret = CALL_11(int, __thiscall, hook->GetDefaultFunc(), advMng, MixedPos, HrA, MArrA, OwnerD, townD, HrD, MArrD, Pv3, Pv2, Pv1);
 
-		if ( isNeedReplay ) {
-			FireEvent("OnAfterBattleReplay", NULL, 0);
-			ERM_FU_CALL(870530); 
+		if ( isNeedReplay ) { // Сообщаем о переигровке ERM'у
+			FireEvent("OnBeforeBattleReplay", NULL, 0);
+			// ERM_FU_CALL(870530); устаревший вызов функции
 		}
 	} while ( isNeedReplay );
 
