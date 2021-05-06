@@ -1,6 +1,6 @@
  game bug fixes extended
 
- Timestamp is 5fe1e92c (Tue Dec 22 15:40:12 2020)
+ Timestamp is 60937c50 (Thu May 06 08:19:12 2021)
 
  Preferred load address is 10000000
 
@@ -16,19 +16,19 @@
  0002:0000010c 00000004H .CRT$XPZ                DATA
  0002:00000110 00000004H .CRT$XTA                DATA
  0002:00000114 00000004H .CRT$XTZ                DATA
- 0002:00000120 00001340H .rdata                  DATA
- 0002:00001460 00000062H .rdata$debug            DATA
- 0002:000014d0 0000000cH .rdata$sxdata           DATA
- 0002:000014dc 00000004H .rtc$IAA                DATA
- 0002:000014e0 00000004H .rtc$IZZ                DATA
- 0002:000014e4 00000004H .rtc$TAA                DATA
- 0002:000014e8 00000004H .rtc$TZZ                DATA
- 0002:000014f0 0000028cH .xdata$x                DATA
- 0002:0000177c 00000014H .idata$2                DATA
- 0002:00001790 00000014H .idata$3                DATA
- 0002:000017a4 000000ecH .idata$4                DATA
- 0002:00001890 0000043cH .idata$6                DATA
- 0002:00001ccc 00000000H .edata                  DATA
+ 0002:00000120 00001370H .rdata                  DATA
+ 0002:00001490 00000068H .rdata$debug            DATA
+ 0002:00001500 0000000cH .rdata$sxdata           DATA
+ 0002:0000150c 00000004H .rtc$IAA                DATA
+ 0002:00001510 00000004H .rtc$IZZ                DATA
+ 0002:00001514 00000004H .rtc$TAA                DATA
+ 0002:00001518 00000004H .rtc$TZZ                DATA
+ 0002:00001520 0000028cH .xdata$x                DATA
+ 0002:000017ac 00000014H .idata$2                DATA
+ 0002:000017c0 00000014H .idata$3                DATA
+ 0002:000017d4 000000ecH .idata$4                DATA
+ 0002:000018c0 0000043cH .idata$6                DATA
+ 0002:00001cfc 00000000H .edata                  DATA
  0003:00000000 00000cd8H .data                   DATA
  0003:00000ce0 00000fbcH .bss                    DATA
 
@@ -65,8 +65,8 @@
  0001:000008d0       ?Y_SetWogHates@@YGHPAVLoHook@@PAUHookContext@@@Z 100018d0 f   game bug fixes.obj
  0001:00000a10       ?Fix_WoG_GetCreatureGrade_Expo@@YGHPAVLoHook@@PAUHookContext@@@Z 10001a10 f   game bug fixes.obj
  0001:00000a30       ?Fix_WoG_GetCreatureGrade_Town@@YGHPAVLoHook@@PAUHookContext@@@Z 10001a30 f   game bug fixes.obj
- 0001:00000a50       ?Y_Dlg_AddCreatures_Init_Add@@YGHPAVHiHook@@PAU_Hero_@@HH@Z 10001a50 f   game bug fixes.obj
  0001:00000a50       ?Y_Dlg_AddCreatures_Init_Leave@@YGHPAVHiHook@@PAU_Hero_@@PAU_Army_@@H@Z 10001a50 f   game bug fixes.obj
+ 0001:00000a50       ?Y_Dlg_AddCreatures_Init_Add@@YGHPAVHiHook@@PAU_Hero_@@HH@Z 10001a50 f   game bug fixes.obj
  0001:00000a80       ?Monsters@@YAXPAVPatcherInstance@@@Z 10001a80 f   game bug fixes.obj
  0001:00000c40       ?Fix_ForceFieldShadow@@YGHPAVLoHook@@PAUHookContext@@@Z 10001c40 f   game bug fixes.obj
  0001:00000c70       ?Y_RestoreBattleShadow@@YGHPAVLoHook@@PAUHookContext@@@Z 10001c70 f   game bug fixes.obj
@@ -236,8 +236,8 @@
  0001:00007498       ___ansicp                  10008498 f   LIBCMT:convrtcp.obj
  0001:000074e1       ___convertcp               100084e1 f   LIBCMT:convrtcp.obj
  0001:00007695       __isctype_l                10008695 f   LIBCMT:isctype.obj
- 0001:00007750       __chkstk                   10008750 f   LIBCMT:chkstk.obj
  0001:00007750       __alloca_probe             10008750     LIBCMT:chkstk.obj
+ 0001:00007750       __chkstk                   10008750 f   LIBCMT:chkstk.obj
  0001:000079aa       _strtol                    100089aa f   LIBCMT:strtol.obj
  0001:000079e0       ___ascii_strnicmp          100089e0 f   LIBCMT:_strnicm.obj
  0001:00007a50       __aulldvrm                 10008a50 f   LIBCMT:ulldvrm.obj
@@ -312,8 +312,8 @@
  0002:0000010c       ___xp_z                    1000910c     LIBCMT:crt0init.obj
  0002:00000110       ___xt_a                    10009110     LIBCMT:crt0init.obj
  0002:00000114       ___xt_z                    10009114     LIBCMT:crt0init.obj
- 0002:0000013c       __pDefaultRawDllMain       1000913c     LIBCMT:dllcrt0.obj
  0002:0000013c       __pRawDllMain              1000913c     LIBCMT:dllcrt0.obj
+ 0002:0000013c       __pDefaultRawDllMain       1000913c     LIBCMT:dllcrt0.obj
  0002:00000148       ??_C@_0O@NLDKAIKN@EncodePointer?$AA@ 10009148     LIBCMT:tidtable.obj
  0002:00000158       ??_C@_1BK@DBDEIDLH@?$AAK?$AAE?$AAR?$AAN?$AAE?$AAL?$AA3?$AA2?$AA?4?$AAD?$AAL?$AAL?$AA?$AA@ 10009158     LIBCMT:tidtable.obj
  0002:00000174       ??_C@_0O@KBPMFGHI@DecodePointer?$AA@ 10009174     LIBCMT:tidtable.obj
@@ -422,19 +422,20 @@
  0002:00001374       ??_C@_0BL@KDNLKMAG@8B4D?508?5C601?501?5C641?502?504?$AA@ 1000a374     game bug fixes.obj
  0002:00001390       ??_C@_04CNHNGAPO@EB17?$AA@ 1000a390     game bug fixes.obj
  0002:00001398       ??_C@_0BG@HLEFPKFH@81FF?5B7000000?590?57747?$AA@ 1000a398     game bug fixes.obj
- 0002:000013b0       ??_C@_0CK@GHPHDNIN@0F?5BF?557?518?5?58B?54F?524?5B8?5?5FF?5FF?5@ 1000a3b0     game bug fixes.obj
- 0002:000013dc       ??_C@_0BC@GNGLJKJC@EB?530?590?590?590?590?$AA@ 1000a3dc     game bug fixes.obj
- 0002:000013f0       ??_C@_04CNNEPIP@EB74?$AA@  1000a3f0     game bug fixes.obj
- 0002:000013f8       ??_C@_04CMIOOACJ@2800?$AA@ 1000a3f8     game bug fixes.obj
- 0002:00001400       ??_C@_0BI@NFDPFHCG@game?5bug?5fixes?5extended?$AA@ 1000a400     game bug fixes.obj
- 0002:00001418       __load_config_used         1000a418     LIBCMT:loadcfg.obj
- 0002:000014d0       ___safe_se_handler_table   1000a4d0     <linker-defined>
- 0002:000014dc       ___rtc_iaa                 1000a4dc     LIBCMT:_initsect_.obj
- 0002:000014e0       ___rtc_izz                 1000a4e0     LIBCMT:_initsect_.obj
- 0002:000014e4       ___rtc_taa                 1000a4e4     LIBCMT:_initsect_.obj
- 0002:000014e8       ___rtc_tzz                 1000a4e8     LIBCMT:_initsect_.obj
- 0002:0000177c       __IMPORT_DESCRIPTOR_KERNEL32 1000a77c     kernel32:KERNEL32.dll
- 0002:00001790       __NULL_IMPORT_DESCRIPTOR   1000a790     kernel32:KERNEL32.dll
+ 0002:000013b0       ??_C@_0CJ@KOHFKNIF@8B4D?508?5C601?501?5C641?502?504?5EB0C?5@ 1000a3b0     game bug fixes.obj
+ 0002:000013dc       ??_C@_0CK@GHPHDNIN@0F?5BF?557?518?5?58B?54F?524?5B8?5?5FF?5FF?5@ 1000a3dc     game bug fixes.obj
+ 0002:00001408       ??_C@_0BC@GNGLJKJC@EB?530?590?590?590?590?$AA@ 1000a408     game bug fixes.obj
+ 0002:0000141c       ??_C@_04CNNEPIP@EB74?$AA@  1000a41c     game bug fixes.obj
+ 0002:00001424       ??_C@_04CMIOOACJ@2800?$AA@ 1000a424     game bug fixes.obj
+ 0002:0000142c       ??_C@_0BI@NFDPFHCG@game?5bug?5fixes?5extended?$AA@ 1000a42c     game bug fixes.obj
+ 0002:00001448       __load_config_used         1000a448     LIBCMT:loadcfg.obj
+ 0002:00001500       ___safe_se_handler_table   1000a500     <linker-defined>
+ 0002:0000150c       ___rtc_iaa                 1000a50c     LIBCMT:_initsect_.obj
+ 0002:00001510       ___rtc_izz                 1000a510     LIBCMT:_initsect_.obj
+ 0002:00001514       ___rtc_taa                 1000a514     LIBCMT:_initsect_.obj
+ 0002:00001518       ___rtc_tzz                 1000a518     LIBCMT:_initsect_.obj
+ 0002:000017ac       __IMPORT_DESCRIPTOR_KERNEL32 1000a7ac     kernel32:KERNEL32.dll
+ 0002:000017c0       __NULL_IMPORT_DESCRIPTOR   1000a7c0     kernel32:KERNEL32.dll
  0003:00000000       ___security_cookie         1000b000     LIBCMT:gs_cookie.obj
  0003:00000004       ___security_cookie_complement 1000b004     LIBCMT:gs_cookie.obj
  0003:00000008       ___flsindex                1000b008     LIBCMT:tidtable.obj
