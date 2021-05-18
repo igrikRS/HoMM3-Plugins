@@ -76,16 +76,16 @@ int New_Dlg_IF_G(_CheckBoxes_* checkBoxes)
     dlg->AddItem(_DlgButton_::Create(dlg->width/2 -32, dlg->height -22 -30, 64, 30, 1, iOkayDef, 0, 1, 1, 28, 2));
 
     // Титульный текст
-    dlg->AddItem(_DlgStaticText_::Create(20, 20, dlg->width -40, 56, checkBoxes->Caption, n_MedFont, 1, 3, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+    dlg->AddItem(_DlgStaticText_::Create(20, 20, dlg->width -40, 56, checkBoxes->Caption, n_MedFont, 7, 3, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 
     // Создаём и заполняем строки[12]
     for (int i = 0; i < checkBoxes->Count; i++)
     {
         // желтая обводка
-        b_YellowFrame_Create(dlg, 18, 76+i*dy, dlg->width -36, 24, 22+i, ON, o_Pal_Y);		
+        b_YellowFrame_Create(dlg, 18, 76+i*dy, dlg->width -36, 24, 22+i, ON, o_Pal_Grey);		
 
         // текст
-        dlg->AddItem(_DlgStaticText_::Create(44, 80+i*dy, dlg->width -66, 16, checkBoxes->Text[i], n_SmallFont, 7, 10+i, ALIGN_H_LEFT | ALIGN_V_CENTER, 0));
+        dlg->AddItem(_DlgStaticText_::Create(44, 80+i*dy, dlg->width -66, 16, checkBoxes->Text[i], n_SmallFont, 1, 10+i, ALIGN_H_LEFT | ALIGN_V_CENTER, 0));
 
         // деф кнопки (чекбоксы или радиобаттоны)
         dlg->AddItem(_DlgButton_::Create(22, 80+i*dy, dlg->width -44, 18, 34+i, 
