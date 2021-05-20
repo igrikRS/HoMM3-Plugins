@@ -54,75 +54,9 @@ int __stdcall Y_Lo_Dlg_HeroLvlUp_Create(LoHook* h, HookContext* c)
 	return EXEC_DEFAULT;
 } 
 
-// #############################################################################################
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//int __stdcall Y_Dlg_Recuit_Proc(HiHook* hook, _Struct_* this_, _EventMsg_* msg)
-//{
-//	int ret = CALL_2(int, __thiscall, hook->GetDefaultFunc(), this_, msg);
-//
-//	if ((msg->type == MT_MOUSEBUTTON) && (msg->subtype == MST_LBUTTONDOWN))
-//	{
-//		if ((msg->item_id == 538) || (msg->item_id == 539) || (msg->item_id == 540) || (msg->item_id == 541))
-//		{
-//			CALL_2(int, __thiscall, hook->GetDefaultFunc(), this_, msg->Set(512, MST_LBUTTONCLICK, 532));
-//		}
-//	}
-//	return ret;
-//}
-//
-//int __stdcall Y_Dlg_Recuit_Create(HiHook* hook, _Struct_* this_, int a2)
-//{
-//	int ret = CALL_2(int, __thiscall, hook->GetDefaultFunc(), this_, a2);
-//
-//	_DlgMsg_ msg;
-//	CALL_2(int, __thiscall, 0x550D40, this_, msg.Set(512, MST_LBUTTONCLICK, 532));
-//
-//	return ret;
-//}
-
-// #############################################################################################
-
-//int __stdcall Y_DlgMainMenu_Proc(HiHook* hook, _EventMsg_* msg)
-//{
-//	if ( msg->type == MT_KEYDOWN) 
-//	{
-//		if ( msg->subtype == HK_F5 ) 
-//		{
-//			o_PauseVideo();
-//			_Dlg_* d = (_Dlg_*)o_New(104);
-//			CALL_1(void, __thiscall, 0x5B1AA0, d);
-//
-//			// отключаем все кнопки
-//			d->GetItem(102)->SetEnabled(0); 
-//			d->GetItem(105)->SetEnabled(0); 
-//			d->GetItem(106)->SetEnabled(0); 
-//			d->GetItem(107)->SetEnabled(0); 
-//			d->GetItem(108)->SetEnabled(0); 
-//			d->GetItem(30722)->SetEnabled(0); 
-//
-//			// создаём подкладку и одну кнопку выхода (id = 95, 96)
-//			d->AddItem(_DlgStaticPcx8_::Create(235, 270, 230, 200, 95, "DiBoxBck.pcx" ));
-//			d->AddItem(_DlgButton_::Create(357, 415, 100, 48, 96, (char*)(*(int*)0x5B1DC0), 1, 2, 1, 1, 2)); // "soretrn.def" (кнопка "Вернуться в игру")
-//
-//			d->Run();
-//			d->Destroy(TRUE);
-//			o_WndMgr->result_dlg_item_id = -1;
-//			CALL_0(void, __cdecl, 0x50C370);
-//			o_ContinueVideo();
-//		}
-//
-//		//if ( msg->subtype == HK_F6 ) // тестовая кнопка
-//		//{
-//		//	int HD_Version = _P->VarValue<_dword_>("HD.Version.Dword");
-//		//	sprintf(o_TextBuffer, "HD_Version = %d", HD_Version );
-//		//	b_MsgBox(o_TextBuffer, 1);
-//		//}
-//	}
-//	return CALL_1(int, __thiscall, hook->GetDefaultFunc(), msg);
-//}
-
-
-// #############################################################################################
 // быстро закончить бой по Q
 _int_ QuickBattle_SAVE, isNeedRestore;
 _int_ saveManaHero[2][2];
@@ -200,15 +134,6 @@ void StartHD5Functions()
     // быстро закончить бой по Q
 	_PI->WriteHiHook(0x473F55, CALL_, EXTENDED_, THISCALL_, Y_BATTLE_Proc);
 	_PI->WriteLoHook(0x476DA5, Y_EndBattle);
-
-	//// установить ползунок в MAX положение при покупке монстров
-	//_PI->WriteHiHook(0x550D40, SPLICE_, EXTENDED_, THISCALL_, Y_Dlg_Recuit_Proc);
-	//_PI->WriteHiHook(0x5502A0, SPLICE_, EXTENDED_, THISCALL_, Y_Dlg_Recuit_Create);
-
-	//// системное меню в главном меню
-	//_PI->WriteHiHook(0x4FBDA0, SPLICE_, EXTENDED_, THISCALL_, Y_DlgMainMenu_Proc);
-	//_PI->WriteHiHook(0x4D5B50, SPLICE_, EXTENDED_, THISCALL_, Y_DlgMainMenu_Proc);
-	//_PI->WriteHiHook(0x456FD0, SPLICE_, EXTENDED_, THISCALL_, Y_DlgMainMenu_Proc);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
