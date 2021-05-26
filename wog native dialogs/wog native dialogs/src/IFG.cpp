@@ -22,12 +22,12 @@ int __stdcall New_Dlg_IF_G_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
         {
             _CheckBoxes_* checkBoxes = (_CheckBoxes_*)dlg->custom_data[0];
 
-            if ( checkBoxes->Type )	// RadioButtons
+            if ( checkBoxes->Type ) // RadioButtons
             { 
-                for (int i = 0; i < checkBoxes->Count; i++)	
+                for (int i = 0; i < checkBoxes->Count; i++) 
                 {
                     checkBoxes_ChangeButtonFrame(dlg, 34+i, 0, 1);
-                    checkBoxes->State[i] = false;  				
+                    checkBoxes->State[i] = false;               
                 }
                 // изменяем деф выбранного элемента
                 checkBoxes_ChangeButtonFrame(dlg, msg->item_id, 2, 3);
@@ -35,7 +35,7 @@ int __stdcall New_Dlg_IF_G_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 
             }
             else // CheckBoxes
-            {	
+            {   
                 // получаем индекс кадра дефа
                 int frame = ((_DlgButton_*)dlg->GetItem(msg->item_id))->def_frame_index;
                 // "инвертируем" кадр
@@ -44,7 +44,7 @@ int __stdcall New_Dlg_IF_G_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
                 checkBoxes_ChangeButtonFrame(dlg, msg->item_id, frame, frame + 1);
                 // устанавливаем состояние кнопки
                 checkBoxes->State[msg->item_id -34] = frame ? 1 : 0;  
-            }	
+            }   
 
             dlg->Redraw(TRUE); 
         }
@@ -82,7 +82,7 @@ int New_Dlg_IF_G(_CheckBoxes_* checkBoxes)
     for (int i = 0; i < checkBoxes->Count; i++)
     {
         // желтая обводка
-        b_YellowFrame_Create(dlg, 18, 76+i*dy, dlg->width -36, 24, 22+i, ON, o_Pal_Grey);		
+        b_YellowFrame_Create(dlg, 18, 76+i*dy, dlg->width -36, 24, 22+i, ON, o_Pal_Grey);       
 
         // текст
         dlg->AddItem(_DlgStaticText_::Create(44, 80+i*dy, dlg->width -66, 16, checkBoxes->Text[i], n_SmallFont, 1, 10+i, ALIGN_H_LEFT | ALIGN_V_CENTER, 0));
@@ -115,7 +115,7 @@ int New_Dlg_IF_G(_CheckBoxes_* checkBoxes)
 
 
 _int_ __stdcall New_Dlg_IF_G_Lo(LoHook* h, HookContext* c)
-{	    
+{       
     _CheckBoxes_ checkBoxes = *(_CheckBoxes_*)(c->ebp -0xB0);
 
     if( checkBoxes.Count > 0 && checkBoxes.Count <= 12 )
@@ -131,7 +131,7 @@ _int_ __stdcall New_Dlg_IF_G_Lo(LoHook* h, HookContext* c)
 void Dlg_IFG(PatcherInstance* _PI)
 {
     // диалог IF:G
-    _PI->WriteLoHook(0x77318D, New_Dlg_IF_G_Lo);		
+    _PI->WriteLoHook(0x77318D, New_Dlg_IF_G_Lo);        
     _PI->WriteCodePatch(0x77300C, "%n", 5);
     _PI->WriteCodePatch(0x77324B, "%n", 5);
 }

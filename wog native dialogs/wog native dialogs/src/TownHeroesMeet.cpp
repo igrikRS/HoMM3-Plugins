@@ -83,7 +83,7 @@ int __stdcall Y_Dlg_HeroesMeet(LoHook* h, HookContext* c)
 
 void Dlg_TownHeroesMeet(PatcherInstance* _PI)
 {
-	// обмен героями в замке ко клавише E
-	_PI->WriteHiHook(0x5D3640, SPLICE_, EXTENDED_, THISCALL_, Y_DlgTown_Proc);
-	_PI->WriteLoHook(0x4AAC1B, Y_Dlg_HeroesMeet);
+    // обмен героями в замке ко клавише E
+    _PI->WriteHiHook(0x5D3640, SPLICE_, EXTENDED_, THISCALL_, Y_DlgTown_Proc);
+    _PI->WriteLoHook(0x4AAC1B, Y_Dlg_HeroesMeet);
 }

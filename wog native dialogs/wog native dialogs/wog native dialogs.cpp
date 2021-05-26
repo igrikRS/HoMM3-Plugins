@@ -1,7 +1,7 @@
 //////////////////////////////////
 // Author: [igrik]              //
 // Date:   31.05.2019г.         //
-// Thanks: baratorch, ZVS, MoP	//
+// Thanks: baratorch, ZVS, MoP  //
 //////////////////////////////////
 
 #define _CRT_SECURE_NO_WARNINGS
@@ -18,6 +18,17 @@ using namespace Era;
 
 Patcher* _P;
 PatcherInstance* _PI;
+
+//////////////////////////////////
+
+namespace wndText
+{
+    const char* PLUGIN_NAME = "wog native dialogs";
+    const char* PLUGIN_AUTHOR = "igrik";
+    const char* PLUGIN_DATA = "26/05/2021";
+} 
+
+//////////////////////////////////
 
 // переменная, для чистого WND
 // для Берса ее коментирую
@@ -38,7 +49,7 @@ char* json_Combat[2];
 
 // функция получения JSON строк методом ERA
 char* GetEraJSON(const char* json_string_name) {
-	return tr(json_string_name);
+    return tr(json_string_name);
 }
 
 // мои текстовые буферы
@@ -105,13 +116,13 @@ char* textProcS = "%s";
 
 int __stdcall Y_Dlg_MainMenu_Create(HiHook* hook, _Dlg_* dlg) 
 {
-	int ret = CALL_1(int, __thiscall, hook->GetDefaultFunc(), dlg);
+    int ret = CALL_1(int, __thiscall, hook->GetDefaultFunc(), dlg);
 
-	const char* ERA_version = GetEraVersion();
-	sprintf(o_TextBuffer, "HoMM3 ERA %s", ERA_version );
-	dlg->AddItem(_DlgStaticText_::Create(596, 576, 200, 20, o_TextBuffer, n_MedFont, 7, 545, ALIGN_H_RIGHT | ALIGN_V_BOTTOM, 0)); 
+    const char* ERA_version = GetEraVersion();
+    sprintf(o_TextBuffer, "HoMM3 ERA %s", ERA_version );
+    dlg->AddItem(_DlgStaticText_::Create(596, 576, 200, 20, o_TextBuffer, n_MedFont, 7, 545, ALIGN_H_RIGHT | ALIGN_V_BOTTOM, 0)); 
 
-	return ret;
+    return ret;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -119,54 +130,54 @@ int __stdcall Y_Dlg_MainMenu_Create(HiHook* hook, _Dlg_* dlg)
 
 int __stdcall Y_LoadAllTXTinGames(LoHook* h, HookContext* c)
 {
-	txtresWOG = _TXT_::Load( "\\zvs\\Lib1.res\\txtres.txt" );
-	return EXEC_DEFAULT;
+    txtresWOG = _TXT_::Load( "\\zvs\\Lib1.res\\txtres.txt" );
+    return EXEC_DEFAULT;
 }
 
 //-----------------------------------------------------------------------
 int __stdcall Y_Hook_MainLoop(LoHook* h, HookContext* c)
-{	
+{   
     n_BigFont = GetEraJSON("wnd.fonts.big_font");
     n_MedFont = GetEraJSON("wnd.fonts.med_font");
     n_SmallFont = GetEraJSON("wnd.fonts.small_font");
-	// загружаем необходимые русскоязычные игровые шрифты
-	bigfont2 = _Fnt_::Load(n_BigFont);
-	medfont2 = _Fnt_::Load(n_MedFont);
-	smalfont2 = _Fnt_::Load(n_SmallFont);
+    // загружаем необходимые русскоязычные игровые шрифты
+    bigfont2 = _Fnt_::Load(n_BigFont);
+    medfont2 = _Fnt_::Load(n_MedFont);
+    smalfont2 = _Fnt_::Load(n_SmallFont);
 
-	json_CrExpo[0] = GetEraJSON("wnd.dlg_crexpo.line0");
-	json_CrExpo[1] = GetEraJSON("wnd.dlg_crexpo.line1");
-	json_CrExpo[2] = GetEraJSON("wnd.dlg_crexpo.line2");
-	json_CrExpo[3] = GetEraJSON("wnd.dlg_crexpo.line3");
-	json_CrExpo[4] = GetEraJSON("wnd.dlg_crexpo.line4");
-	json_CrExpo[5] = GetEraJSON("wnd.dlg_crexpo.line5");
-	json_CrExpo[6] = GetEraJSON("wnd.dlg_crexpo.line6");
-	json_CrExpo[7] = GetEraJSON("wnd.dlg_crexpo.line7");
-	json_CrExpo[8] = GetEraJSON("wnd.dlg_crexpo.line8");
-	json_CrExpo[9] = GetEraJSON("wnd.dlg_crexpo.line9");
-	json_CrExpo[10] = GetEraJSON("wnd.dlg_crexpo.line10");
-	json_CrExpo[11] = GetEraJSON("wnd.dlg_crexpo.line11");
+    json_CrExpo[0] = GetEraJSON("wnd.dlg_crexpo.line0");
+    json_CrExpo[1] = GetEraJSON("wnd.dlg_crexpo.line1");
+    json_CrExpo[2] = GetEraJSON("wnd.dlg_crexpo.line2");
+    json_CrExpo[3] = GetEraJSON("wnd.dlg_crexpo.line3");
+    json_CrExpo[4] = GetEraJSON("wnd.dlg_crexpo.line4");
+    json_CrExpo[5] = GetEraJSON("wnd.dlg_crexpo.line5");
+    json_CrExpo[6] = GetEraJSON("wnd.dlg_crexpo.line6");
+    json_CrExpo[7] = GetEraJSON("wnd.dlg_crexpo.line7");
+    json_CrExpo[8] = GetEraJSON("wnd.dlg_crexpo.line8");
+    json_CrExpo[9] = GetEraJSON("wnd.dlg_crexpo.line9");
+    json_CrExpo[10] = GetEraJSON("wnd.dlg_crexpo.line10");
+    json_CrExpo[11] = GetEraJSON("wnd.dlg_crexpo.line11");
 
-	json_WoGOpt[0] = GetEraJSON("wnd.dlg_wog_options.intro_font");
-	json_WoGOpt[1] = GetEraJSON("wnd.dlg_wog_options.bttn_name");
+    json_WoGOpt[0] = GetEraJSON("wnd.dlg_wog_options.intro_font");
+    json_WoGOpt[1] = GetEraJSON("wnd.dlg_wog_options.bttn_name");
 
-	json_Npc[0] = GetEraJSON("wnd.dlg_commander.bttn_open_hint");
-	json_Npc[1] = GetEraJSON("wnd.dlg_commander.bttn_exit_hint");
-	json_Npc[2] = GetEraJSON("wnd.dlg_commander.bttn_lvlup_hint");
-	json_Npc[3] = GetEraJSON("wnd.dlg_commander.bttn_dismiss_rmc");
+    json_Npc[0] = GetEraJSON("wnd.dlg_commander.bttn_open_hint");
+    json_Npc[1] = GetEraJSON("wnd.dlg_commander.bttn_exit_hint");
+    json_Npc[2] = GetEraJSON("wnd.dlg_commander.bttn_lvlup_hint");
+    json_Npc[3] = GetEraJSON("wnd.dlg_commander.bttn_dismiss_rmc");
 
-	// теперь создаём свои хуки после всех патчей вога
-	Dlg_WoGOptions(_PI);   // диалог WoG Опций 
-	Dlg_NPC(_PI); 		   // диалог командира	
-	Dlg_MsgBox(_PI);       // новый и расширенный Callback диалога MsgBox
+    // теперь создаём свои хуки после всех патчей вога
+    Dlg_WoGOptions(_PI);   // диалог WoG Опций 
+    Dlg_NPC(_PI);          // диалог командира  
+    Dlg_MsgBox(_PI);       // новый и расширенный Callback диалога MsgBox
 
 #ifdef DOP_FUNK_TO_ERA
-	json_Combat[0] = GetEraJSON("wnd.combat.finish_question");
-	json_Combat[1] = GetEraJSON("wnd.combat.show_killed");
-	Battle_ShowKilled(_PI);			// показ предполагаемого количества убитых монстров при атаке и стрельбе
+    json_Combat[0] = GetEraJSON("wnd.combat.finish_question");
+    json_Combat[1] = GetEraJSON("wnd.combat.show_killed");
+    Battle_ShowKilled(_PI);         // показ предполагаемого количества убитых монстров при атаке и стрельбе
 #endif DOP_FUNK_TO_ERA
 
-	return EXEC_DEFAULT;
+    return EXEC_DEFAULT;
 } 
 
 
@@ -174,10 +185,6 @@ int __stdcall Y_Hook_MainLoop(LoHook* h, HookContext* c)
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
-
-char* PLUGIN_NAME = "wog native dialogs";
-char* PLUGIN_AUTHOR = "igrik";
-char* PLUGIN_DATA = "26/05/2021";
 
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
@@ -190,63 +197,63 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     case DLL_PROCESS_ATTACH:
         if (!plugin_On)
         {
-			plugin_On = 1;    
+            plugin_On = 1;    
 
-			_P = GetPatcher();
-			_PI = _P->CreateInstance(PLUGIN_NAME); 
+            _P = GetPatcher();
+            _PI = _P->CreateInstance((char*)wndText::PLUGIN_NAME); 
 
-			// подтягиваем ERA
-			ConnectEra();
-			// и сразу получаем версию ERA
-			ERA_VERSION = GetVersionNum();
+            // подтягиваем ERA
+            ConnectEra();
+            // и сразу получаем версию ERA
+            ERA_VERSION = GetVersionNum();
 
-			// // загружаем HD данные
-			// _HD = _P->GetInstance("HD.WoG"); 
-			// if (_HD) { isHD = true; }
+            // // загружаем HD данные
+            // _HD = _P->GetInstance("HD.WoG"); 
+            // if (_HD) { isHD = true; }
 
-			// создаем загрузку необходимых тектовиков
-			_PI->WriteLoHook(0x4EDD65, Y_LoadAllTXTinGames);
+            // создаем загрузку необходимых тектовиков
+            _PI->WriteLoHook(0x4EDD65, Y_LoadAllTXTinGames);
 
-			// загрузка MainLoop
-			_PI->WriteLoHook(0x4EEAC0, Y_Hook_MainLoop);
+            // загрузка MainLoop
+            _PI->WriteLoHook(0x4EEAC0, Y_Hook_MainLoop);
 
-			// делаем показ версии игры в главном меню
-			_PI->WriteHiHook(0x4FB930, SPLICE_, EXTENDED_, THISCALL_, Y_Dlg_MainMenu_Create);
+            // делаем показ версии игры в главном меню
+            _PI->WriteHiHook(0x4FB930, SPLICE_, EXTENDED_, THISCALL_, Y_Dlg_MainMenu_Create);
 
-			// коректировка описаний монстров
-			// не в бою
-			_PI->WriteDword(0x5F3E3F, 0x660CB4);	// шрифт tiny.fnt
-			_PI->WriteDword(0x5F3E4C, 234);			// поз.Y
-			_PI->WriteByte(0x5F3E51, 22);			// поз.X 
-			// в бою
-			_PI->WriteDword(0x5F446A, 0x660CB4);	// шрифт tiny.fnt
-			_PI->WriteDword(0x5F4477, 234);			// поз.Y
-			_PI->WriteByte(0x5F447C, 22);			// поз.X 
-			// при покупке
-			_PI->WriteDword(0x5F4885, 0x660CB4);	// шрифт tiny.fnt
-			_PI->WriteDword(0x5F4892, 234);			// поз.Y
-			_PI->WriteByte(0x5F4897, 22);			// поз.X 
+            // коректировка описаний монстров
+            // не в бою
+            _PI->WriteDword(0x5F3E3F, 0x660CB4);    // шрифт tiny.fnt
+            _PI->WriteDword(0x5F3E4C, 234);         // поз.Y
+            _PI->WriteByte(0x5F3E51, 22);           // поз.X 
+            // в бою
+            _PI->WriteDword(0x5F446A, 0x660CB4);    // шрифт tiny.fnt
+            _PI->WriteDword(0x5F4477, 234);         // поз.Y
+            _PI->WriteByte(0x5F447C, 22);           // поз.X 
+            // при покупке
+            _PI->WriteDword(0x5F4885, 0x660CB4);    // шрифт tiny.fnt
+            _PI->WriteDword(0x5F4892, 234);         // поз.Y
+            _PI->WriteByte(0x5F4897, 22);           // поз.X 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-			WoGOptionsStrings(_PI);	// вырезаем текстовик "zsetup00.txt"
-			Dlg_ChangeBmp(_PI);	// все замены кадров
-			Dlg_ExpaMon(_PI); 	// диалог Экспы монстров
-			Dlg_Curse(_PI);     // диалог проклятий и благословлений
-			Dlg_DropArt(_PI);   // диалог сброса артефактов на землю	
-			Dlg_Sphinx(_PI); 	// диалог сфинкса и IF:D/E
-			Dlg_IFG(_PI); 		// диалог IF:G
-			Dlg_ChooseAttack(_PI); 	// диалог выбора типа атаки монстром
-			Dlg_CastleReBuild(_PI);	// диалог перестройки замка
-			HD5_Functions(_PI); 	// реализация функций, вырезанных в HD 5 версии
-			DlgBattleLog(_PI); 	// окно диалога статуса действий и событий в битве
+            WoGOptionsStrings(_PI); // вырезаем текстовик "zsetup00.txt"
+            Dlg_ChangeBmp(_PI); // все замены кадров
+            Dlg_ExpaMon(_PI);   // диалог Экспы монстров
+            Dlg_Curse(_PI);     // диалог проклятий и благословлений
+            Dlg_DropArt(_PI);   // диалог сброса артефактов на землю    
+            Dlg_Sphinx(_PI);    // диалог сфинкса и IF:D/E
+            Dlg_IFG(_PI);       // диалог IF:G
+            Dlg_ChooseAttack(_PI);  // диалог выбора типа атаки монстром
+            Dlg_CastleReBuild(_PI); // диалог перестройки замка
+            HD5_Functions(_PI);     // реализация функций, вырезанных в HD 5 версии
+            DlgBattleLog(_PI);  // окно диалога статуса действий и событий в битве
 #ifdef DOP_FUNK_TO_ERA
-			Dlg_TownHeroesMeet(_PI);	// обмен героями в замке ко клавише E
-#endif DOP_FUNK_TO_ERA	
-			// char* oVersionERA = "{Game Version:}\n\nHoMM3 ERA 2.7.7 \n (with Wog Native Dialogs)";
-			// _PI->WriteDword(0x7066E1 +1, *(int*)&oVersionERA); // ENG
-			// _PI->WriteDword(0x7066CE +1, *(int*)&oVersionERA); // RUS
+            Dlg_TownHeroesMeet(_PI);    // обмен героями в замке ко клавише E
+#endif DOP_FUNK_TO_ERA  
+            // char* oVersionERA = "{Game Version:}\n\nHoMM3 ERA 2.7.7 \n (with Wog Native Dialogs)";
+            // _PI->WriteDword(0x7066E1 +1, *(int*)&oVersionERA); // ENG
+            // _PI->WriteDword(0x7066CE +1, *(int*)&oVersionERA); // RUS
 
         }
         break;
