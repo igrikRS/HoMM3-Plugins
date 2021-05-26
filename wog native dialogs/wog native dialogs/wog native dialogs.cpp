@@ -11,6 +11,8 @@
 #include "..\..\..\include\HoMM3_Extra.h" 
 #include "..\..\..\include\WogClasses.h"
 
+#include <algorithm>
+
 #include "..\..\..\include\era.h"
 using namespace Era;
 
@@ -173,6 +175,9 @@ int __stdcall Y_Hook_MainLoop(LoHook* h, HookContext* c)
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
+char* PLUGIN_NAME = "wog native dialogs";
+char* PLUGIN_AUTHOR = "igrik";
+char* PLUGIN_DATA = "26/05/2021";
 
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
@@ -188,7 +193,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 			plugin_On = 1;    
 
 			_P = GetPatcher();
-			_PI = _P->CreateInstance("WoG Native Dialogs"); 
+			_PI = _P->CreateInstance(PLUGIN_NAME); 
 
 			// подтягиваем ERA
 			ConnectEra();

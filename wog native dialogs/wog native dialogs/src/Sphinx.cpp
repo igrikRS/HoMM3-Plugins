@@ -1,6 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////// Диалог IF:D/E /////////////////////////////////////////////////////////
 
+// переменная, которая заставляет выполняться диалог ввода из zvslib.dll
 int BanDlg_CustomReq_EnterText = false;
 
 extern "C" __declspec(dllexport) int UseWin32InputControl(int newState);
@@ -22,53 +23,62 @@ int UseWin32InputControl(int newState)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define OPTION_ID 911
-
+// указатель на структуру диалога ввода
 _Sphinx1_* o_Sphinx1 = 0;
 
+// переменная, которая не даёт запуститься диалог ввода несколько раз
+// можно запустить только единожды
 _bool_ Dlg_CustomReq_Ban = false;
 
-
-bool IsSupportedFormatImage(char* image_name) 
+/*
+* функция проверки на расширение картинки
+** поддерживаются:
+** - pcx
+** - pcx16
+** - bmp, jpg, jpeg, png
+** - gif, avi
+*/
+_int32_ IsSupportedFormatImage(char* image_name) 
 {
-	if ( ERA_VERSION < 2940 )
+    if ( ERA_VERSION < 2940 )
 		return false;
 
-	bool ret = false;
-	char im_name[256];
-	MemCopy(im_name, image_name, 256);		
-	int len = strlen(im_name);
-	im_name[len] = 0;
+    // защита от вылета при image_name = "(null)"
+    if ( !image_name )
+        image_name = "default.bmp";
 
-	// bmp 
-	if ( im_name[len-4] == '.' && im_name[len-3] == 'b' && im_name[len-2] == 'm' && im_name[len-1] == 'p' )
-		ret = true;
-	if ( im_name[len-4] == '.' && im_name[len-3] == 'B' && im_name[len-2] == 'M' && im_name[len-1] == 'P' )
-		ret = true;
-	// pcx 
-	if ( im_name[len-4] == '.' && im_name[len-3] == 'p' && im_name[len-2] == 'c' && im_name[len-1] == 'x' )
-		ret = true;
-	if ( im_name[len-4] == '.' && im_name[len-3] == 'P' && im_name[len-2] == 'C' && im_name[len-1] == 'X' )
-		ret = true;
-	// jpg 
-	if ( im_name[len-4] == '.' && im_name[len-3] == 'j' && im_name[len-2] == 'p' && im_name[len-1] == 'g' )
-		ret = true;
-	if ( im_name[len-4] == '.' && im_name[len-3] == 'J' && im_name[len-2] == 'P' && im_name[len-1] == 'G' )
-		ret = true;
-	// jpeg 
-	if ( im_name[len-5] == '.' && im_name[len-4] == 'j' && im_name[len-3] == 'p' && im_name[len-2] == 'e' && im_name[len-1] == 'g' )
-		ret = true;
-	if ( im_name[len-5] == '.' && im_name[len-4] == 'J' && im_name[len-3] == 'P' && im_name[len-2] == 'E' && im_name[len-1] == 'G' )
-		ret = true;
-	// png 
-	if ( im_name[len-4] == '.' && im_name[len-3] == 'p' && im_name[len-2] == 'n' && im_name[len-1] == 'g' )
-		ret = true;
-	if ( im_name[len-4] == '.' && im_name[len-3] == 'P' && im_name[len-2] == 'N' && im_name[len-1] == 'G' )
-		ret = true;
+    std::string name;
+    name.append(image_name);
 
-	return ret;
+    // переводим строку в верхний регистр
+    std::transform(name.begin(), name.end(),name.begin(), ::toupper);
+
+    if(name.substr(name.find_last_of(".") + 1) == "PCX")
+       return 4; 
+    if(name.substr(name.find_last_of(".") + 1) == "PCX16")
+       return 3; 
+
+    // проверки на расширение файла для "LoadImageAsPcx16"
+    if(name.substr(name.find_last_of(".") + 1) == "BMP")
+       return 2; 
+    if(name.substr(name.find_last_of(".") + 1) == "JPG")
+       return 2; 
+    if(name.substr(name.find_last_of(".") + 1) == "JPEG")
+       return 2; 
+    if(name.substr(name.find_last_of(".") + 1) == "PNG")
+       return 2; 
+
+    // проверки для запуска диалога из zvslib.dll
+    if(name.substr(name.find_last_of(".") + 1) == "GIF")
+       return 1; 
+    if(name.substr(name.find_last_of(".") + 1) == "AVI")
+       return 1; 
+
+    // пользователь пытается загрузить какую-то дичь 
+    return 0;
 }
 
+// процедура диалога ввода
 int __stdcall New_Dlg_CustomReq_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 {
 	int r = dlg->DefProc(msg);
@@ -137,7 +147,7 @@ int __stdcall New_Dlg_CustomReq_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 }
 
 
-
+// создание и заполнение элементами диалога ввода
 int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 {
 	// высчитываем размеры диалога
@@ -201,6 +211,7 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 		yy = 580;
 	}
 
+    // перзаписываем утверджённую высоту диалога
 	y = yy;
 
 	_CustomDlg_* dlg = _CustomDlg_::Create(-1, -1, x, y, DF_SCREENSHOT | DF_SHADOW, New_Dlg_CustomReq_Proc);
@@ -233,13 +244,28 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 		
 			char* short_name = GetShortFileName_Y(pPath);
 
-			//sprintf(o_TextBuffer, "pPath: %s \n\n short_name: %s", pPath, short_name);
-			//b_MsgBox(o_TextBuffer, 1);
+            // получаем "тип" картинки, и по этому "типу" обрабатываем способ загрузки
+            _int32_ imageType = IsSupportedFormatImage(short_name);
 
-			if (IsSupportedFormatImage(short_name) )
+			if ( imageType >= 2 )
 			{
+                _Pcx16_* o_Pic;
+
 				// грузим картинку через era.dll->LoadImageAsPcx16()
-				_Pcx16_* o_Pic = (_Pcx16_*)Era::LoadImageAsPcx16(pPath, short_name, 0, 0, max_width_pic, 100, 3); 
+                if ( imageType == 2 )
+				    o_Pic = (_Pcx16_*)Era::LoadImageAsPcx16(pPath, short_name, 0, 0, max_width_pic, 100, 3); 
+                // *.pcx16
+                if ( imageType == 3 )
+                {
+                    std::string pcxName;
+                    pcxName.append(short_name);
+                    int pcxNameLength = pcxName.length() -2;
+                    pcxName.erase(pcxNameLength);
+                    o_Pic = o_LoadPcx16(pcxName.c_str());
+                }
+                // *.pcx (8 bit)
+                if ( imageType == 4 )
+                    o_Pic = (_Pcx16_*)o_LoadPcx8(short_name); 
 				
 				int pic_x = 0;
 				int pic_y = 0;
@@ -254,8 +280,13 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 					start_x += ( (max_width_pic/2) - pic_x/2);
 					start_y += (50 - pic_y/2);
 
-					dlg->AddItem(_DlgStaticPcx16_::Create(start_x, start_y, pic_x, pic_y, 10+i, o_Pic->name, 2048));
+                    if ( imageType == 4 ) // *.pcx (8 bit)
+                        dlg->AddItem(_DlgStaticPcx8_::Create(start_x, start_y, pic_x, pic_y, 10+i, o_Pic->name));
+                    else // *.pcx16 or era.dll->LoadImageAsPcx16()
+					    dlg->AddItem(_DlgStaticPcx16_::Create(start_x, start_y, pic_x, pic_y, 10+i, o_Pic->name, 2048));
+
 					// dlg->GetItem(10+i)->full_tip_text = pPath; // ПКМ на картинке
+
 					if (pHint)
 					{
 						dlg->GetItem(10+i)->full_tip_text = o_NullString;
@@ -263,22 +294,21 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 					}
 				}
 			} 
-			else 
+			else if ( imageType == 1 ) // avi or gif file
 			{
-				dlg->AddItem(_DlgStaticText_::Create(start_x, 24+h_text1, 100, 100, pPath, n_SmallFont, 1, 50+i, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
-				b_YellowFrame_Create(dlg, start_x, 24+h_text1, 100, 100, 10+i, ON, o_Pal_Y);
-				dlg->GetItem(10+i)->full_tip_text = pPath; // ПКМ на картинке
-				if (pHint){
-					dlg->GetItem(10+i)->short_tip_text = pHint;
-				}
-
 				// в диалоге неподдерживаемая картинка gif/avi, поэтому выходим из нашего диалога
 				// и передадим управление воговскому из zvslib.dll который их может обработать
-				i = 4; // счетчик цикла в максимум
 				Sphinx->SelItm = 10;
 				dlg->Destroy(TRUE);
 				return Sphinx->SelItm; // 10 = значит нужно грузить стандартный диалог
-			} // end else IsSupportedFormatImage()
+			} 
+            else
+            {
+                sprintf(MyString, "{Gitcha!!!}\n\nYou're trying to upload some bullshit.\n But not today! (c) igrik\n\n wog native dialogs.era: IF:D/E \n\n image name: {%s}", short_name);
+                b_MsgBox(MyString, 5);
+                Sphinx->SelItm = -1; // -1 = cancel
+                return Sphinx->SelItm;
+            } // end else IsSupportedFormatImage()
 		} // end for()
 	} // end if (count_pics)
 
@@ -411,7 +441,7 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
 	return Sphinx->SelItm;
 }
 
-
+// иницаиализации диалога ввода
 int __stdcall Y_Dlg_CustomReq(LoHook* h, HookContext* c)
 {	
 	Dlg_CustomReq_Ban++;
@@ -424,7 +454,7 @@ int __stdcall Y_Dlg_CustomReq(LoHook* h, HookContext* c)
 
 		int result = 0;
 
-		if (Sphinx->Text2 && BanDlg_CustomReq_EnterText /* GetWoGOptionsStatus(OPTION_ID) */ ) {			
+		if (Sphinx->Text2 && BanDlg_CustomReq_EnterText ) {			
 			result = 10; // гребанные выкрутасы. Мне такие костыли очень, очень не нравятся!
 		}
 
@@ -463,7 +493,7 @@ int __stdcall Y_Dlg_CustomReq(LoHook* h, HookContext* c)
 int __stdcall Y_WoGDlg_SphinxReq(HiHook* hook, int Num) 
 {
 	// if ( если окно ввода должно быть отключено (и необходима работа стандартного воговского (опция 911)) )
-	if ( BanDlg_CustomReq_EnterText /* GetWoGOptionsStatus(OPTION_ID) */  )
+	if ( BanDlg_CustomReq_EnterText )
 	{
 		// вызов оригинальной функции
 		return CALL_1(int, __cdecl, hook->GetDefaultFunc(), Num);
@@ -481,6 +511,8 @@ int __stdcall Y_WoGDlg_SphinxReq(HiHook* hook, int Num)
         *(_byte_*)0x28AAB8B = 57; // Answer[3]='9';
         *(_byte_*)0x28AAB8C = 0;  // Answer[4]=0;
 
+        // иницаиализация параметров: так делает WOG, детка.
+        // тут я не стал ничего выдумывать и просто скопировал код
         Sphinx.Text4 = (char*)0x28AAB88;
         Sphinx.Pic1Path = 0;
         Sphinx.Pic2Path = 0;
@@ -500,17 +532,19 @@ int __stdcall Y_WoGDlg_SphinxReq(HiHook* hook, int Num)
         Sphinx.Chk4Hint = 0;
         Sphinx.ShowCancel = 0;
 
-        // делаем глоб.ссылку на Sphinx
+        // пишем в глобальный указатель на структуру диалога
         o_Sphinx1 = (_Sphinx1_*)&Sphinx;
 
         // устанавливаем стандартный курсор мыши
         Y_Mouse_SetCursor(0);
 
-        New_Dlg_CustomReq(o_Sphinx1); // диалог
+        // запускаем создание и выполнение диалога
+        New_Dlg_CustomReq(o_Sphinx1); 
 
         // возвращаем курсор мыши
         Y_Mouse_SetCursor(1);
 
+        // выполняем WOG'овскиие функции перед передачей управления WOG'у
         CALL_3(void, __cdecl, 0x710B9B, 0x28AAB88, 512, Sphinx.Text4); // WoG_StrCopy(Answer, int 512, Sphinx.Text4)
         return CALL_2(int, __cdecl, 0x772DFD, 0x28AAB88, CALL_3(char*, __cdecl, 0x77710B, Num, 1, 0x289BFF0));
     }
@@ -523,18 +557,19 @@ int __stdcall Y_WoGDlg_SphinxReq(HiHook* hook, int Num)
 int __stdcall Y_Dlg_QuickDialog(HiHook* hook, _Sphinx1_* Sphinx)
 {		
     Y_Mouse_SetCursor(0);	
-    int ret = New_Dlg_CustomReq(Sphinx); // диалог
+    int ret = New_Dlg_CustomReq(Sphinx);
     Y_Mouse_SetCursor(1);
 
     // -1: Esc, 1: Ok
     return ret;
 }
 
+// описываем воговскую функцию получения CData 
 int WoG_FindCData(int num) {
     return CALL_1(int, __cdecl, 0x771A13, num); 
 }
 
-// Воговская функция разделения текста на путь и название файла
+// Описываем воговскую функцию разделения текста на путь и название файла
 void WoG_SplitPath(char *all, char *path, char *name) {
     return CALL_3(void, __cdecl, 0x716701, all, path, name);
 }
@@ -597,9 +632,9 @@ int __stdcall Y_Dlg_CustomPic(HiHook* hook, int num, int startup)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// установка перехватов в код игры
 void Dlg_Sphinx(PatcherInstance* _PI)
 {
-
     // Диалог IF:D/E
     _PI->WriteCodePatch(0x772A6C, "%n", 5); // call    WoG_BeforeDialog()
     _PI->WriteCodePatch(0x772D39, "%n", 5); // call    WOG_AfterDialog()		
@@ -624,5 +659,4 @@ void Dlg_Sphinx(PatcherInstance* _PI)
     _PI->WriteHiHook(0x772E48, SPLICE_, EXTENDED_, CDECL_, Y_WoGDlg_SphinxReq);
 }
 
-
-
+// ** end
