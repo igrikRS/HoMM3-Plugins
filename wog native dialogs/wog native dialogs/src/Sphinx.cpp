@@ -315,7 +315,7 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
             } 
             else
             {
-                sprintf(MyString, "{Gitcha!!!}\n\nYou're trying to upload some bullshit.\n But not today! (c) %s\n\n wog native dialogs.era: IF:D/E \n\n image name: {%s}", wndText::PLUGIN_AUTHOR, short_name);
+                sprintf(MyString, "{Gotcha!!!}\n\nYou're trying to upload some bullshit.\n But not today! (c) %s\n\n wog native dialogs.era: IF:D/E \n\n image name: {%s}", wndText::PLUGIN_AUTHOR, short_name);
                 b_MsgBox(MyString, 5);
                 Sphinx->SelItm = -1; // -1 = cancel
                 return Sphinx->SelItm;
