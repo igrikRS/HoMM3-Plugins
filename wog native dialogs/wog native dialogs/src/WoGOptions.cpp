@@ -36,7 +36,7 @@ int Redraw_WoGDlgSetup_ElemOnPage(_CustomDlg_* dlg, _DlgSetup_* ds, int page)
                 ((_DlgButton_*)dlg->GetItem(id+i+100))->def_frame_index = 5;
                 ((_DlgButton_*)dlg->GetItem(id+i+100))->press_def_frame_index = 5;
             } else {
-                sprintf(o_TextBuffer, "Error (for igrik)!!!\n\n Debug\nPage: %d (%d) \nCount: %d \n id: %d \n state: %d \n\n %s", page, j, count, id+i+100, state, ds->Pages[page]->ItemList[j]->ItemName[i]); 
+                sprintf(o_TextBuffer, "Error (for %s)!!!\n\n Debug\nPage: %d (%d) \nCount: %d \n id: %d \n state: %d \n\n %s", wndText::PLUGIN_AUTHOR, page, j, count, id+i+100, state, ds->Pages[page]->ItemList[j]->ItemName[i]); 
                 b_MsgBox(o_TextBuffer, 1);
             }
         }

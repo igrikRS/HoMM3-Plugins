@@ -23,9 +23,9 @@ PatcherInstance* _PI;
 
 namespace wndText
 {
-    const char* PLUGIN_NAME = "wog native dialogs";
+    const char* PLUGIN_NAME = "WoG native dialogs";
     const char* PLUGIN_AUTHOR = "igrik";
-    const char* PLUGIN_DATA = "26/05/2021";
+    const char* PLUGIN_DATA = "26.05.2021";
 } 
 
 //////////////////////////////////
@@ -125,6 +125,11 @@ int __stdcall Y_Dlg_MainMenu_Create(HiHook* hook, _Dlg_* dlg)
     return ret;
 }
 
+void __stdcall OnReportVersion (TEvent* Event) {
+    sprintf(MyString, "{%s}\n(%s)\n", wndText::PLUGIN_NAME, wndText::PLUGIN_DATA);
+    ReportPluginVersion(MyString);
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -206,6 +211,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
             ConnectEra();
             // и сразу получаем версию ERA
             ERA_VERSION = GetVersionNum();
+            RegisterHandler(OnReportVersion, "OnReportVersion");
 
             // // загружаем HD данные
             // _HD = _P->GetInstance("HD.WoG"); 
