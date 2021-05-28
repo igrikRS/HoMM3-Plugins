@@ -157,6 +157,18 @@ int __stdcall New_Dlg_CustomReq_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
     return r;
 }
 
+// функция для очистки памяти от загруженых изоражений
+int New_Dlg_CustomReq_PicDestroy(_Pcx16_* pic[4], int countPictures )
+{
+    // удаляем загруженные картинки
+    for (int i = 0; i < countPictures; i++) {
+        if ( pic[i] )
+            pic[i]->DerefOrDestruct();
+    }
+
+    return 1;
+};
+
 
 // создание и заполнение элементами диалога ввода
 int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
@@ -241,6 +253,8 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
             count_pics++;
     }
 
+    _Pcx16_* o_Pic[4];
+
     char* pic_name = o_NullString;
     // строим изображения id 10-14
     if (count_pics) {
@@ -259,12 +273,10 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
             _int32_ imageType = IsSupportedFormatImage(short_name);
 
             if ( imageType >= dlgSphinx::IMAGE_TYPE_ERA )
-            {
-                _Pcx16_* o_Pic;
-
+            {           
                 // грузим картинку через era.dll->LoadImageAsPcx16()
                 if ( imageType == dlgSphinx::IMAGE_TYPE_ERA )
-                    o_Pic = (_Pcx16_*)Era::LoadImageAsPcx16(pPath, short_name, 0, 0, max_width_pic, 100, 3); 
+                    o_Pic[i] = (_Pcx16_*)Era::LoadImageAsPcx16(pPath, short_name, 0, 0, max_width_pic, 100, 3); 
                 // *.pcx16
                 if ( imageType == dlgSphinx::IMAGE_TYPE_PCX16 )
                 {
@@ -272,29 +284,29 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
                     pcxName.append(short_name);
                     int pcxNameLength = pcxName.length() -2;
                     pcxName.erase(pcxNameLength);
-                    o_Pic = o_LoadPcx16(pcxName.c_str());
+                    o_Pic[i] = o_LoadPcx16(pcxName.c_str());
                 }
                 // *.pcx (8 bit)
                 if ( imageType == dlgSphinx::IMAGE_TYPE_PCX )
-                    o_Pic = (_Pcx16_*)o_LoadPcx8(short_name); 
+                    o_Pic[i] = (_Pcx16_*)o_LoadPcx8(short_name); 
                 
                 int pic_x = 0;
                 int pic_y = 0;
-                if (o_Pic) 
+                if (o_Pic[i]) 
                 {
                     // проверяем размеры загруженной картинки
                     // и при выходе за границы 100х100
-                    pic_x = o_Pic->width;
-                    pic_y = o_Pic->height;
+                    pic_x = o_Pic[i]->width;
+                    pic_y = o_Pic[i]->height;
 
                     // вычисляем привязку изображений (координаты верхнего левого угла картинки)
                     start_x += ( (max_width_pic/2) - pic_x/2);
                     start_y += (50 - pic_y/2);
 
                     if ( imageType == dlgSphinx::IMAGE_TYPE_PCX ) // *.pcx (8 bit)
-                        dlg->AddItem(_DlgStaticPcx8_::Create(start_x, start_y, pic_x, pic_y, 10+i, o_Pic->name));
+                        dlg->AddItem(_DlgStaticPcx8_::Create(start_x, start_y, pic_x, pic_y, 10+i, o_Pic[i]->name));
                     else // *.pcx16 or era.dll->LoadImageAsPcx16()
-                        dlg->AddItem(_DlgStaticPcx16_::Create(start_x, start_y, pic_x, pic_y, 10+i, o_Pic->name, 2048));
+                        dlg->AddItem(_DlgStaticPcx16_::Create(start_x, start_y, pic_x, pic_y, 10+i, o_Pic[i]->name, 2048));
 
                     // dlg->GetItem(10+i)->full_tip_text = pPath; // ПКМ на картинке
 
@@ -309,16 +321,31 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
             {
                 // в диалоге неподдерживаемая картинка gif/avi, поэтому выходим из нашего диалога
                 // и передадим управление воговскому из zvslib.dll который их может обработать
-                Sphinx->SelItm = 10;
+                
+                // уничтожаем диалог
                 dlg->Destroy(TRUE);
-                return Sphinx->SelItm; // 10 = значит нужно грузить стандартный диалог
+                // уничтожаем картинки
+                New_Dlg_CustomReq_PicDestroy(&o_Pic[0], count_pics);
+
+                // 10 = значит нужно грузить стандартный диалог
+                Sphinx->SelItm = 10; 
+                return Sphinx->SelItm;  
             } 
             else
             {
+                // преждупреждающее сообщение, что пользователь грузит дичь
                 sprintf(MyString, "{Gotcha!!!}\n\nYou're trying to upload some bullshit.\n But not today! (c) %s\n\n wog native dialogs.era: IF:D/E \n\n image name: {%s}", wndText::PLUGIN_AUTHOR, short_name);
                 b_MsgBox(MyString, 5);
-                Sphinx->SelItm = -1; // -1 = cancel
+
+                // уничтожаем диалог
+                dlg->Destroy(TRUE);
+                // уничтожаем картинки
+                New_Dlg_CustomReq_PicDestroy(&o_Pic[0], count_pics);
+
+                // Отмена: -1 = cancel 
+                Sphinx->SelItm = -1; 
                 return Sphinx->SelItm;
+
             } // end else IsSupportedFormatImage()
         } // end for()
     } // end if (count_pics)
@@ -428,7 +455,7 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
     // (id = 115) подсказка в статус баре   
     dlg->AddItem(_DlgStaticTextPcx8ed_::Create(8, dlg->height -18 -8, dlg->width - 16, 18, o_NullString, n_SmallFont, adRollvrPcx, 1, 115, ALIGN_H_CENTER | ALIGN_V_CENTER) ); // HD_TStat.pcx
 
-
+    // обнуляем переменную выбранного пункта
     Sphinx->SelItm = 0;
     dlg->Run();
 
@@ -437,6 +464,7 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
         Sphinx->Text4 = edit_text->text;
     }
 
+    // уничтожаем диалог
     dlg->Destroy(TRUE);
 
     if (o_WndMgr->result_dlg_item_id == DIID_CANCEL){ 
@@ -448,8 +476,10 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
         }
     }
 
-    // если возвращается 10, то нужно вызвать стандартный воговский диалог (есть avi или gif)
-    return Sphinx->SelItm;
+    // уничтожаем картинки
+    New_Dlg_CustomReq_PicDestroy(&o_Pic[0], count_pics);
+
+    return Sphinx->SelItm;  
 }
 
 // иницаиализации диалога ввода
