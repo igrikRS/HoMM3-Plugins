@@ -98,7 +98,7 @@ int __stdcall Y_FixCrash_RemoveObstacle(LoHook* h, HookContext* c)
 // Pull request by Raistlin /////////////////////////////////////////////////////////////////////////////////////////
 
 // Исправляем косяк, из-за которого ИИ не мог использовать торговцев артефактами в Сопряжении
-int __stdcall LoHook_FixAIConflArtMercant(LoHook* h, HookContext* c)
+int __stdcall R_FixAI_ConfluxNerchant(LoHook* h, HookContext* c)
 {
 	if ((c->eax & 0xFF) == 8) // al
 	{
@@ -145,7 +145,7 @@ void GameLogic(PatcherInstance* _PI)
 	
 // Pull request by Raistlin /////////////////////////////////////////////////////////////////////////////////////////
 // Исправляем косяк, из-за которого ИИ не мог использовать торговцев артефактами в Сопряжении
-    _PI->WriteLoHook(0x525ED1, LoHook_FixAIConflArtMercant);
+    _PI->WriteLoHook(0x525ED1, R_FixAI_ConfluxNerchant);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
