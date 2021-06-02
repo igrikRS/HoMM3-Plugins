@@ -24,7 +24,7 @@ static struct _SaveHero_
 } saveHero;
 
 int __stdcall Y_SetBattleSave(LoHook* h, HookContext* c)
-{	
+{   
     // получаем структуру героя
     _Hero_* atacker = *(_Hero_**)0x2860248;
 
@@ -52,7 +52,9 @@ int __stdcall Y_SetBattleSave(LoHook* h, HookContext* c)
                 atacker->movement_points = saveHero.movement;
             }
             // сохраняем игру
-            CALL_6(char, __thiscall, 0x4BEB60, o_GameMgr, "BATTLE!", 1, 0, 1, 0);
+            CALL_6(char, __thiscall, 0x4BEB60, o_GameMgr, "BATTLE!", 1, 1, 1, 0);
+            // o_AdvMgr->HeroActive_Mobilize();
+
             // восстанавливаем параметры
             if ( saveHero.init == 1 && atacker->id == saveHero.id )
             {
@@ -72,8 +74,8 @@ int __stdcall Y_SetBattleSave(LoHook* h, HookContext* c)
 
 // при каждом шаге героя сохраняем его координаты и мувпоинты
 int __stdcall Y_HeroMakeStep(LoHook* h, HookContext* c)
-{	
-    _Hero_* hero = (_Hero_*)c->esi;
+{   
+     _Hero_* hero = (_Hero_*)c->esi;
 
     if (hero) 
     {
@@ -114,7 +116,7 @@ BOOL APIENTRY DllMain ( HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpRes
             _PI = _P->CreateInstance(PLUGIN_NAME);
 
             StartPlugin();
-
+            
         }
         break;
 
