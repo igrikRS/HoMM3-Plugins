@@ -7,7 +7,7 @@ namespace dlgSphinx
     const int IMAGE_TYPE_PCX16 = 0x3;
     const int IMAGE_TYPE_ERA   = 0x2;
     const int IMAGE_TYPE_ZVS   = 0x1;
-    // ... other related constants
+    const char* IMAGE_GOTCHA = "{Gotcha!!!}\n\nYou're trying to upload some bullshit.\n But not today! (c) %s\n\n wog native dialogs.era: %s \n\n image name: {%s}";
 
 } // namespace dlgSphinx
 
@@ -334,7 +334,8 @@ int New_Dlg_CustomReq(_Sphinx1_* Sphinx)
             else
             {
                 // преждупреждающее сообщение, что пользователь грузит дичь
-                sprintf(MyString, "{Gotcha!!!}\n\nYou're trying to upload some bullshit.\n But not today! (c) %s\n\n wog native dialogs.era: IF:D/E \n\n image name: {%s}", wndText::PLUGIN_AUTHOR, short_name);
+                char* ermTypeTrigger = "IF:D/E";
+                sprintf(MyString, dlgSphinx::IMAGE_GOTCHA, wndText::PLUGIN_AUTHOR, ermTypeTrigger, short_name);
                 b_MsgBox(MyString, 5);
 
                 // уничтожаем диалог
@@ -592,8 +593,6 @@ int __stdcall Y_WoGDlg_SphinxReq(HiHook* hook, int Num)
 }
 
 
-
-
 // диалог посещения камней силы (повышение перв.навыков командира)
 int __stdcall Y_Dlg_QuickDialog(HiHook* hook, _Sphinx1_* Sphinx)
 {       
@@ -622,14 +621,28 @@ int __stdcall Y_Dlg_CustomPic(HiHook* hook, int num, int startup)
     int needCallOrigFunc = 0;
     int ind = WoG_FindCData(num);
 
-    if (ind == -1 ) {
+    if ( ind == -1 ) 
         needCallOrigFunc = 1;
-    } else {
+    else 
+    {
         _CustomData_* CD = (_CustomData_*)(0x28809B8 +112*ind);
 
-        WoG_SplitPath(CD->Pic[0], MyString1, MyString2 );
+        WoG_SplitPath( CD->Pic[0], MyString1, MyString2 );
 
-        if ( IsSupportedFormatImage( MyString2 ) )
+        _int32_ imageType = IsSupportedFormatImage(MyString2);
+
+        if ( imageType < dlgSphinx::IMAGE_TYPE_ZVS || imageType > dlgSphinx::IMAGE_TYPE_PCX )
+        {
+            // преждупреждающее сообщение, что пользователь грузит дичь
+            char* ermTypeTrigger = "IF:B/P";
+            sprintf(MyString, dlgSphinx::IMAGE_GOTCHA, wndText::PLUGIN_AUTHOR, ermTypeTrigger, MyString2);
+            b_MsgBox(MyString, 5);
+        }
+        else if ( imageType == dlgSphinx::IMAGE_TYPE_ZVS )
+        {
+            needCallOrigFunc = 1;
+        } 
+        else
         {
             Y_Mouse_SetCursor(0); 
 
@@ -637,8 +650,24 @@ int __stdcall Y_Dlg_CustomPic(HiHook* hook, int num, int startup)
             // MyString1 = it's path to file
             // MyString2 = it's file name 
 
-            _Pcx16_* o_Pic = (_Pcx16_*)Era::LoadImageAsPcx16(MyString1, MyString2, 0, 0, 750, 510, /* RESIZE_ALG_DOWNSCALE */ 3);
-          
+            _Pcx16_* o_Pic; 
+
+            if ( imageType == dlgSphinx::IMAGE_TYPE_ERA )
+                o_Pic = (_Pcx16_*)Era::LoadImageAsPcx16(MyString1, MyString2, 0, 0, 750, 510, /* RESIZE_ALG_DOWNSCALE */ 3); 
+            // *.pcx16
+            if ( imageType == dlgSphinx::IMAGE_TYPE_PCX16 )
+            {
+                std::string pcxName;
+                pcxName.append(MyString2);
+                int pcxNameLength = pcxName.length() -2;
+                pcxName.erase(pcxNameLength);
+                o_Pic = o_LoadPcx16(pcxName.c_str());
+            }
+            // *.pcx (8 bit)
+            if ( imageType == dlgSphinx::IMAGE_TYPE_PCX )
+                o_Pic = (_Pcx16_*)o_LoadPcx8(MyString2); 
+
+
             int picWi = o_Pic->width;
             int picHi = o_Pic->height;
 
@@ -651,7 +680,10 @@ int __stdcall Y_Dlg_CustomPic(HiHook* hook, int num, int startup)
             _CustomDlg_* dlg = _CustomDlg_::Create(-1, -1, x, y, DF_SCREENSHOT | DF_SHADOW, NULL);
             Set_DlgBackground_RK(dlg, 0, o_GameMgr->GetMeID());
 
-            dlg->AddItem(_DlgStaticPcx16_::Create(15, 16, picWi, picHi, 1, o_Pic->name, 2048));
+            if ( imageType == dlgSphinx::IMAGE_TYPE_PCX ) 
+                dlg->AddItem(_DlgStaticPcx8_::Create(15, 16, picWi, picHi, 1, o_Pic->name));
+            else 
+                dlg->AddItem(_DlgStaticPcx16_::Create(15, 16, picWi, picHi, 1, o_Pic->name, 2048));
 
             dlg->AddItem(_DlgStaticPcx8_::Create((x >> 1) -33, y -50, 2, box64x30Pcx)); 
             dlg->AddItem(_DlgButton_::Create((x >> 1) -32, y -49, 64, 30, DIID_OK, iOkayDef, 0, 1, 1, 28, 2)); 
@@ -659,9 +691,12 @@ int __stdcall Y_Dlg_CustomPic(HiHook* hook, int num, int startup)
             dlg->Run();
             dlg->Destroy(TRUE);
 
-            Y_Mouse_SetCursor(1);
+            // удаляем загруженную картинку
+            if ( o_Pic )
+                o_Pic->DerefOrDestruct();
 
-        } else needCallOrigFunc = 1;
+            Y_Mouse_SetCursor(1);
+        } 
     }
 
     if ( needCallOrigFunc )
