@@ -22,13 +22,10 @@ char* optionsIntro = "wog_options.main.intro";
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SetupJsonText( char* target, const char* jsonName)
+void SetupJsonText( char** target, const char* jsonName)
 {
-    char* jsonText = GetEraJSON(jsonName);
-
-    if ( strcmp(jsonName, jsonText) ) {
-        strcpy(target, jsonText);
-    }
+    // strcpy(target, GetEraJSON(jsonName));
+    *target = GetEraJSON(jsonName);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -44,31 +41,31 @@ void __stdcall WOG_ProcessAll(HiHook* h)
     // получаем структуру диалога ВОГ Опций
     _DlgSetup_* ds = o_WogOptions;
 
-    SetupJsonText(ds->Name, optionsName);
-    SetupJsonText(ds->Hint, optionsHint);
-    SetupJsonText(ds->PopUp, optionsPopUp);
-    SetupJsonText(ds->Intro, optionsIntro);
+    SetupJsonText(&ds->Name, optionsName);
+    SetupJsonText(&ds->Hint, optionsHint);
+    SetupJsonText(&ds->PopUp, optionsPopUp);
+    SetupJsonText(&ds->Intro, optionsIntro);
 
     for (int i = 0; i < 8; i++) {
         sprintf(strPage, textPage, i, name);
-        SetupJsonText(ds->Pages[i]->Name, strPage);
+        SetupJsonText(&ds->Pages[i]->Name, strPage);
 
         sprintf(strPage, textPage, i, hint);
-        SetupJsonText(ds->Pages[i]->Hint, strPage);
+        SetupJsonText(&ds->Pages[i]->Hint, strPage);
 
         sprintf(strPage, textPage, i, popUp);
-        SetupJsonText(ds->Pages[i]->PopUp, strPage);
+        SetupJsonText(&ds->Pages[i]->PopUp, strPage);
 
         sprintf(strPage, textPage, i, list);
         for(int j = 0; j < 4; j++){
             sprintf(strList, strPage, j, name);
-            SetupJsonText(ds->Pages[i]->ItemList[j]->Name, strList);
+            SetupJsonText(&ds->Pages[i]->ItemList[j]->Name, strList);
 
             sprintf(strList, strPage, j, hint);
-            SetupJsonText(ds->Pages[i]->ItemList[j]->Hint, strList);
+            SetupJsonText(&ds->Pages[i]->ItemList[j]->Hint, strList);
 
             sprintf(strList, strPage, j, popUp);
-            SetupJsonText(ds->Pages[i]->ItemList[j]->PopUp, strList);
+            SetupJsonText(&ds->Pages[i]->ItemList[j]->PopUp, strList);
         }
     }
 }
@@ -80,9 +77,9 @@ int __stdcall Dlg_SaveDatFile1(LoHook* h, HookContext* c)
 {
     _ChooseFile_* cf = o_ChooseFile;
 
-    SetupJsonText(cf->Caption, "dlg_datfile.captionsave");
-    SetupJsonText(cf->Description, "dlg_datfile.descrsave");
-    SetupJsonText(cf->Mask, "dlg_datfile.filemask");
+    SetupJsonText(&cf->Caption, "dlg_datfile.captionsave");
+    SetupJsonText(&cf->Description, "dlg_datfile.descrsave");
+    SetupJsonText(&cf->Mask, "dlg_datfile.filemask");
 
     return EXEC_DEFAULT;
 } 
@@ -98,9 +95,9 @@ int __stdcall Dlg_LoadDatFile1(LoHook* h, HookContext* c)
 {
     _ChooseFile_* cf = o_ChooseFile;
 
-    SetupJsonText(cf->Caption, "dlg_datfile.captionload");
-    SetupJsonText(cf->Description, "dlg_datfile.descrload");
-    SetupJsonText(cf->Mask, "dlg_datfile.filemask");
+    SetupJsonText(&cf->Caption, "dlg_datfile.captionload");
+    SetupJsonText(&cf->Description, "dlg_datfile.descrload");
+    SetupJsonText(&cf->Mask, "dlg_datfile.filemask");
 
     return EXEC_DEFAULT;
 } 
