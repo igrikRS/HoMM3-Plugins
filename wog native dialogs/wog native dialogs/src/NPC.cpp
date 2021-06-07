@@ -219,7 +219,7 @@ int __stdcall Y_New_CommanderDlg_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
                         ((_DlgStaticDef_*)dlg->GetItem(msg->item_id))->def_frame_index = (int)dlgNPC->NextActive[this_id -1];
                         ((_DlgStaticDef_*)dlg->GetItem(msg->item_id))->RedrawScreen();
                         dlgNPC->DlgLeft = this_id;
-                        // e_ClickSound();
+                        e_ClickSound();
                     }
                     time_click = o_GetTime();
                 }
