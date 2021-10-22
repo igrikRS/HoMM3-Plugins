@@ -318,13 +318,51 @@ int __stdcall New_Dlg_ExpaMon_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
     return r;
 }
 
+// функция выталкивает пустые строки в конец структуры
+// таким образом между текстами нет пустых строк
+void CreatureExpo_CompressedEmptyStrings(_CreatureExpo_* crexpo)
+{
+    for(int i = 0; i < 15; i++) { 
+        if( crexpo->RowCaptionHints[i] )
+            continue;
+
+        for (int j = 15; j >= (i+1); j--)
+        {
+            if( !crexpo->RowCaptionHints[j] )
+            {
+                char* temp = crexpo->RowCaptions[j-1];
+                crexpo->RowCaptions[i] = crexpo->RowCaptions[j-1];
+                crexpo->RowCaptions[j-1] = temp;
+
+                temp = crexpo->RowCaptionHints[i];
+                crexpo->RowCaptionHints[i] = crexpo->RowCaptionHints[j-1];
+                crexpo->RowCaptionHints[j-1] = temp;
+
+                temp = crexpo->Rows[i];
+                crexpo->Rows[i] = crexpo->Rows[j-1];
+                crexpo->Rows[j-1] = temp;
+
+                temp = crexpo->RowHints[i];
+                crexpo->RowHints[i] = crexpo->RowHints[j-1];
+                crexpo->RowHints[j-1] = temp;
+            }
+        }
+
+    } 
+}
+
 int __stdcall Y_NewDlg_CreatureExpo(HiHook* hook, _CreatureExpo_* crexpo) 
 {
     // считаем полное количество текстовых строк
     int linesCount = 0;
-    for (int i = 0; i < 16; i++)
-        if ( crexpo->RowCaptions[i] )
+    for (int i = 0; i < 16; i++) {
+        if ( crexpo->RowCaptionHints[i] )
             linesCount++;
+    }
+
+    // убираем пустые строки среди заполненных строк
+    if ( linesCount )
+       CreatureExpo_CompressedEmptyStrings(crexpo);
 
     int minLinesCount = linesCount;
     if (minLinesCount < 7)

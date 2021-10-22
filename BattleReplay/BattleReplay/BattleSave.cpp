@@ -39,24 +39,30 @@ int __stdcall Y_SetBattleSave(LoHook* h, HookContext* c)
             // перед сохранением "отматываем" координаты и мувпоинты
             if ( saveHero.init == 1 && atacker->id == saveHero.id )
             {
-                saveHero.save_x = atacker->x;
-                atacker->x = saveHero.x;
+                if (saveHero.x == atacker->x && saveHero.y == atacker->y && saveHero.z == atacker->z)
+                    saveHero.init = 0;
 
-                saveHero.save_y = atacker->y;
-                atacker->y = saveHero.y;
+                if ( saveHero.init == 1 )
+                {
+                    saveHero.save_x = atacker->x;
+                    atacker->x = saveHero.x;
 
-                saveHero.save_z = atacker->z;
-                atacker->z = saveHero.z;
+                    saveHero.save_y = atacker->y;
+                    atacker->y = saveHero.y;
 
-                saveHero.save_movement = atacker->movement_points;
-                atacker->movement_points = saveHero.movement;
+                    saveHero.save_z = atacker->z;
+                    atacker->z = saveHero.z;
+
+                    saveHero.save_movement = atacker->movement_points;
+                    atacker->movement_points = saveHero.movement;
+                }
             }
             // сохраняем игру
             CALL_6(char, __thiscall, 0x4BEB60, o_GameMgr, "BATTLE!", 1, 1, 1, 0);
             // o_AdvMgr->HeroActive_Mobilize();
 
             // восстанавливаем параметры
-            if ( saveHero.init == 1 && atacker->id == saveHero.id )
+            if ( saveHero.init && atacker->id == saveHero.id )
             {
                 atacker->x = saveHero.save_x;
                 atacker->y = saveHero.save_y;
