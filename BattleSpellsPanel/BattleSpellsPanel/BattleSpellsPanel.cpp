@@ -52,7 +52,7 @@ int __stdcall Y_Dlg_ShowHeroSpells_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 {
     int r = dlg->DefProc(msg);
 
-    if (msg->type == MT_MOUSEOVER) // ведение мыши
+    if (msg->type == MT_MOUSEOVER) // РІРµРґРµРЅРёРµ РјС‹С€Рё
     {
         _DlgItem_* it = dlg->FindItem(msg->x_abs, msg->y_abs);
         char* text = o_NullString;
@@ -69,13 +69,13 @@ int __stdcall Y_Dlg_ShowHeroSpells_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 
     if (msg->type == MT_MOUSEBUTTON) {
         
-        if (msg->subtype == MST_RBUTTONDOWN) { // ПКМ
+        if (msg->subtype == MST_RBUTTONDOWN) { // РџРљРњ
             if (msg->item_id >= 10 && msg->item_id < 70) {
                 Y_MsgBox_ShowSpellDescription(msg->item_id, o_BattleMgr->spec_terr_type, o_BattleMgr->hero[SideMenu], -1, -1);
             }
         }
 
-        if (msg->subtype == MST_LBUTTONCLICK) { // ЛКМ 
+        if (msg->subtype == MST_LBUTTONCLICK) { // Р›РљРњ 
             if (msg->item_id >= 10 && msg->item_id < 70) {
                 dlg->custom_data[0] = msg->item_id;
                 r = dlg->Close(msg);
@@ -91,7 +91,7 @@ int __stdcall Y_Dlg_ShowHeroSpells_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
         }
     }
 
-    // клик за пределами окна
+    // РєР»РёРє Р·Р° РїСЂРµРґРµР»Р°РјРё РѕРєРЅР°
     if ( msg->type == MT_LBUTTONOUTSIDE ) {
         r = dlg->Close(msg);
     }
@@ -170,13 +170,13 @@ int __stdcall Y_Battle_Proc_UserActions(HiHook* h, _BattleMgr_* bm, _EventMsg_* 
             if (item_id >= SPBID && item_id < (SPBID+10) ) 
             {
                 int bttnID = item_id-SPBID;
-                if (msg->subtype == MST_RBUTTONDOWN)  // ПКМ
+                if (msg->subtype == MST_RBUTTONDOWN)  // РџРљРњ
                 {
                     if ( playerSpellsMenu[OwnerMenu][bttnID] >= 10 )
                         Y_MsgBox_ShowSpellDescription(playerSpellsMenu[OwnerMenu][bttnID], bm->spec_terr_type, bm->hero[SideMenu], msg->x_abs, msg->y_abs);
 
                 }
-                if (msg->subtype == MST_LBUTTONCLICK)  // ЛКМ
+                if (msg->subtype == MST_LBUTTONCLICK)  // Р›РљРњ
                 {           
                     if ( GetKeyState(17)<0 ) { // CTRL = Reset Button
                             playerSpellsMenu[OwnerMenu][bttnID] = 0;
@@ -211,16 +211,16 @@ int __stdcall Y_Battle_Proc_UserActions(HiHook* h, _BattleMgr_* bm, _EventMsg_* 
                 int bttnID = msg->subtype - HK_1;
                 int spellUsed = playerSpellsMenu[OwnerMenu][bttnID];
 
-                if ( !bm->isTactics && spellUsed >= 10) { // если заклинание настроено, и не фаза тактики
+                if ( !bm->isTactics && spellUsed >= 10) { // РµСЃР»Рё Р·Р°РєР»РёРЅР°РЅРёРµ РЅР°СЃС‚СЂРѕРµРЅРѕ, Рё РЅРµ С„Р°Р·Р° С‚Р°РєС‚РёРєРё
                     if ( !bm->sideIsCasted[SideMenu] || bm->cheat_NoCastLimit ) {
-                        if ( !bm->hero[SideMenu]->spell_level[spellUsed] ) { // у героя нет такого заклинания
+                        if ( !bm->hero[SideMenu]->spell_level[spellUsed] ) { // Сѓ РіРµСЂРѕСЏ РЅРµС‚ С‚Р°РєРѕРіРѕ Р·Р°РєР»РёРЅР°РЅРёСЏ
                             b_MsgBox(o_GENRLTXT_TXT->GetString(676), 1);
-                        } else { // заклинание есть
+                        } else { // Р·Р°РєР»РёРЅР°РЅРёРµ РµСЃС‚СЊ
                             int manaCost = bm->hero[SideMenu]->GetSpellCost(spellUsed, bm->army[SideMenu], bm->spec_terr_type);
                             int heroMana = bm->hero[SideMenu]->spell_points;
                             if ( heroMana >= manaCost ) {
                                 bm->UserChooseSpellTarget(spellUsed, 0);
-                            } else { // не хватает маны на заклинание
+                            } else { // РЅРµ С…РІР°С‚Р°РµС‚ РјР°РЅС‹ РЅР° Р·Р°РєР»РёРЅР°РЅРёРµ
                                 sprintf(MyString, o_GENRLTXT_TXT->GetString(208), manaCost, heroMana);
                                 sprintf(o_TextBuffer, "{%s} \n\n %s", o_Spell[spellUsed].name, MyString);
                                 b_MsgBoxD(o_TextBuffer, MBX_OK, 9, spellUsed);
@@ -244,20 +244,20 @@ int __stdcall Y_BattleMgr_CreateSpellsMenu(LoHook* h, HookContext* c)
 
     SpellMenu = false;
 
-    // игра сама проверяет видимая это битва, или нет
-    // поэтому нет смысла проверять на "видимую битву"
+    // РёРіСЂР° СЃР°РјР° РїСЂРѕРІРµСЂСЏРµС‚ РІРёРґРёРјР°СЏ СЌС‚Рѕ Р±РёС‚РІР°, РёР»Рё РЅРµС‚
+    // РїРѕСЌС‚РѕРјСѓ РЅРµС‚ СЃРјС‹СЃР»Р° РїСЂРѕРІРµСЂСЏС‚СЊ РЅР° "РІРёРґРёРјСѓСЋ Р±РёС‚РІСѓ"
 
-    // если оба компы: спелл-меню нет
+    // РµСЃР»Рё РѕР±Р° РєРѕРјРїС‹: СЃРїРµР»Р»-РјРµРЅСЋ РЅРµС‚
     if ( !bm->isNotAI[0] && !bm->isNotAI[1] ) 
         return EXEC_DEFAULT;    
 
-    // если оба люди: спелл-меню нет
+    // РµСЃР»Рё РѕР±Р° Р»СЋРґРё: СЃРїРµР»Р»-РјРµРЅСЋ РЅРµС‚
     if ( bm->isHuman[0] && bm->isHuman[1] ) 
         return EXEC_DEFAULT;
 
     int meID = o_GameMgr->GetMeID();
 
-    // проверяем левую сторону
+    // РїСЂРѕРІРµСЂСЏРµРј Р»РµРІСѓСЋ СЃС‚РѕСЂРѕРЅСѓ
     if ( bm->isHuman[0] && bm->owner_id[0] == meID ) {
         if ( bm->hero[0] && bm->CanUseAnySpell(0, 1) ) {
             SpellMenu = true;
@@ -265,7 +265,7 @@ int __stdcall Y_BattleMgr_CreateSpellsMenu(LoHook* h, HookContext* c)
             SideMenu = 0;
         }
     }
-    // проверяем правую сторону
+    // РїСЂРѕРІРµСЂСЏРµРј РїСЂР°РІСѓСЋ СЃС‚РѕСЂРѕРЅСѓ
     if ( bm->isHuman[1] && bm->owner_id[1] == meID ) {
         if ( bm->hero[1] && bm->CanUseAnySpell(1, 1)  ) {
             SpellMenu = true;
@@ -274,7 +274,7 @@ int __stdcall Y_BattleMgr_CreateSpellsMenu(LoHook* h, HookContext* c)
         }
     }
 
-    // создаём элементы спелл-меню
+    // СЃРѕР·РґР°С‘Рј СЌР»РµРјРµРЅС‚С‹ СЃРїРµР»Р»-РјРµРЅСЋ
     if ( SpellMenu ) {
         _Dlg_* dlg = (_Dlg_*)c->esi;
 
@@ -283,7 +283,7 @@ int __stdcall Y_BattleMgr_CreateSpellsMenu(LoHook* h, HookContext* c)
         Dlg_SetBackgroundWithHDFrame(dlg, -63, -4, 60, 630, SPBID -30, DiBoxBck_PCX); 
 
         for (int i = 0; i < 10; i++) {
-            b_YellowFrame_Create(dlg, -58, 22+i*dy, 50, 38, SPBID-20+i, ON, o_Pal_Black); // замена цвета item->Field<int>(0x30) 
+            b_YellowFrame_Create(dlg, -58, 22+i*dy, 50, 38, SPBID-20+i, ON, o_Pal_Black); // Р·Р°РјРµРЅР° С†РІРµС‚Р° item->Field<int>(0x30) 
                  
             int frame = 0;
             if ( playerSpellsMenu[OwnerMenu][i] >= 10 )
@@ -305,8 +305,8 @@ int __stdcall Y_BattleMgr_CreateSpellsMenu(LoHook* h, HookContext* c)
 int __stdcall BattleMgr_Dlg_HeroPreviewDlg_OffSet(LoHook* h, HookContext* c)
 {
     if ( SpellMenu ) {
-        // смещаем левую статистику героя и монстра
-        // левую определяем, если x < 200
+        // СЃРјРµС‰Р°РµРј Р»РµРІСѓСЋ СЃС‚Р°С‚РёСЃС‚РёРєСѓ РіРµСЂРѕСЏ Рё РјРѕРЅСЃС‚СЂР°
+        // Р»РµРІСѓСЋ РѕРїСЂРµРґРµР»СЏРµРј, РµСЃР»Рё x < 200
         if (IntAt(c->ebp +8))
             if ( IntAt(c->ebp +8) < 200)
                 IntAt(c->ebp +8) -= ShadowWidth_SpellsPanel;
@@ -315,19 +315,19 @@ int __stdcall BattleMgr_Dlg_HeroPreviewDlg_OffSet(LoHook* h, HookContext* c)
     return EXEC_DEFAULT;
 } 
 
-// увеличения ширины тени, при первом показе диалога битвы
+// СѓРІРµР»РёС‡РµРЅРёСЏ С€РёСЂРёРЅС‹ С‚РµРЅРё, РїСЂРё РїРµСЂРІРѕРј РїРѕРєР°Р·Рµ РґРёР°Р»РѕРіР° Р±РёС‚РІС‹
 signed int __stdcall Y_Battle_SpellsMenu_SetShadow(HiHook* h, _dword_ buffer, int x, int y, int width, int height)
 {
-    // если меню заклинаний было создано (и это первые 2 вызова)
+    // РµСЃР»Рё РјРµРЅСЋ Р·Р°РєР»РёРЅР°РЅРёР№ Р±С‹Р»Рѕ СЃРѕР·РґР°РЅРѕ (Рё СЌС‚Рѕ РїРµСЂРІС‹Рµ 2 РІС‹Р·РѕРІР°)
     if ( SpellMenu == 1 || SpellMenu == 2 ) 
     {
-        // если диалог битвы был создан
+        // РµСЃР»Рё РґРёР°Р»РѕРі Р±РёС‚РІС‹ Р±С‹Р» СЃРѕР·РґР°РЅ
         _Dlg_* dlg = o_BattleMgr->dlg;
-        if ( dlg && ( /* только нижняя полоса тени */ height == 8 || height == 7 ) ) 
+        if ( dlg && ( /* С‚РѕР»СЊРєРѕ РЅРёР¶РЅСЏСЏ РїРѕР»РѕСЃР° С‚РµРЅРё */ height == 8 || height == 7 ) ) 
         {   
-            // некрасивое решение: 
-            // глобальный счетчик вызовов
-            // делаю только для 2х первых вызовов
+            // РЅРµРєСЂР°СЃРёРІРѕРµ СЂРµС€РµРЅРёРµ: 
+            // РіР»РѕР±Р°Р»СЊРЅС‹Р№ СЃС‡РµС‚С‡РёРє РІС‹Р·РѕРІРѕРІ
+            // РґРµР»Р°СЋ С‚РѕР»СЊРєРѕ РґР»СЏ 2С… РїРµСЂРІС‹С… РІС‹Р·РѕРІРѕРІ
             SpellMenu++;
             x -= ShadowWidth_SpellsPanel;
             width += (ShadowWidth_SpellsPanel + ShadowWidth_BattleQueue);
@@ -341,7 +341,7 @@ signed int __stdcall Y_Battle_SpellsMenu_SetShadow(HiHook* h, _dword_ buffer, in
 //////////////////////////////////////////////////////////////////////////////////
 
 void __stdcall OnAfterErmInstructions (TEvent* Event) {
-    // при старте карты очищаем список панели заклинаний
+    // РїСЂРё СЃС‚Р°СЂС‚Рµ РєР°СЂС‚С‹ РѕС‡РёС‰Р°РµРј СЃРїРёСЃРѕРє РїР°РЅРµР»Рё Р·Р°РєР»РёРЅР°РЅРёР№
     for (int playerID = 0; playerID < 8; playerID++) {
         for (int spellID = 0; spellID < 10; spellID++) {
             playerSpellsMenu[playerID][spellID] = 0;
@@ -373,26 +373,26 @@ int __stdcall HooksInit(LoHook* h, HookContext* c)
     if (EXE_VERSION == TE) {
         if ( o_HD_X >= 1076 && o_HD_Y >= 630) {
 
-            // поддтягиваем ERA
+            // РїРѕРґРґС‚СЏРіРёРІР°РµРј ERA
             ConnectEra();
             RegisterHandler(OnAfterErmInstructions, "OnAfterErmInstructions");
             RegisterHandler(OnSavegameRead, "OnSavegameRead");
             RegisterHandler(OnSavegameWrite, "OnSavegameWrite");
 
-            // создаём элементы диалога
+            // СЃРѕР·РґР°С‘Рј СЌР»РµРјРµРЅС‚С‹ РґРёР°Р»РѕРіР°
             _PI->WriteLoHook(0x471FF9, Y_BattleMgr_CreateSpellsMenu);
 
-            // сдвигаем характеристики героя и монстра
+            // СЃРґРІРёРіР°РµРј С…Р°СЂР°РєС‚РµСЂРёСЃС‚РёРєРё РіРµСЂРѕСЏ Рё РјРѕРЅСЃС‚СЂР°
             _PI->WriteLoHook(0x46BEC5, BattleMgr_Dlg_HeroPreviewDlg_OffSet);
             _PI->WriteLoHook(0x46CA05, BattleMgr_Dlg_HeroPreviewDlg_OffSet);
 
-            // действия игрока в битве
+            // РґРµР№СЃС‚РІРёСЏ РёРіСЂРѕРєР° РІ Р±РёС‚РІРµ
             _PI->WriteHiHook(0x473F55, CALL_, EXTENDED_, THISCALL_, Y_Battle_Proc_UserActions);
 
-            // реализуем тень
+            // СЂРµР°Р»РёР·СѓРµРј С‚РµРЅСЊ
             _PI->WriteHiHook(0x44E2C0, SPLICE_, EXTENDED_, THISCALL_, Y_Battle_SpellsMenu_SetShadow);
 
-            // делаем совместимость тени с плагином BattleQueue
+            // РґРµР»Р°РµРј СЃРѕРІРјРµСЃС‚РёРјРѕСЃС‚СЊ С‚РµРЅРё СЃ РїР»Р°РіРёРЅРѕРј BattleQueue
             ShadowWidth_SpellsPanel = 59;
             ShadowWidth_BattleQueue = 0;
             PatcherInstance* _RK_BQ = _P->GetInstance("ERA.BattleQueue");   
