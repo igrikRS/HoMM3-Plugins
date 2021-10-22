@@ -25,7 +25,7 @@ namespace wndText
 {
     const char* PLUGIN_NAME = "WoG native dialogs";
     const char* PLUGIN_AUTHOR = "igrik";
-    const char* PLUGIN_DATA = "15.06.2021";
+    const char* PLUGIN_DATA = "22.10.2021";
 } 
 
 //////////////////////////////////
@@ -91,6 +91,7 @@ char* textProcS = "%s";
 
 // подключение всех диалогов по отдельности
 #include "src\MsgBox.cpp"
+#include "src\WoGMessageBox.cpp"
 #include "src\ChangeBmp.cpp"
 #include "src\NPC.cpp"
 #include "src\CrExpo.cpp"
@@ -105,6 +106,8 @@ char* textProcS = "%s";
 #include "src\CastleReBuild.cpp"
 #include "src\HD5_Functions.cpp"
 #include "src\BattleLogDlg.cpp"
+
+#include "src\WoGOptionsSaveOrLoad.cpp"
 
 #ifdef DOP_FUNK_TO_ERA
 #include "src\TownHeroesMeet.cpp"
@@ -172,7 +175,8 @@ int __stdcall Y_Hook_MainLoop(LoHook* h, HookContext* c)
     json_Npc[3] = GetEraJSON("wnd.dlg_commander.bttn_dismiss_rmc");
 
     // теперь создаём свои хуки после всех патчей вога
-    Dlg_WoGOptions(_PI);   // диалог WoG Опций 
+	DlgWoGOptions_SaveOrLoad(_PI); // диалог загрузки и сохранения WOG Опций
+    Dlg_WoGOptions(_PI);   // диалог WoG Опций 	
     Dlg_NPC(_PI);          // диалог командира  
     Dlg_MsgBox(_PI);       // новый и расширенный Callback диалога MsgBox
 
@@ -259,7 +263,8 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 #endif DOP_FUNK_TO_ERA  
             // char* oVersionERA = "{Game Version:}\n\nHoMM3 ERA 2.7.7 \n (with Wog Native Dialogs)";
             // _PI->WriteDword(0x7066E1 +1, *(int*)&oVersionERA); // ENG
-            // _PI->WriteDword(0x7066CE +1, *(int*)&oVersionERA); // RUS
+            // _PI->WriteDword(0x7066CE +1, *(int*)&oVersionERA); // RUS            
+            Dlg_WoGMessageBox(_PI); // Воговский текстовый диалог
 
         }
         break;

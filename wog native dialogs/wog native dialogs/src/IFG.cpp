@@ -62,8 +62,25 @@ int New_Dlg_IF_G(_CheckBoxes_* checkBoxes)
     // и устанавливаем стандартные параметры
     Y_Mouse_SetCursor(0);
 
-    // размеры диалога
-    int x = 435;
+    // вычисляем размеры ширины диалога
+    int x = 415;
+    int textMaxWidth = 0;
+
+    // вычисляем текст чекбоксов с максимальной шириной
+    for (int i = 0; i < checkBoxes->Count; i++)
+    {
+        textMaxWidth = smalfont2->GetMax_LineWidth(checkBoxes->Text[i]);
+        
+        if (textMaxWidth > x)
+            x = textMaxWidth;
+    }
+
+    // но эта ширина будет не более 760 px
+    x += 22;
+    if (x > 760)
+        x = 760;    
+    
+    // размеры высоты диалога
     int dy = 27;
     int y = 134 + dy * checkBoxes->Count; 
 
