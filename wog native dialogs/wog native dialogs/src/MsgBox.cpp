@@ -30,6 +30,26 @@ int my_TimeClick_MsgBox;
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
 
+int F_MsgBox_OnlyTwoFirstItemsExist(_Dlg_* dlg)
+{
+    _DlgItem_* it;        
+    int bitAccess = dlg->GetItem(1525)->field_28;
+
+    if ( bitAccess == -1 || bitAccess == 3 )
+    {
+        for (int i = MSG_10_IT3; i <= MSG_10_IT7; i++) {
+            _DlgItem_* it = dlg->GetItem(i);
+            if ( it ) { 
+                return 0;
+            }
+        }
+        return 1;
+    }
+
+    return 0;
+}
+
+
 // общая функция обновления всех желтых рамок диалога
 int F_MsgBox_ResetYellowFrames(_Dlg_* dlg, int itemID)
 {
@@ -91,6 +111,13 @@ int Y_New_MsgBox_GetNextItem(int way, int currentItem)
     // прокрутка вправо (поиск следующего элемента)
     if ( way == 1 )
     {
+        // отменяем круговую прокрутку, если есть 2 первых элемента
+        // ибо она визуально запутывает игрока
+        if ( bitExist == 3 && currentItem == 1)
+            return -1;
+        if ( bitExist == 3 && currentItem == -1)
+            return 1;
+
         int nextItem = 0;
         if (currentItem != -1)
             nextItem = currentItem + 1; 
@@ -109,6 +136,13 @@ int Y_New_MsgBox_GetNextItem(int way, int currentItem)
     // прокрутка влево (поиск предыдущего элемента)
     if ( way == -1 )
     {
+        // отменяем круговую прокрутку, если есть 2 первых элемента
+        // ибо она визуально запутывает игрока
+        if ( bitExist == 3 && currentItem == 0)
+            return -1;
+        if ( bitExist == 3 && currentItem == -1)
+            return 0;
+
         int nextItem = 0;
         if (currentItem != -1)
             nextItem = currentItem - 1 + 1; 
@@ -145,6 +179,9 @@ signed int __stdcall Y_New_MsgBox_Proc(HiHook* hook, _EventMsg_* msg)
 
     } 
 
+    // получаем структуру диалога
+    _Dlg_* dlg = P_Dlg_MsgBox;
+
     if (msg->type == MT_KEYDOWN)
     {
         // если тип сообщения: с выбором элементов
@@ -152,7 +189,7 @@ signed int __stdcall Y_New_MsgBox_Proc(HiHook* hook, _EventMsg_* msg)
         {    
             // *** по неоднократной просьбе Berserker'a ***
             // прокрутка элементов списка по стрелкам влево/вправо
-            if (msg->subtype == 75 /* <<--- */ || msg->subtype == 77 /* --->> */ ) 
+            if (msg->subtype == HK_ARROW_LEFT || msg->subtype == HK_ARROW_RIGHT ) 
             {    
                 // получаем текущий выбранный элемент в диалоге
                 int currentItem = b_MsgBox_Result_id;
@@ -171,6 +208,18 @@ signed int __stdcall Y_New_MsgBox_Proc(HiHook* hook, _EventMsg_* msg)
                     msg->item_id = nextItem + MSG_10_IT0;
                 }
             }
+            // *** по просьбе Bes'a ***
+            // выбор элементов клавишами 1 или 2 (при двух картинках)
+            if (msg->subtype == HK_1 || msg->subtype == HK_2 ) 
+            {            
+                if ( F_MsgBox_OnlyTwoFirstItemsExist(dlg) )
+                {
+                    b_MsgBox_Result_id = msg->subtype -2 +MSG_10_IT0;
+                    F_MsgBox_ResetYellowFrames(dlg, b_MsgBox_Result_id);
+                    dlg->GetItem(MSG_1_OK)->SetEnabled(1);
+                    dlg->Redraw(1);
+                }
+            }
         }
     }
     
@@ -180,7 +229,6 @@ signed int __stdcall Y_New_MsgBox_Proc(HiHook* hook, _EventMsg_* msg)
     {
         if (msg->subtype == MST_LBUTTONCLICK)
         {   
-            _Dlg_* dlg = P_Dlg_MsgBox;
             int temp = 0;
 
             switch ( msg->item_id )
