@@ -318,61 +318,36 @@ int __stdcall New_Dlg_ExpaMon_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
     return r;
 }
 
-// функция выталкивает пустые строки в конец структуры
-// таким образом между текстами нет пустых строк
-void CreatureExpo_CompressedEmptyStrings(_CreatureExpo_* crexpo)
-{
-    for(int i = 0; i < 15; i++) { 
-        if( crexpo->RowCaptionHints[i] )
-            continue;
-
-        for (int j = 15; j >= (i+1); j--)
-        {
-            if( !crexpo->RowCaptionHints[j] )
-            {
-                char* temp = crexpo->RowCaptions[j-1];
-                crexpo->RowCaptions[i] = crexpo->RowCaptions[j-1];
-                crexpo->RowCaptions[j-1] = temp;
-
-                temp = crexpo->RowCaptionHints[i];
-                crexpo->RowCaptionHints[i] = crexpo->RowCaptionHints[j-1];
-                crexpo->RowCaptionHints[j-1] = temp;
-
-                temp = crexpo->Rows[i];
-                crexpo->Rows[i] = crexpo->Rows[j-1];
-                crexpo->Rows[j-1] = temp;
-
-                temp = crexpo->RowHints[i];
-                crexpo->RowHints[i] = crexpo->RowHints[j-1];
-                crexpo->RowHints[j-1] = temp;
-            }
-        }
-
-    } 
-}
-
 int __stdcall Y_NewDlg_CreatureExpo(HiHook* hook, _CreatureExpo_* crexpo) 
 {
-    // считаем полное количество текстовых строк
+    // количество существующих и видимых строк
     int linesCount = 0;
-    for (int i = 0; i < 16; i++) {
-        if ( crexpo->RowCaptionHints[i] )
+    int linesCountShowed = 0;
+
+    // переменная существующих строк
+    _bool_ trueLine = false;
+
+    // полное количество текстовых строк
+    for (int i = 15; i >= 0; i--) {
+        // считаем существующие строки
+        if ( crexpo->RowCaptions[i] || trueLine ) {
             linesCount++;
+            trueLine = true;
+        }
+        // теперь считаем видимые строки
+        if ( crexpo->RowCaptions[i] )
+            linesCountShowed++;
     }
 
-    // убираем пустые строки среди заполненных строк
-    if ( linesCount )
-       CreatureExpo_CompressedEmptyStrings(crexpo);
+    // недопускаем слишком маленькую высоту диалога
+    if ( linesCountShowed < 7)
+        linesCountShowed = 7;
 
-    int minLinesCount = linesCount;
-    if (minLinesCount < 7)
-        minLinesCount = 7;
+    // вручную указываем высоту текста smallfont2->height
+    int smallfontHight = 16;
 
     int x = 800;
-    int y = 132 + 16*minLinesCount +52*Round(((float)crexpo->IcoPropertiesCount)/2); 
-
-    // вручную указываем высоту текста medfont2->height
-    int medfontHI = 20; 
+    int y = 132 + smallfontHight*linesCountShowed +52*Round(((float)crexpo->IcoPropertiesCount)/2); 
 
     // создаём диалог
     _CustomDlg_* dlg = _CustomDlg_::Create(-1, -1, x, y, DF_SCREENSHOT | DF_SHADOW, New_Dlg_ExpaMon_Proc);
@@ -407,7 +382,7 @@ int __stdcall Y_NewDlg_CreatureExpo(HiHook* hook, _CreatureExpo_* crexpo)
     }
 
     // Подсказка (id = 2)
-    dlg->AddItem(_DlgStaticText_::Create(8, y-26, x-34, 18, o_NullString, n_SmallFont, 1, 2, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+    dlg->AddItem(_DlgStaticText_::Create(8, y-26, x-34, smallfontHight+2, o_NullString, n_SmallFont, 1, 2, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 
     // заголовок диалога (id = 3)
     dlg->AddItem(_DlgStaticText_::Create(150, 14, 500, 30, crexpo->Caption, n_BigFont, 7, 3, ALIGN_H_CENTER | ALIGN_V_TOP, 0));
@@ -432,7 +407,7 @@ int __stdcall Y_NewDlg_CreatureExpo(HiHook* hook, _CreatureExpo_* crexpo)
 
     // желтая рамка обрамления ранга
     int rank = CALL_2(int, __cdecl, 0x727F20, CURMON, o_Expo);
-    b_YellowFrame_Create(dlg, 164+ 56*rank, 50, 56, 16*linesCount, 100, ON, o_Pal_Y);
+    b_YellowFrame_Create(dlg, 164+ 56*rank, 50, 56, smallfontHight*linesCountShowed, 100, ON, o_Pal_Y);
 
     // сохраняем ранг в переменную диалога
     dlg->custom_data[1] = rank;
@@ -445,32 +420,43 @@ int __stdcall Y_NewDlg_CreatureExpo(HiHook* hook, _CreatureExpo_* crexpo)
     }
 
     // элементы заполнения колонок (первый столбик) id = 11...26
+    int lineID = 0; // счётчик видимых строк
     for (int i = 0; i < linesCount; i++) {
-        dlg->AddItem(_DlgStaticText_::Create(80, 50 + 16*i, 80, 16, crexpo->RowCaptions[i], n_SmallFont, 7, 11+i, ALIGN_H_LEFT | ALIGN_V_TOP, 0));      
+        if ( crexpo->RowCaptions[i] ) {
+            dlg->AddItem(_DlgStaticText_::Create(80, 50 + smallfontHight*lineID, 80, 16, crexpo->RowCaptions[i], n_SmallFont, 7, 11+i, ALIGN_H_LEFT | ALIGN_V_TOP, 0));
+            lineID++;
+        }
     }
 
     // элементы заполнения колонок (2-12 столбик) id = 30...45 (один id на всю линию)
-    char text[16];
-    for (char i = 0; i < linesCount; i++){
-        for (char j = 0; j < 11; j++){
-            for (char k = 0; k < 8; k++){
-                if (*(char*)(crexpo->Rows[i] +j*8 +k) != ' ')
-                    text[k] = *(char*)(crexpo->Rows[i] +j*8 +k);
-                else {
-                    for (char s = k; s < 16; s++)
-                        text[s] = ' ';
+    lineID = 0; // обнуляем счётчик видимых строк
+    char text[16];    
+    for (char i = 0; i < linesCount; i++)
+    {
+        if ( crexpo->RowCaptions[i] )
+        {
+            for (char j = 0; j < 11; j++){
+                for (char k = 0; k < 8; k++){
+                    if (*(char*)(crexpo->Rows[i] +j*8 +k) != ' ')
+                        text[k] = *(char*)(crexpo->Rows[i] +j*8 +k);
+                    else {
+                        for (char s = k; s < 16; s++)
+                            text[s] = ' ';
 
-                    k = 7;
-                }
-            } 
-            dlg->AddItem(_DlgStaticText_::Create(168 + 56*j, 50 + 16*i, 54, 16, text, n_SmallFont, 1, 30+i, ALIGN_H_LEFT | ALIGN_V_TOP, 0));
+                        k = 7;
+                    }
+                } 
+                dlg->AddItem(_DlgStaticText_::Create(168 + 56*j, 50 + smallfontHight*lineID, 54, 16, text, n_SmallFont, 1, 30+i, ALIGN_H_LEFT | ALIGN_V_TOP, 0));                
+            }
+            // переход на следующую строку
+            lineID++;
         }
     }
 
 
     // нижние картинки с дефами (id 50 ... )
     x = 18;  
-    y = 60 +16*minLinesCount; 
+    y = 60 +16*linesCountShowed; 
 
     if (crexpo->IcoPropertiesCount)
     {
