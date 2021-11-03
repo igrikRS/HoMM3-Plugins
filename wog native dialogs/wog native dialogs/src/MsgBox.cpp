@@ -327,5 +327,6 @@ void Dlg_MsgBox(PatcherInstance* _PI)
     _PI->WriteByte(0x4F7988 +2, 1); // увеличение высоты
 
     // увеличение высоты скролл текста
-    _PI->WriteDword(0x4F662F +1, o_HD_Y-440);
+    if ( o_HD_Y >= 664)
+        _PI->WriteDword(0x4F662F +1, o_HD_Y-440);
 }
