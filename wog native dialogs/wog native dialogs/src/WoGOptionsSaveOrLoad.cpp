@@ -199,6 +199,35 @@ int NewDlg_ChooseFile_FolderIn(_CustomDlg_* dlg)
     return 0;
 }
 
+// переход в корневую папку игры
+int NewDlg_ChooseFile_JumpRootFolder(_CustomDlg_* dlg)
+{
+    // получаем необходмые структуры
+    _ScrollFiles_* ScrollFiles = (_ScrollFiles_*)dlg->custom_data[0];
+    fsman::FsMan* fs = (fsman::FsMan*)dlg->custom_data[1];
+    _ChooseFile_* cf = (_ChooseFile_*)dlg->custom_data[2];
+
+    // получаем базовый каталог игры
+    char rootFolder[BUFFER_SIZE];
+    GetCurrentDirectoryA(sizeof(rootFolder), rootFolder);
+
+    // сохраняем выбранный путь
+    sprintf(PathDirectory, "%s\\", rootFolder);
+    cf->Directory = PathDirectory;
+    // делаем переход в менеджере папок
+    fs->changeDirectory(PathDirectory);
+    // опустошаем файл по умолчанию
+    cf->fileName = DS_STRING_EMPTY;
+    // перестраиваем диалог
+    NewDlg_ChooseFile_Rebuild(dlg);
+    // обновляем содержимое текста в поле ввода
+    NewDlg_ChooseFile_SetTextOnEditTextItem(dlg, 130);
+    // и перерисовываем диалог
+    dlg->Redraw();
+
+    return 0;
+}
+
 /////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 
@@ -671,6 +700,10 @@ int __stdcall NewDlg_ChooseFile_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
         // переход желтой рамкой выбора на 1 позицию вниз
         if (msg->subtype == HK_ARROW_DOWN) 
             NewDlg_ChooseFile_MooveFrameDown(dlg);
+
+        // прыгаем в корневой каталог игры
+        if (msg->subtype == HK_HOME)
+            NewDlg_ChooseFile_JumpRootFolder(dlg);
 
     }
 
