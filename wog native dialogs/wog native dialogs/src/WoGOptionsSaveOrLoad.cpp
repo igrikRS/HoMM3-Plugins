@@ -564,13 +564,18 @@ void NewDlg_ChooseFile_UpdateHintText(_CustomDlg_* dlg, _EventMsg_* msg)
 
     if (it) 
     {
+        // разрешаем или запрещаем управлять кнопками: влево, вправо, вверх, вниз,  home
+        if ( it && (it->id == 97 || (it->id >= 160 && it->id <= 172) ))
+            dlg->custom_data[3] = true;
+        else dlg->custom_data[3] = false;
+
         // разрешаем редактировать текст ввода, только если на него наведён курсор
         if (cf->FileEditEnabled)
         {
             _DlgTextEdit_* editText = (_DlgTextEdit_*)dlg->GetItem(256);
             if (editText)
             {
-                if (it->id == 256) 
+                if (!dlg->custom_data[3]) 
                 {  
                     if (editText->text)
                         // собираем правильный текст подсказки: полный путь + введённый текст           
@@ -679,32 +684,35 @@ int __stdcall NewDlg_ChooseFile_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 
     if (msg->type == MT_KEYDOWN)
     {
-        _ScrollFiles_* ScrollFiles = (_ScrollFiles_*)dlg->custom_data[0];
+        // кнопки управления доступны, если курсор только на квадрате с файлами/папками
+        if ( dlg->custom_data[3] )
+        {
+            _ScrollFiles_* ScrollFiles = (_ScrollFiles_*)dlg->custom_data[0];
 
-        if (msg->subtype == HK_BACKSPACE) 
-            NewDlg_ChooseFile_FolderOut(dlg);
+            if (msg->subtype == HK_BACKSPACE) 
+                NewDlg_ChooseFile_FolderOut(dlg);
 
-        if (msg->subtype == HK_ENTER) 
-            NewDlg_ChooseFile_FolderIn(dlg);
+            if (msg->subtype == HK_ENTER) 
+                NewDlg_ChooseFile_FolderIn(dlg);
 
-        if (msg->subtype == HK_ARROW_LEFT) 
-            NewDlg_ChooseFile_FolderOut(dlg);
+            if (msg->subtype == HK_ARROW_LEFT) 
+                NewDlg_ChooseFile_FolderOut(dlg);
 
-        if (msg->subtype == HK_ARROW_RIGHT) 
-            NewDlg_ChooseFile_FolderIn(dlg);
+            if (msg->subtype == HK_ARROW_RIGHT) 
+                NewDlg_ChooseFile_FolderIn(dlg);
 
-        // переход желтой рамкой выбора на 1 позицию верх
-        if (msg->subtype == HK_ARROW_UP)
-            NewDlg_ChooseFile_MooveFrameUp(dlg);
+            // переход желтой рамкой выбора на 1 позицию верх
+            if (msg->subtype == HK_ARROW_UP)
+                NewDlg_ChooseFile_MooveFrameUp(dlg);
 
-        // переход желтой рамкой выбора на 1 позицию вниз
-        if (msg->subtype == HK_ARROW_DOWN) 
-            NewDlg_ChooseFile_MooveFrameDown(dlg);
+            // переход желтой рамкой выбора на 1 позицию вниз
+            if (msg->subtype == HK_ARROW_DOWN) 
+                NewDlg_ChooseFile_MooveFrameDown(dlg);
 
-        // прыгаем в корневой каталог игры
-        if (msg->subtype == HK_HOME)
-            NewDlg_ChooseFile_JumpRootFolder(dlg);
-
+            // прыгаем в корневой каталог игры
+            if (msg->subtype == HK_HOME)
+                NewDlg_ChooseFile_JumpRootFolder(dlg);
+        }
     }
 
     return r;
@@ -795,6 +803,9 @@ int __stdcall NewDlg_ChooseFile(_ChooseFile_* cf)
     dlg->custom_data[0] = (int)&ScrollFiles;
     dlg->custom_data[1] = (int)&fs;
     dlg->custom_data[2] = (int)cf;
+
+    // переменная разрешающая/запрещающая перемещасться в папках по кнопкам
+    dlg->custom_data[3] = false;
 
     // создаём пустой скролл (id 9)
     _DlgScroll_* scroll = _DlgScroll_::Create( x-42, 142, 16, y-270, 9, 0, (_ptr_)NewDlg_ChooseFile_ScrollProc, 0, 0, 0); 
