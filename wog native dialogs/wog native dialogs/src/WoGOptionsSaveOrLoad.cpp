@@ -770,8 +770,8 @@ int __stdcall NewDlg_ChooseFile(_ChooseFile_* cf)
     dlg->AddItem(_DlgStaticText_::Create(dx, y-130, x-dxx, 30, txtresWOG->GetString(97), n_MedFont, 7, 6, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 
     // обводка поля ввода
-    b_YellowFrame_Create(dlg, dx+1, y-101, x-dxx, 19, 96, ON, o_Pal_Black); // id = 96
-    b_YellowFrame_Create(dlg, dx, y-102, x-dxx, 19, 97, ON, o_Pal_Grey); // id = 96
+    b_YellowFrame_Create(dlg, dx+1, y-101, x-dxx, 19, 98, ON, o_Pal_Black); // id = 98
+    b_YellowFrame_Create(dlg, dx, y-102, x-dxx, 19, 99, ON, o_Pal_Grey); // id = 99
 
     // поле ввода, если разрешено вводить
     if (cf->FileEditEnabled) 
@@ -784,8 +784,8 @@ int __stdcall NewDlg_ChooseFile(_ChooseFile_* cf)
     int dy = 19;
 
     // рамка со списком файлов и папок
-    b_YellowFrame_Create(dlg, dx+1, startY-3, x-dxx, y-266, 96, ON, o_Pal_Black); // id = 98
-    b_YellowFrame_Create(dlg, dx, startY-4, x-dxx, y-266, 97, ON, o_Pal_Grey);    // id = 99
+    b_YellowFrame_Create(dlg, dx+1, startY-3, x-dxx, y-266, 96, ON, o_Pal_Black); // id = 96
+    b_YellowFrame_Create(dlg, dx, startY-4, x-dxx, y-266, 97, ON, o_Pal_Grey);    // id = 97
 
     _DlgItem_* tempItem;
     //  создаём элементы списка (пока что пустышки)
