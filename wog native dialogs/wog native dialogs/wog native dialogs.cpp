@@ -123,7 +123,7 @@ int __stdcall Y_Dlg_MainMenu_Create(HiHook* hook, _Dlg_* dlg)
 
     const char* ERA_version = GetEraVersion();
     sprintf(o_TextBuffer, "HoMM3 ERA %s", ERA_version );
-    dlg->AddItem(_DlgStaticText_::Create(596, 576, 200, 20, o_TextBuffer, n_MedFont, 7, 545, ALIGN_H_RIGHT | ALIGN_V_BOTTOM, 0)); 
+    dlg->AddItem(_DlgStaticText_::Create(590, 570, 200, 20, o_TextBuffer, n_MedFont, 7, 545, ALIGN_H_RIGHT | ALIGN_V_BOTTOM, 0)); 
 
     return ret;
 }
