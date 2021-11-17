@@ -25,7 +25,7 @@ namespace wndText
 {
     const char* PLUGIN_NAME = "WoG native dialogs";
     const char* PLUGIN_AUTHOR = "igrik";
-    const char* PLUGIN_DATA = "05.11.2021";
+    const char* PLUGIN_DATA = "17.11.2021";
 } 
 
 //////////////////////////////////
@@ -117,6 +117,22 @@ char* textProcS = "%s";
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
+// делаем плавность отображения текста в диалоге Credits (Авторы)
+_dword_ timeDlgCreditsSmoothly;
+
+int __stdcall Y_DlgCreditsSmoothly(LoHook* h, HookContext* c)
+{
+    timeDlgCreditsSmoothly++;
+
+    if (timeDlgCreditsSmoothly > 30) {
+        *(_byte_*)0x69FE55 = 1;
+        timeDlgCreditsSmoothly = 0;
+    }
+
+    return EXEC_DEFAULT;
+}
+
+// показываем версию ERA в главном меню
 int __stdcall Y_Dlg_MainMenu_Create(HiHook* hook, _Dlg_* dlg) 
 {
     int ret = CALL_1(int, __thiscall, hook->GetDefaultFunc(), dlg);
@@ -128,6 +144,7 @@ int __stdcall Y_Dlg_MainMenu_Create(HiHook* hook, _Dlg_* dlg)
     return ret;
 }
 
+// дополняем сообщение ПКМ на кнопке "Авторы"
 void __stdcall OnReportVersion (TEvent* Event) {
     sprintf(MyString, "{%s}\n(%s)\n", wndText::PLUGIN_NAME, wndText::PLUGIN_DATA);
     ReportPluginVersion(MyString);
@@ -228,7 +245,13 @@ BOOL APIENTRY DllMain( HMODULE hModule,
             _PI->WriteLoHook(0x4EEAC0, Y_Hook_MainLoop);
 
             // делаем показ версии игры в главном меню
-            _PI->WriteHiHook(0x4FB930, SPLICE_, EXTENDED_, THISCALL_, Y_Dlg_MainMenu_Create);
+            _PI->WriteHiHook(0x4FB930, SPLICE_, EXTENDED_, THISCALL_, Y_Dlg_MainMenu_Create);            
+            // делаем более плавное отображение credits
+            _PI->WriteLoHook(0x4EE674, Y_DlgCreditsSmoothly);
+            _PI->WriteByte(0x4EE6C0 +2, 1); // начало: до достижения копирайтов до верха
+            _PI->WriteByte(0x4EE716 +2, 1); // середина: когда текст есть и снизу, и сверху
+            _PI->WriteByte(0x4EE75E +2, 1); // конец 1: когда текста снизу нет, только сверху
+            _PI->WriteByte(0x4EE761 +2, 1); // конец 2: когда текста снизу нет, только сверху
 
             // коректировка описаний монстров
             // не в бою
