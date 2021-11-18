@@ -118,15 +118,13 @@ char* textProcS = "%s";
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 // делаем плавность отображения текста в диалоге Credits (Авторы)
-_dword_ timeDlgCreditsSmoothly;
+_dword_ timeDlgCreditsSmoothly = 0;
 
 int __stdcall Y_DlgCreditsSmoothly(LoHook* h, HookContext* c)
 {
-    timeDlgCreditsSmoothly++;
-
-    if (timeDlgCreditsSmoothly > 30) {
+    if (o_GetTime() > timeDlgCreditsSmoothly + 15) {
         *(_byte_*)0x69FE55 = 1;
-        timeDlgCreditsSmoothly = 0;
+        timeDlgCreditsSmoothly = o_GetTime();
     }
 
     return EXEC_DEFAULT;
