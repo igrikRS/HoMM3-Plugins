@@ -14,8 +14,8 @@ _int64_ getAIValue_NPC(int heroID){
 
     _int64_ value = 0;
 
-    int attNPC = Get_NpcSkillPower(npc, 0);		attNPC += hero->attack;	
-    int defNPC = Get_NpcSkillPower(npc, 1);		defNPC += hero->defence;
+    int attNPC = Get_NpcSkillPower(npc, 0);		attNPC += hero->primary_skill[0];	
+    int defNPC = Get_NpcSkillPower(npc, 1);		defNPC += hero->primary_skill[1];
     int hpNPC = Get_NpcSkillPower(npc, 2);	
     int damageNPC = Get_NpcSkillPower(npc, 3);	
     int speedNPC = Get_NpcSkillPower(npc, 5);								

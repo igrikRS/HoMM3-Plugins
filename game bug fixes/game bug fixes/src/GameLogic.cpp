@@ -54,12 +54,12 @@ void __stdcall Y_WoG_UnMixedPos_Fix(HiHook* hook, _dword_ x, _dword_ y, _dword_ 
 // Убираем из проверки существ с нулевой скоростью и боевые машины
 _int_ __stdcall Y_AIMgr_Stack_MinRoundToReachHex(HiHook* hook, _dword_ this_, _BattleStack_* stack, _int_ a3)
 {
-	if (stack->creature.flags == BCF_CANT_MOVE || stack->creature.speed < 1) 
-	{
-		return 99; // 99 раундов необходимо, чтобы добраться до стрелка
-	}
+    if (stack->creature.flags == BCF_CANT_MOVE || stack->creature.speed < 1) 
+    {
+        return 99; // 99 раундов необходимо, чтобы добраться до стрелка
+    }
 
-	return CALL_3(_int_, __thiscall, hook->GetDefaultFunc(), this_, stack, a3);
+    return CALL_3(_int_, __thiscall, hook->GetDefaultFunc(), this_, stack, a3);
 }
 
 // фикс вылета: нет проверки на наличие стуктуры целевого стека
@@ -68,10 +68,10 @@ int __stdcall Y_FixCrash_CastSpell_38(LoHook* h, HookContext* c)
 {
    if ( c->edi )
    {
-	   c->eax = *(int*)(c->edi + 0x38);
-	   c->ecx = *(int*)(c->ebx + 0x132C0);
-	   c->return_address = 0x5A1C20;
-	  
+       c->eax = *(int*)(c->edi + 0x38);
+       c->ecx = *(int*)(c->ebx + 0x132C0);
+       c->return_address = 0x5A1C20;
+      
    } else c->return_address = 0x5A2368;
    return NO_EXEC_DEFAULT;
 }
@@ -84,12 +84,64 @@ int __stdcall Y_FixCrash_RemoveObstacle(LoHook* h, HookContext* c)
    // чтобы пропустить код обращения к ней и как следствие крит.краш.игры
    if ( !c->ecx || !c->edi )
    {
-	   c->return_address = 0x466826;
-	   return NO_EXEC_DEFAULT;
-	  
+       c->return_address = 0x466826;
+       return NO_EXEC_DEFAULT;
+      
    } 
    return EXEC_DEFAULT;
 }
+
+
+// фикс: атакующий летающий стек НЕ пропускает ход при атаке заблоченного со всех сторон целевого стека
+_byte_ __stdcall AIMgr_Stack_SetHexes_WayToMoveLength(HiHook* hook, _dword_ this_, _BattleStack_* stack, _int_ side, _int_ gex_id, _int_ isTactics, _int_ speed, _int_ a7) 
+{
+    // результат по умолчанию: клетка не доступна
+    _byte_ result = FALSE;
+
+    // если стек существует (защита от вылетов)
+    if (stack)
+    {
+        // проходим по гексам вокруг целевого гекса (gex_id)
+        for (int i = 0; i < 6; i++)
+        {
+            // ищем пустой гекс вокруг цели
+            _int_ emptyGexID = o_BattleMgr->GetEmptySquareAroundThis(gex_id, i);
+
+            // если в текущем цикле найден пустой доступный гекс вокруг цели
+            if ( emptyGexID != -1 )
+            {
+                // клетка найдена
+                result = TRUE;
+
+                // проверяем на доступность широкому атакующему монстру
+                if (stack->creature.flags & BCF_2HEX_WIDE)
+                {
+                    // ищем второй гекс: справа от текущего
+                    _byte_ isNotEmptyGexID = o_BattleMgr->IsGexNotFree(emptyGexID +1);
+
+                    // если справа занят: ищем слева
+                    if (isNotEmptyGexID) 
+                        isNotEmptyGexID = o_BattleMgr->IsGexNotFree(emptyGexID -1);
+
+                    // если и слева занят: убираем флаг найденного и ищем дальше в следующей итерации
+                    if (isNotEmptyGexID)
+                        result = FALSE;
+                }
+
+                // если гекс(ы) найден(ы) - выход из цикла
+                // если не найдены: ищем в следующей итерации
+                if (result)
+                    break;
+            }
+        }
+    }
+
+    // если клетка найдена: добавляем её в список
+    if (result)
+        return CALL_7(_byte_, __thiscall, hook->GetDefaultFunc(), this_, stack, side, gex_id, isTactics, speed, a7);
+    else return FALSE;
+}
+
 
 // ##############################################################################################################################
 // ##############################################################################################################################
@@ -97,7 +149,10 @@ int __stdcall Y_FixCrash_RemoveObstacle(LoHook* h, HookContext* c)
 
 
 void GameLogic(PatcherInstance* _PI)
-{	
+{   
+    // фикс: атакующий летающий стек НЕ пропускает ход при атаке заблоченного со всех сторон целевого стека
+    _PI->WriteHiHook(0x523FE6, CALL_, EXTENDED_, THISCALL_,  AIMgr_Stack_SetHexes_WayToMoveLength);
+
     // исправление созданий WoG'ом корявых пакованых координат
     _PI->WriteHiHook(0x711E7F, SPLICE_, EXTENDED_, CDECL_, Y_WoG_MixedPos_Fix);
     _PI->WriteHiHook(0x711F49, SPLICE_, SAFE_, CDECL_, Y_WoG_UnMixedPos_Fix);
@@ -110,15 +165,15 @@ void GameLogic(PatcherInstance* _PI)
     _PI->WriteHiHook(0x4A7E8A, CALL_, EXTENDED_, THISCALL_, Y_SetCanselWitchHut);
 
     // Делаем кнопку отмены у ученого, предлагающего втор.навык
-    _PI->WriteLoHook(0x4A4AFE, Y_SetCanselScholarlySS);	
+    _PI->WriteLoHook(0x4A4AFE, Y_SetCanselScholarlySS); 
 
 
     // фикс выбора типа атаки при битве ИИ vs человек (человек не мог выбрать тип атаки)
     // суть в том, что была проверка на флаг V997, а должна быть V998
     _PI->WriteByte(0x762601 +3, 0xC5);
 
-	// пропускаем показ всем игрокам захват Двеллинга 8-го уровня существ 
-	_PI->WriteByte(0x70DB3B +1, 0x37);  
+    // пропускаем показ всем игрокам захват Двеллинга 8-го уровня существ 
+    _PI->WriteByte(0x70DB3B +1, 0x37);  
 
     // логическая ошибка SOD:
     // пропускаем показ обновления экрана для ИИ в телепортах:
@@ -128,58 +183,19 @@ void GameLogic(PatcherInstance* _PI)
 
 
     ///////////////////////////////////////////////////////////////////////////
-	///////////////////////// Фиксы крит.крашей игры //////////////////////////
+    ///////////////////////// Фиксы крит.крашей игры //////////////////////////
 
-	// АИ битва (просчёт)
-	// проверка на скорость монстра и когда он дойдет до защиты стрелка. 
-	// Убираем из проверки существ с нулевой скоростью и боевые машины
-	_PI->WriteHiHook(0x4B3C80, SPLICE_, EXTENDED_, THISCALL_, Y_AIMgr_Stack_MinRoundToReachHex);
+    // АИ битва (просчёт)
+    // проверка на скорость монстра и когда он дойдет до защиты стрелка. 
+    // Убираем из проверки существ с нулевой скоростью и боевые машины
+    _PI->WriteHiHook(0x4B3C80, SPLICE_, EXTENDED_, THISCALL_, Y_AIMgr_Stack_MinRoundToReachHex);
 
-	// фикс вылета: нет проверки на на наличие стуктуры целевого стека
-	// но тут не хватает проверки на c->edi 
-	_PI->WriteLoHook(0x5A1C17, Y_FixCrash_CastSpell_38);
+    // фикс вылета: нет проверки на на наличие стуктуры целевого стека
+    // но тут не хватает проверки на c->edi 
+    _PI->WriteLoHook(0x5A1C17, Y_FixCrash_CastSpell_38);
 
-	// фикс вылета: при удалении препятствия в битве, когда его стуктура таблицы равна нуля 
-	// (привет WoG и его стена огня у Огненных Лошадей)
-	_PI->WriteLoHook(0x46681B, Y_FixCrash_RemoveObstacle);
+    // фикс вылета: при удалении препятствия в битве, когда его стуктура таблицы равна нуля 
+    // (привет WoG и его стена огня у Огненных Лошадей)
+    _PI->WriteLoHook(0x46681B, Y_FixCrash_RemoveObstacle);
 
-    ///////////////////////////////////////////////////////////////////////////
-	///////////////////////// неиспользуемый функционал ///////////////////////
-
-    // отмена фикса по просьбе Berserker'a для ERA 2.8.6 и выше
-    //// o_BattleMgr->Round = 1; правка ошибки с номерами раундов SOD.
-    //// После тактической фазы первый раунд всегда был = 1
-    //// А без тактической фазы первый раунд всегда был = 0
-    //// Теперь всегда первый раунд будет = 0
-    //_PI->WriteLoHook(0x473E73, Y_FixNewRoundCountInTactics);
-    //_PI->WriteLoHook(0x474B79, Y_FixNewRoundCountInTactics);
-    //_PI->WriteLoHook(0x4758B3, Y_FixNewRoundCountInTactics);
-    //_PI->WriteDword(0x75D125, 0);
-    //_PI->WriteLoHook(0x760973, Y_FixRoundCount_WoG);
 }
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// отмена фикса по просьбе Berserker'a для ERA 2.8.6 и выше
-//_int_ __stdcall Y_FixNewRoundCountInTactics(LoHook* h, HookContext* c)
-//{
-//	o_BattleMgr->round = -1;
-//	return EXEC_DEFAULT;
-//}
-//#define BACall_Day  (*(_int_*)0x79F0B8)
-//#define BACall_Turn  (*(_int_*)0x79F0BC)
-//_int_ __stdcall Y_FixRoundCount_WoG(LoHook* h, HookContext* c)
-//{
-//	BACall_Day = o_BattleMgr->round;
-//	if (o_BattleMgr->isTactics) {
-//		BACall_Turn--;
-//	} else {
-//		BACall_Turn = BACall_Day;
-//	}
-//	c->return_address = 0x76099A;
-//	return NO_EXEC_DEFAULT;
-//}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////

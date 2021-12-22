@@ -28,9 +28,9 @@ int __stdcall AI_waterwalk_fly(LoHook *h, HookContext *c)
     if (c->eax == 0) // no angel wings
     {
         _Hero_* hero = (_Hero_ *)(c->esi);
-        if (hero->spell[6] == 0 && hero->spell_level[6] == 0) // this AI hero does not have the means to cast fly (id = 6)
+        if (hero->spells_spellbook[6] == 0 && hero->spells_available[6] == 0) // this AI hero does not have the means to cast fly (id = 6)
         {
-            if (hero->spell[7] != 0 || hero->spell_level[7] != 0) // this AI hero has access to waterwalk (id = 7)
+            if (hero->spells_spellbook[7] != 0 || hero->spells_available[7] != 0) // this AI hero has access to waterwalk (id = 7)
             {
                 if (hero->waterwalk_cast_power == -1) // waterwalk is not cast ~ waterwalk field is *(&hero + 0x116) (see 0x4E6040 Cast_waterwalk function)
                     c->return_address = 0x430231; // try to cast waterwalk instead (code checks for Boots of Levitation first...)
