@@ -348,8 +348,8 @@ _int_ __stdcall Y_Dlg_NPC_Show(HiHook* hook, _DlgNPC_* dlgNPC)
     dlg->AddItem(_DlgStaticText_::Create(22, 46, 96, medfontHI, o_TextBuffer, n_MedFont, 1, 13, ALIGN_H_RIGHT | ALIGN_V_CENTER, 0)); 
 
     // (id = 14, 15) класс командира текст 
-    dlg->AddItem(_DlgStaticText_::Create(16, 205, 104, medfontHI, txtresWOG->GetString(65), n_MedFont, 7, 14, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
-    dlg->AddItem(_DlgStaticText_::Create(16, 220, 104, medfontHI, dlgNPC->Type, n_MedFont, 1, 15, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
+    dlg->AddItem(_DlgStaticText_::Create(16, 205, 110, medfontHI, txtresWOG->GetString(65), n_MedFont, 7, 14, ALIGN_H_CENTER | ALIGN_V_CENTER, 0)); 
+    dlg->AddItem(_DlgStaticText_::Create(16, 220, 110, medfontHI, dlgNPC->Type, n_MedFont, 1, 15, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 
     // (id = 16, 17) имя героя хозяина 
     dlg->AddItem(_DlgStaticText_::Create(128, 46, 192, medfontHI, txtresWOG->GetString(68), n_MedFont, 7, 16, ALIGN_H_LEFT | ALIGN_V_CENTER, 0)); 
