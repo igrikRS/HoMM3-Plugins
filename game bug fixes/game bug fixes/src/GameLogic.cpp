@@ -101,14 +101,26 @@ _byte_ __stdcall AIMgr_Stack_SetHexes_WayToMoveLength(HiHook* hook, _dword_ this
     // если стек существует (защита от вылетов)
     if (stack)
     {
+        // пишем сразу структуру менеджера битвы
+        _BattleMgr_* bm = o_BattleMgr;
+
         // проходим по гексам вокруг целевого гекса (gex_id)
         for (int i = 0; i < 6; i++)
         {
-            // ищем пустой гекс вокруг цели
-            _int_ emptyGexID = o_BattleMgr->GetEmptySquareAroundThis(gex_id, i);
+            // сначала исключаем случай, если атакующий уже стоит рядом с целью
+            _int_ stackGexID = bm->adjacentSquares[gex_id].hexAdjacent[i];
+
+            if ( stackGexID == stack->hex_ix || stackGexID == stack->GetSecondGexID() )  
+            {
+                result = TRUE;
+                break;
+            }
+
+            // теперь ищем пустой гекс вокруг цели
+            _int_ emptyGexID = bm->GetEmptySquareAroundThis(gex_id, i);
 
             // если в текущем цикле найден пустой доступный гекс вокруг цели
-            if ( emptyGexID != -1 )
+            if ( emptyGexID != -1 ) 
             {
                 // клетка найдена
                 result = TRUE;
@@ -117,7 +129,7 @@ _byte_ __stdcall AIMgr_Stack_SetHexes_WayToMoveLength(HiHook* hook, _dword_ this
                 if (stack->creature.flags & BCF_2HEX_WIDE)
                 {
                     // ищем второй гекс: справа от текущего
-                    _byte_ isNotEmptyGexID = o_BattleMgr->IsGexNotFree(emptyGexID +1);
+                    _byte_ isNotEmptyGexID = bm->IsGexNotFree(emptyGexID +1);
 
                     // если справа занят: ищем слева
                     if (isNotEmptyGexID) 
