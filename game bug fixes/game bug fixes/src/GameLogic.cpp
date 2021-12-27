@@ -128,15 +128,19 @@ _byte_ __stdcall AIMgr_Stack_SetHexes_WayToMoveLength(HiHook* hook, _dword_ this
                 // проверяем на доступность широкому атакующему монстру
                 if (stack->creature.flags & BCF_2HEX_WIDE)
                 {
-                    // ищем второй гекс: справа от текущего
-                    _byte_ isNotEmptyGexID = bm->IsGexNotFree(emptyGexID +1);
+                    // проверяем справа и слева клетку на под атакующим монстром
+                    if (  stack->GetSecondGexID() == (emptyGexID+1) || stack->GetSecondGexID() == (emptyGexID-1) )
+                    {
+                        result = TRUE;
+                        break;
+                    }
 
-                    // если справа занят: ищем слева
-                    if (isNotEmptyGexID) 
-                        isNotEmptyGexID = o_BattleMgr->IsGexNotFree(emptyGexID -1);
+                    // ищем второй гекс: справа или слева от текущего
+                    _byte_ isNotEmptyGexID_Right = bm->IsGexNotFree(emptyGexID +1);
+                    _byte_ isNotEmptyGexID_Left = bm->IsGexNotFree(emptyGexID -1);
 
-                    // если и слева занят: убираем флаг найденного и ищем дальше в следующей итерации
-                    if (isNotEmptyGexID)
+                    // если оба гекса заняты: убираем флаг найденного и ищем дальше в следующей итерации
+                    if (isNotEmptyGexID_Right && isNotEmptyGexID_Left)
                         result = FALSE;
                 }
 
