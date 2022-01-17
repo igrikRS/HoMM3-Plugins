@@ -133,6 +133,12 @@ int __stdcall Y_ReplayBattle(HiHook* hook, _AdvMgr_* advMng, _dword_ MixedPos, _
 	_Army_* armyAS = 0;
 	_Army_* armyDS = 0;
 
+    _int_ goldAttacker = o_GameMgr->players[HrA->owner_id].resourses.gold;
+
+    _int_ goldDefender = 0;
+    if ( OwnerD >= 0 )
+        _int_ goldDefender = o_GameMgr->players[OwnerD].resourses.gold;
+
 	if (HrA) {
         o_AdvMgr->HeroActive_DeMobilize();
 		HrAS = (_Hero_*)o_New(1170);
@@ -194,11 +200,18 @@ int __stdcall Y_ReplayBattle(HiHook* hook, _AdvMgr_* advMng, _dword_ MixedPos, _
 
 			o_QuickBattle = 0;						
 			hdv(_bool_, "HD.QuickCombat") = 0;	
+
+            // возвращаем деньги атакующему
+            o_GameMgr->players[HrA->owner_id].resourses.gold = goldAttacker;
+
+            // возвращаем деньги защитнику
+            if ( OwnerD >= 0 )
+                o_GameMgr->players[OwnerD].resourses.gold = goldDefender;
 			
             // Сообщаем о переигровке ERM'у
 			FireEvent("OnBattleReplay", NULL, 0);
-            // ERM_FU_CALL(870520); устаревший вызов функции
 		}
+
 		// нужен, если выходим в главное меню 
         // через кнопку HD в диалоге настроек битвы
         isNeedReplay = false;
@@ -208,7 +221,6 @@ int __stdcall Y_ReplayBattle(HiHook* hook, _AdvMgr_* advMng, _dword_ MixedPos, _
 
 		if ( isNeedReplay ) { // Сообщаем о переигровке ERM'у
 			FireEvent("OnBeforeBattleReplay", NULL, 0);
-			// ERM_FU_CALL(870530); устаревший вызов функции
 		}
 	} while ( isNeedReplay );
 
