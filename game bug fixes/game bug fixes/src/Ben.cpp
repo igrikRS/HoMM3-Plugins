@@ -48,4 +48,8 @@ void Ben(PatcherInstance* _PI)
 
     // Earthquake Bug will no longer kill creatures and end battle
     _PI->WriteLoHook(0x465656, EarthquakeBug);
+
+    // fix Witch Huts for random maps 
+    // (it gave only secondary skills with number 15 or lesser),
+    _PI->WriteDword(0x534621 +3, 0x0FFFEFBF);
 }
