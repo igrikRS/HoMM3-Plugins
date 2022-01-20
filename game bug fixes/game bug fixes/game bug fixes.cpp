@@ -1,10 +1,14 @@
 #include "..\..\..\include\homm3.h"
+#include "..\..\..\include\era.h"
+using namespace Era;
 
 Patcher* _P;
 PatcherInstance* _PI;
 
 char myString[1024];
 #define MyString  (char*)myString
+
+static _bool_ TIPHON = false;
 
 #include "src\RoseKavalier.cpp"
 #include "src\Ben.cpp"
@@ -47,6 +51,11 @@ BOOL APIENTRY DllMain( HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpRese
 
             _P = GetPatcher();
             _PI = _P->CreateInstance("game bug fixes extended"); 
+
+            ConnectEra();
+
+            if (PluginExists("typhon"))
+                TIPHON = true;
 
             if (_PI)
                 HooksInit(_P, _PI);

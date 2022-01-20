@@ -327,10 +327,6 @@ void Monsters(PatcherInstance* _PI)
     // фикс переполнения опыта существ (вызов проверки на max опыт)	
 	// _PI->WriteLoHook(0x71924A, Y_WoGCrExpoSet_AddExpo);
 
-    // корректировка WoG ненависти существ
-    // добавляем и существ 8-го уровня
-    _PI->WriteLoHook(0x766E4E, Y_SetWogHates);
-
     // вызовы драконов от артефакта сердце дракона
     // меняем местами номера гексов, 
     // чтобы в банках существ не перекрывался стек №3
@@ -345,7 +341,6 @@ void Monsters(PatcherInstance* _PI)
     // _PI->WriteHiHook(0x4E64FA, CALL_, EXTENDED_, FASTCALL_, Y_FixWoG_GetCreatureGrade);
     _PI->WriteLoHook(0x4E64D1, Y_FixWoG_GetCreatureGrade);
 
-
     // показ лычек опыта в диалоге присоединения и оставления монстров на карте
     _PI->WriteHiHook(0x5D15D0, SPLICE_, EXTENDED_, FASTCALL_, Y_Dlg_AddCreatures_Init_Add); 
     _PI->WriteHiHook(0x5D16B0, SPLICE_, EXTENDED_, FASTCALL_, Y_Dlg_AddCreatures_Init_Leave);
@@ -356,8 +351,19 @@ void Monsters(PatcherInstance* _PI)
     _PI->WriteCodePatch(0x717B37, "%n", 20); // 20 nops
     _PI->WriteCodePatch(0x717FAB, "%n", 20); // 20 nops
 
+
     // меняем картинки оставления монстров и для эстетики
     // и для того, чтобы визуально понимать, что мы вносили правку
     _PI->WriteByte(0x757365 +1, 35); // 35 - Меч Правосудия
     _PI->WriteByte(0x757369 +1, 13); // 13 - Архангел
+
+
+    // патчи без Tiphon.dll
+    if (!TIPHON)
+    {
+        // корректировка WoG ненависти существ
+        // добавляем и существ 8-го уровня
+        _PI->WriteLoHook(0x766E4E, Y_SetWogHates);
+    }
+
 }

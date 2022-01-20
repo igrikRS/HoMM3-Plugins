@@ -3,7 +3,7 @@
 
 _int64_ getAIValue_NPC(int heroID){
 
-    if ( heroID < 0 && heroID > 155 )
+    if ( heroID < 0 && heroID >= o_HeroesCount )
         return 0; // выход, если номер героя неправильный
 
     _Npc_* npc = GetNpc(heroID);	// структура командира
