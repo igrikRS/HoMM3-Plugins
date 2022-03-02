@@ -295,7 +295,7 @@ int __stdcall New_Dlg_ExpaMon_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
                 if ( o_CrExpo )
                     hero_id = *(short*)(o_CrExpo +12);
 
-                if ( !o_MayChooseArtOpt || hero_id < 0 || hero_id >155 ){
+                if ( !o_MayChooseArtOpt || hero_id < 0 || hero_id >= o_HEROES_COUNT ){
                     b_MsgBox(Get_ITxtExp(455), 1);
                 }
                 else {
