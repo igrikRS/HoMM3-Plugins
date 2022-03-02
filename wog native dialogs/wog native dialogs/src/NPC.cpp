@@ -311,7 +311,7 @@ _int_ __stdcall Y_Dlg_NPC_Show(HiHook* hook, _DlgNPC_* dlgNPC)
     mouse->MouseON(0);
 
     // (id = 4, 5) шагающий деф командира (делаем за фоновой картинкой)
-    sprintf(o_TextBuffer, textProcS, *(int*)(0x68295C+4+4*(o_CreatureInfo[npc->type + 174].town)) );
+    sprintf(o_TextBuffer, textProcS, *(int*)(/*0x68295C +4*/ (*(int*)0x449650) +4*(o_CreatureInfo[npc->type + 174].town)) );
     dlg->AddItem(_DlgStaticPcx8_::Create(20, 70, 100, 130, 4, /*"CRBKGNEU.pcx"*/ o_TextBuffer )); // фон замка под дефом командира нейтральный (id = 4)
     dlg->AddItem(NPC_Def = _DlgStaticDef_::Create(-130, -80, 100, 130, 5, o_CreatureInfo[npc->type + 174].def_name, 0, 0, 18)); // шагающий деф командира (id = 5)
     //NPC_Def->def->groups_count = 2; 
