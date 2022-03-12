@@ -22,11 +22,38 @@ char* optionsIntro = "wog_options.main.intro";
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
+_bool_ testUseJsonString = false;
+
+// функция проверяет есть ли отладочный текст в wnd.json
+// для удобства заполнения строк через json
+void IsNeedUseJsonString()
+{
+    // узнаём есть ли строка ("test_json_strings": "test") в json файле 
+    string testJson = GetEraJSON("wnd.dlg_wog_options.test_json_strings");
+    string test = "test"; 
+
+    // переводим строку в нижний регистр
+    transform(testJson.begin(), testJson.end(), testJson.begin(), tolower); 
+
+    if (testJson == test)
+        testUseJsonString = true;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
 void SetupJsonText( char** target, const char* jsonName)
 {
-    // strcpy(target, GetEraJSON(jsonName));
-    *target = GetEraJSON(jsonName);
+    // проверяем существует ли в JSON файле "заполненная строка"
+    // если будет пустышка - не будем перезаписывать
+    string s1 = jsonName;
+    string s2 = GetEraJSON(jsonName);
+
+    // перезаписываем строку текста
+    if (testUseJsonString || s1 != s2)
+        *target = GetEraJSON(jsonName);
 }
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -37,6 +64,22 @@ void __stdcall WOG_ProcessAll(HiHook* h)
 {
     // не вырезаем оригинальную функцию (обратная совместимость)
     CALL_0(void, __cdecl, h->GetDefaultFunc() ); 
+
+    // проверка на необходимость подмены строк из JSON файла
+    // должна быть ("use_json_strings": "on")
+    string useJson = GetEraJSON("wnd.dlg_wog_options.use_json_strings");
+    string campareString = "on";
+
+    // переводим строку useJson в нижний регистр
+    transform(useJson.begin(), useJson.end(), useJson.begin(), tolower);    
+
+    // выходим, если не нужно загружать строки из JSON файла
+    if (useJson != campareString)
+        return;
+
+    // для удобства заполнения строк через json (отладочный функционал)
+    // при необходимости внести строку ("test_json_strings": "test")
+    IsNeedUseJsonString();
 
     // получаем структуру диалога ВОГ Опций
     _DlgSetup_* ds = o_WogOptions;
