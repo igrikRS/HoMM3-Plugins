@@ -81,6 +81,28 @@ int __stdcall fixHarpyBinds(LoHook* h, HookContext* c)
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// фикс возвращения Темных Драконов после атаки врага сзади
+_byte_ __stdcall Y_FixMoveDarkDragonsAfterAttack(HiHook* hook, _BattleStack_* stack, _int_ gex, _byte_ a3)
+{
+    // проверяем стек на двухклеточность (только у них есть этот баг)
+    if (stack->creature.flags & BCF_2HEX_WIDE)
+    {
+        // проверяем повернут ли стек после атаки
+        if (stack->orientation == stack->side)
+        {
+            if (stack->side)
+                gex--;
+            else 
+                gex++;
+        }
+    }
+
+    return CALL_3(_byte_, __thiscall, hook->GetDefaultFunc(), stack, gex, a3);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
 // не считать кавалерийский бонус при полете
 _int_ __stdcall Y_AntiKavalierAndFly(LoHook* h, HookContext* c)
 {
@@ -316,6 +338,9 @@ void Monsters(PatcherInstance* _PI)
 
     // фикс отлета гарпий, когда после удара они связаны корнями дендроидов
     _PI->WriteLoHook(0x47835B, fixHarpyBinds);
+
+    // фикс возвращения Темных Драконов после атаки врага сзади
+    _PI->WriteHiHook(0x478360, CALL_, EXTENDED_, THISCALL_, Y_FixMoveDarkDragonsAfterAttack);
 
     // не считать кавалерийский бонус при полете
     _PI->WriteLoHook(0x44307A, Y_AntiKavalierAndFly);
