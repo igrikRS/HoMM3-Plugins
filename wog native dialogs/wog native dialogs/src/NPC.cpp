@@ -267,7 +267,9 @@ int __stdcall Y_New_CommanderDlg_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 _int_ __stdcall Y_Dlg_NPC_Show(HiHook* hook, _DlgNPC_* dlgNPC)
 {
     time_click = 0; // переменная для дабл_клика
-    _Npc_* npc = GetNpc(dlgNPC->DlgTop);    // структура командира
+    _Npc_* npc = (_Npc_*)dlgNPC->DlgTop; // структура командира
+
+    dlgNPC->DlgTop = 0; // теперь её обнуляем и будем хранить данные о том, что при передаче арта герою нужно будет заново вызвать диалог
 
     // если структуры командира нет
     if (npc == NULL) {
@@ -275,9 +277,7 @@ _int_ __stdcall Y_Dlg_NPC_Show(HiHook* hook, _DlgNPC_* dlgNPC)
         dlgNPC->Request = 0; // НЕ повышение уровня
         dlgNPC->DlgLeft = 0; // возврат: ничего не делать
         return dlgNPC->DlgLeft;
-    }
-
-    dlgNPC->DlgTop = 0; // теперь её обнуляем и будем хранить данные о том, что при передаче арта герою нужно будет заново вызвать диалог
+    } 
 
     // если повышение уровня, то считаем сколько навыков можно изучить
     // и если навыки все изучены, то неоходимо окно меньшего формата y = 505;
@@ -481,7 +481,7 @@ _int_ __stdcall Y_Dlg_NPC_Show(HiHook* hook, _DlgNPC_* dlgNPC)
 void __stdcall Y_Dlg_NPC_Prepare(HiHook* hook, _Npc_* npc, int is_lvlup, int bttn_del, int flags)
 {
     CALL_4(void, __thiscall, hook->GetDefaultFunc(), npc, is_lvlup, bttn_del, flags);
-    o_dlgNPC->DlgTop = npc->id;
+    o_dlgNPC->DlgTop = (_int_)npc;
     o_dlgNPC->Request = is_lvlup;
 
     return;
