@@ -233,7 +233,6 @@ int __stdcall Y_New_CommanderDlg_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 
                         if (o_WndMgr->result_dlg_item_id == DIID_OK){
                             dlgNPC->ArtOutput[itid] = 1; // отдаём артефакт
-                            dlgNPC->DlgTop = 1; // говорим о том, что нужно будет заново вызвать диалог в функции Y_Dlg_NPC_ShowAgain_IfGetArtHero
                             return dlg->Close(msg);
                         }
                     }
@@ -268,8 +267,6 @@ _int_ __stdcall Y_Dlg_NPC_Show(HiHook* hook, _DlgNPC_* dlgNPC)
 {
     time_click = 0; // переменная для дабл_клика
     _Npc_* npc = (_Npc_*)dlgNPC->DlgTop; // структура командира
-
-    dlgNPC->DlgTop = 0; // теперь её обнуляем и будем хранить данные о том, что при передаче арта герою нужно будет заново вызвать диалог
 
     // если структуры командира нет
     if (npc == NULL) {
@@ -491,9 +488,21 @@ void __stdcall Y_Dlg_NPC_Prepare(HiHook* hook, _Npc_* npc, int is_lvlup, int btt
 // если им ранее был снят и передан артефакт герою
 _int_ __stdcall Y_Dlg_NPC_ShowAgain_IfGetArtHero(LoHook* h, HookContext* c)
 {
-    if (o_dlgNPC->DlgTop == 1) { // нужно открыть диалог командира заново
-        c->return_address = 0x76E968;
-        return NO_EXEC_DEFAULT;
+    _bool_ isNeedReruildDlg = false;
+
+    if (o_dlgNPC->DlgTop)
+    {
+        for (int i = 0; i < 6; i++)
+        {
+            // если арт для передачи есть
+            if (o_dlgNPC->ArtOutput[i] == 1)
+                isNeedReruildDlg = true;
+        }
+
+        if (isNeedReruildDlg) { // нужно открыть диалог командира заново
+            c->return_address = 0x76E968;
+            return NO_EXEC_DEFAULT;
+        }
     }
 
     return EXEC_DEFAULT; 
