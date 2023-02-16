@@ -276,7 +276,7 @@ int __stdcall Y_DlgSpellBook_ModifSpell_Description(LoHook* h, HookContext* c)
 		if ( !GetWoGOptionsStatus(726) ) 
 		{
 			string = 12;
-			damage *= (int)(hero->power);
+			damage *= (int)(hero->primary_skill[3]);
 		}
 		break;
 
@@ -315,6 +315,11 @@ int __stdcall Y_Battle_Hint_Prepare_ResurrectArchangel(LoHook* h, HookContext* c
 	// получаем структуры активного и целевого стека
 	_BattleStack_* stack_active = (_BattleStack_*)c->ebx;
 	_BattleStack_* stack_target = o_BattleMgr->Get_Resurrect_BattleStack(side, gex_id, 1);
+
+    if (!stack_target) {     
+        // если целевой стек не найден, ищем через оригинальную функцию
+        stack_target = CALL_3(_BattleStack_*, __thiscall, 0x5A4150, o_BattleMgr, side, gex_id);
+    }
 
 	// подготавливаем переменные: кол-во воскрешаемых и их название
 	char* mon_name = GetCreatureName(stack_target->creature_id, stack_target->count_current);
