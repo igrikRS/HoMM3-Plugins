@@ -1,7 +1,7 @@
 // исправление отображения графики тени Силового Поля
 int __stdcall Fix_ForceFieldShadow(LoHook *h, HookContext *c)
 {
-	if (o_BattleMgr->action_param1 == SPL_FORCE_FIELD) { // если заклинание Силовое Поле
+	if (o_BattleMgr->Action == SPL_FORCE_FIELD) { // если заклинание Силовое Поле
 		IntAt(c->ebp -0x14) = 0x63AC6C; // активная сторона тут всегда должна быть 0 (0x63AC6C всегда равна нулю!)
 		c->return_address = 0x5A3699;
 		return NO_EXEC_DEFAULT;

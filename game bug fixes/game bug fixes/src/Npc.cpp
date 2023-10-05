@@ -63,7 +63,7 @@ int __stdcall get_AIValue_And_NPC_Error(LoHook* h, HookContext* c)
 
 int __stdcall get_Fight_Value_Hook(LoHook* h, HookContext* c)
 {
-    _Hero_* hero = o_BattleMgr->hero[c->ebx]; 
+    _Hero_* hero = o_BattleMgr->Hero[c->ebx]; 
 
     if (!hero) 
         return EXEC_DEFAULT; 

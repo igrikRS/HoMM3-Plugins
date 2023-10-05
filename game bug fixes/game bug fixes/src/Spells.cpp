@@ -75,7 +75,7 @@ _int64_ __stdcall Y_DlgSpellBook_FixDecription_SpellPower(HiHook* hook, _Hero_ *
 _int_ __stdcall Y_Fix_ReportStatusMsg_CastArmageddonSpell(HiHook* hook, _BattleMgr_ *bm, _int_ damage, _int_ spell, _Hero_ *heroA, _Hero_ *heroD, _BattleStack_ *stack, _int_ a7) 
 {
     if ( !heroA ) { // в этом месте структура атакующего героя не подаётся. Поэтому мы создаём её сами
-        heroA = bm->hero[bm->current_side];
+        heroA = bm->Hero[bm->CurrentActiveSide];
     }
 
     _int_ ret = CALL_7(_int_, __thiscall, hook->GetDefaultFunc(), bm, damage, spell, heroA, heroD, stack, a7);

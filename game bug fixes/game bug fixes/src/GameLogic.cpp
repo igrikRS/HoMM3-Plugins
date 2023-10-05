@@ -172,7 +172,29 @@ _byte_ __stdcall AIMgr_Stack_SetHexes_WayToMoveLength(HiHook* hook, _dword_ this
     else return FALSE;
 }
 
+// фикс: двуклеточные монстры в бою могут сделать 1 шаг назад
+_LHF_(Y_FixBattle_StackStepBack)
+{
+    _BattleStack_* stack = (_BattleStack_*)c->edi;
+    _int_ target_pos = *(int*)(c->ebp +8);
 
+    c->eax = 5; // стандартный курсор
+
+    if(stack->creature.flags & BCF_2HEX_WIDE && target_pos != stack->GetSecondGexID()) {
+        _int_ backGexID = target_pos +1 -2*stack->orientation;
+        if (backGexID % 17 > 0 && backGexID % 17 < 16) {
+            if(stack->creature.flags & BCF_CAN_FLY) {
+                c->eax = 2;
+            } else {
+                c->eax = 1;
+            }
+        }
+    }
+    c->Pop(); // pop edi
+    c->Pop(); // pop esi 
+
+    return EXEC_DEFAULT;
+}
 
 
 // ##############################################################################################################################
@@ -182,6 +204,10 @@ _byte_ __stdcall AIMgr_Stack_SetHexes_WayToMoveLength(HiHook* hook, _dword_ this
 
 void GameLogic(PatcherInstance* _PI)
 {   
+    // фикс: двуклеточные монстры в бою могут сделать 1 шаг назад
+    _PI->WriteCodePatch(0x47601E, "%n", 7); // 7 nops
+    _PI->WriteLoHook(0x476020, Y_FixBattle_StackStepBack);
+
     // фикс: атакующий летающий стек НЕ пропускает ход при атаке заблоченного со всех сторон целевого стека
     _PI->WriteHiHook(0x523FE6, CALL_, EXTENDED_, THISCALL_,  AIMgr_Stack_SetHexes_WayToMoveLength);
 
