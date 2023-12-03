@@ -89,7 +89,7 @@ int __stdcall FaerieButton_RMB(LoHook *h, HookContext *c)
 
 int __stdcall RK_WaitPhaseBug(LoHook *h, HookContext *c)
 {
-	if (o_BattleMgr->WaitPhase) // мы должны предотвратить триггер регена существ или регена элексира жизни
+	if (o_BattleMgr->waitPhase) // мы должны предотвратить триггер регена существ или регена элексира жизни
 		c->flags.ZF = TRUE;      // потому что он не должен был действовать в этой фазе
 
 

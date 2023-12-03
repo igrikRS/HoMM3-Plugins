@@ -267,7 +267,6 @@ int PreShowRMC_ComplexQuestDialog(_H3Quest_* quest, char* quest_text)
 	}
 
 	if (quest->GetQuestType() == _H3Quest_::QT_DefeatHero ) {
-		char hero_id_text[100];
 		int hero_id = quest->data.killHero.targetHero;
 		if (hero_id > -1 ) {
 			_Hero_* hero = o_GameMgr->GetHero(hero_id);
@@ -276,7 +275,6 @@ int PreShowRMC_ComplexQuestDialog(_H3Quest_* quest, char* quest_text)
 	}
 
 	if (quest->GetQuestType() == _H3Quest_::QT_BeHero ) {
-		char hero_id_text[100];
 		int hero_id = quest->data.beHero;
 		if (hero_id > -1 ) {
 			_Hero_* hero = o_GameMgr->GetHero(hero_id);
@@ -407,7 +405,7 @@ int __stdcall Dlg_QuestLog_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
 			} // ЛКМ
 
 			if (msg->subtype == MST_RBUTTONDOWN ) { // при ПКМ 
-				int quest_type = it->field_28[0];
+				int quest_type = it->field_28;
 				_HStr_ textQuest;
 				if ( quest_type == 1 ) { // SeerHut
 					_H3QuestSeerHut_* questSH =(_H3QuestSeerHut_*)it->field_3C;
@@ -518,7 +516,7 @@ int __stdcall Dlg_BuildQuestLog(LoHook* h, HookContext* c)
 					
 					dlg->AddItem(text_item = _DlgStaticText_::Create(40, text_y, xt, oHT, string.c_str, o_Smalfont_Fnt->name, 1, i_id+50, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 
-					text_item->field_28[0] = 1; // значит, что передаем _H3QuestSeerHut_
+					text_item->field_28 = 1; // значит, что передаем _H3QuestSeerHut_
 					text_item->field_3C = (int)questSH; // передаем структуру _H3QuestSeerHut_
 
 					if (i_id >= 16) {
@@ -559,7 +557,7 @@ int __stdcall Dlg_BuildQuestLog(LoHook* h, HookContext* c)
 
 					dlg->AddItem(text_item = _DlgStaticText_::Create(41, text_y, xt, oHT, string.c_str, o_Smalfont_Fnt->name, 1, i_id+50, ALIGN_H_CENTER | ALIGN_V_CENTER, 0));
 
-					text_item->field_28[0] = 2; // значит, что передаем _H3QuestGuard_
+					text_item->field_28 = 2; // значит, что передаем _H3QuestGuard_
 					text_item->field_3C = (int)questGG; // передаем структуру _H3QuestGuard_
 
 					if (i_id >= 16) {

@@ -177,7 +177,7 @@ int __stdcall Y_ReplayBattle(HiHook* hook, _AdvMgr_* advMng, _dword_ MixedPos, _
 					MemCopy(npcA, npcAS, 296);
 				}
 			}
-		} else { 
+		} else {
 			MemCopy(MArrA, armyAS, 56); 
 		}
 
@@ -199,7 +199,7 @@ int __stdcall Y_ReplayBattle(HiHook* hook, _AdvMgr_* advMng, _dword_ MixedPos, _
 			BACall_Turn = -1; 
 
 			o_QuickBattle = 0;						
-			hdv(_bool_, "HD.QuickCombat") = 0;	
+			hdv(_bool_, "HD.QuickCombat") = 0;
 
             // возвращаем деньги атакующему
             o_GameMgr->players[HrA->owner_id].resourses.gold = goldAttacker;

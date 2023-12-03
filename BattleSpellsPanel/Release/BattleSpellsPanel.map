@@ -1,6 +1,6 @@
  BattleSpellsPanel
 
- Timestamp is 5faa47de (Tue Nov 10 10:57:18 2020)
+ Timestamp is 656c4334 (Sun Dec 03 11:58:28 2023)
 
  Preferred load address is 10000000
 
@@ -21,19 +21,19 @@
  0002:0000014c 00000004H .CRT$XTA                DATA
  0002:00000150 00000004H .CRT$XTZ                DATA
  0002:00000160 00001d90H .rdata                  DATA
- 0002:00001ef0 00000051H .rdata$debug            DATA
- 0002:00001f44 00000000H .rdata$r                DATA
- 0002:00001f50 0000000cH .rdata$sxdata           DATA
- 0002:00001f5c 00000004H .rtc$IAA                DATA
- 0002:00001f60 00000004H .rtc$IZZ                DATA
- 0002:00001f64 00000004H .rtc$TAA                DATA
- 0002:00001f68 00000004H .rtc$TZZ                DATA
- 0002:00001f70 000003b4H .xdata$x                DATA
- 0002:00002324 00000028H .idata$2                DATA
- 0002:0000234c 00000014H .idata$3                DATA
- 0002:00002360 0000011cH .idata$4                DATA
- 0002:0000247c 00000500H .idata$6                DATA
- 0002:0000297c 00000000H .edata                  DATA
+ 0002:00001ef0 00000065H .rdata$debug            DATA
+ 0002:00001f58 00000000H .rdata$r                DATA
+ 0002:00001f60 0000000cH .rdata$sxdata           DATA
+ 0002:00001f6c 00000004H .rtc$IAA                DATA
+ 0002:00001f70 00000004H .rtc$IZZ                DATA
+ 0002:00001f74 00000004H .rtc$TAA                DATA
+ 0002:00001f78 00000004H .rtc$TZZ                DATA
+ 0002:00001f80 000003b4H .xdata$x                DATA
+ 0002:00002334 00000028H .idata$2                DATA
+ 0002:0000235c 00000014H .idata$3                DATA
+ 0002:00002370 0000011cH .idata$4                DATA
+ 0002:0000248c 00000500H .idata$6                DATA
+ 0002:0000298c 00000000H .edata                  DATA
  0003:00000000 00000f5cH .data                   DATA
  0003:00000f60 00002238H .bss                    DATA
 
@@ -46,7 +46,7 @@
  0001:00000050       ?b_MsgBox@@YAHPADH@Z       10001050 f i BattleSpellsPanel.obj
  0001:00000090       ?b_MsgBoxD@@YAHPADHHH@Z    10001090 f i BattleSpellsPanel.obj
  0001:000000d0       ?b_YellowFrame_Create@@YAXPAU_Dlg_@@HHHHHHH@Z 100010d0 f i BattleSpellsPanel.obj
- 0001:00000150       ?Set_DlgBackground_RK@@YAHPAV_CustomDlg_@@HH@Z 10001150 f   BattleSpellsPanel.obj
+ 0001:00000150       ?Set_DlgBackground_RK@@YAHPAU_Dlg_@@HH@Z 10001150 f   BattleSpellsPanel.obj
  0001:00000620       ?Dlg_SetBackgroundWithHDFrame@@YAHPAU_Dlg_@@HHHHHPAD@Z 10001620 f   BattleSpellsPanel.obj
  0001:00000770       ?ConnectEra@Era@@YAXXZ     10001770 f   BattleSpellsPanel.obj
  0001:00000aa0       ?Y_MsgBox_ShowSpellDescription@@YIXHHPAU_Hero_@@HH@Z 10001aa0 f   BattleSpellsPanel.obj
@@ -216,8 +216,8 @@
  0001:000088bd       __abnormal_termination     100098bd f   LIBCMT:exsup.obj
  0001:000088e0       __NLG_Notify1              100098e0 f   LIBCMT:exsup.obj
  0001:000088e9       __NLG_Notify               100098e9 f   LIBCMT:exsup.obj
- 0001:00008900       __NLG_Dispatch2            10009900     LIBCMT:exsup.obj
  0001:00008900       __NLG_Dispatch             10009900     LIBCMT:exsup.obj
+ 0001:00008900       __NLG_Dispatch2            10009900     LIBCMT:exsup.obj
  0001:00008908       __NLG_Call                 10009908 f   LIBCMT:exsup.obj
  0001:0000890a       __NLG_Return2              1000990a     LIBCMT:exsup.obj
  0001:0000890b       __free_osfhnd              1000990b f   LIBCMT:osfinfo.obj
@@ -227,8 +227,8 @@
  0001:00008acf       __putwch_nolock            10009acf f   LIBCMT:putwch.obj
  0001:00008b94       __mbtowc_l                 10009b94 f   LIBCMT:mbtowc.obj
  0001:00008cab       _mbtowc                    10009cab f   LIBCMT:mbtowc.obj
- 0001:00008cd0       __alloca_probe             10009cd0     LIBCMT:chkstk.obj
  0001:00008cd0       __chkstk                   10009cd0 f   LIBCMT:chkstk.obj
+ 0001:00008cd0       __alloca_probe             10009cd0     LIBCMT:chkstk.obj
  0001:00008cfb       __fcloseall                10009cfb f   LIBCMT:closeall.obj
  0001:00008d9a       __flush                    10009d9a f   LIBCMT:fflush.obj
  0001:00008e02       __fflush_nolock            10009e02 f   LIBCMT:fflush.obj
@@ -609,14 +609,14 @@
  0002:00001e8c       ??_C@_0M@PFKBMHII@hd_fr_u?4pcx?$AA@ 1000de8c     HoMM3_GUI.obj
  0002:00001e98       ??_C@_0M@DNCLBGLG@hd_fr_d?4pcx?$AA@ 1000de98     HoMM3_GUI.obj
  0002:00001ea8       __load_config_used         1000dea8     LIBCMT:loadcfg.obj
- 0002:00001f50       ___safe_se_handler_table   1000df50     <linker-defined>
- 0002:00001f5c       ___rtc_iaa                 1000df5c     LIBCMT:_initsect_.obj
- 0002:00001f60       ___rtc_izz                 1000df60     LIBCMT:_initsect_.obj
- 0002:00001f64       ___rtc_taa                 1000df64     LIBCMT:_initsect_.obj
- 0002:00001f68       ___rtc_tzz                 1000df68     LIBCMT:_initsect_.obj
- 0002:00002324       __IMPORT_DESCRIPTOR_KERNEL32 1000e324     kernel32:KERNEL32.dll
- 0002:00002338       __IMPORT_DESCRIPTOR_USER32 1000e338     user32:USER32.dll
- 0002:0000234c       __NULL_IMPORT_DESCRIPTOR   1000e34c     kernel32:KERNEL32.dll
+ 0002:00001f60       ___safe_se_handler_table   1000df60     <linker-defined>
+ 0002:00001f6c       ___rtc_iaa                 1000df6c     LIBCMT:_initsect_.obj
+ 0002:00001f70       ___rtc_izz                 1000df70     LIBCMT:_initsect_.obj
+ 0002:00001f74       ___rtc_taa                 1000df74     LIBCMT:_initsect_.obj
+ 0002:00001f78       ___rtc_tzz                 1000df78     LIBCMT:_initsect_.obj
+ 0002:00002334       __IMPORT_DESCRIPTOR_KERNEL32 1000e334     kernel32:KERNEL32.dll
+ 0002:00002348       __IMPORT_DESCRIPTOR_USER32 1000e348     user32:USER32.dll
+ 0002:0000235c       __NULL_IMPORT_DESCRIPTOR   1000e35c     kernel32:KERNEL32.dll
  0003:00000010       ___security_cookie         1000f010     LIBCMT:gs_cookie.obj
  0003:00000014       ___security_cookie_complement 1000f014     LIBCMT:gs_cookie.obj
  0003:00000190       ___nullstring              1000f190     LIBCMT:output.obj
@@ -723,54 +723,55 @@
  0003:00001a1c       ?ShadowWidth_BattleQueue@@3HA 10010a1c     BattleSpellsPanel.obj
  0003:00001a20       ?playerSpellsMenu@@3PAY09HA 10010a20     BattleSpellsPanel.obj
  0003:00001b60       ?ShadowWidth_SpellsPanel@@3HA 10010b60     BattleSpellsPanel.obj
- 0003:00001b64       ?hAngel@Era@@3PAUHINSTANCE__@@A 10010b64     BattleSpellsPanel.obj
- 0003:00001b68       ?hEra@Era@@3PAUHINSTANCE__@@A 10010b68     BattleSpellsPanel.obj
- 0003:00001b70       ?myString@@3PADA           10010b70     BattleSpellsPanel.obj
- 0003:00001f70       ?EventParams@Era@@3PAY0BA@HA 10010f70     BattleSpellsPanel.obj
- 0003:00001f74       ?ApiHook@Era@@3P6GPAXPAXH0@ZA 10010f74     BattleSpellsPanel.obj
- 0003:00001f78       ?ClearAllIniCache@Era@@3P6GXXZA 10010f78     BattleSpellsPanel.obj
- 0003:00001f7c       ?ClearIniCache@Era@@3P6GXPBD@ZA 10010f7c     BattleSpellsPanel.obj
- 0003:00001f80       ?ExecErmCmd@Era@@3P6GXPBD@ZA 10010f80     BattleSpellsPanel.obj
- 0003:00001f84       ?ExtractErm@Era@@3P6GXXZA  10010f84     BattleSpellsPanel.obj
- 0003:00001f88       ?FatalError@Era@@3P6GXPBD@ZA 10010f88     BattleSpellsPanel.obj
- 0003:00001f8c       ?FireErmEvent@Era@@3P6GXH@ZA 10010f8c     BattleSpellsPanel.obj
- 0003:00001f90       ?FireEvent@Era@@3P6GXPBDPAXH@ZA 10010f90     BattleSpellsPanel.obj
- 0003:00001f94       ?GetButtonID@Era@@3P6GHPBD@ZA 10010f94     BattleSpellsPanel.obj
- 0003:00001f98       ?GetEraVersion@Era@@3P6GPBDXZA 10010f98     BattleSpellsPanel.obj
- 0003:00001f9c       ?GetVersionNum@Era@@3P6GHXZA 10010f9c     BattleSpellsPanel.obj
- 0003:00001fa0       ?GetGameState@Era@@3P6GXPAUTGameState@1@@ZA 10010fa0     BattleSpellsPanel.obj
- 0003:00001fa4       ?GetRealAddr@Era@@3P6GPAXPAX@ZA 10010fa4     BattleSpellsPanel.obj
- 0003:00001fa8       ?GlobalRedirectFile@Era@@3P6GXXZA 10010fa8     BattleSpellsPanel.obj
- 0003:00001fac       ?Hook@Era@@3P6GPAXPAXHH0@ZA 10010fac     BattleSpellsPanel.obj
- 0003:00001fb0       ?HookCode@Era@@3P6GPAXPAXP6GHPAUTHookContext@1@@ZPAPAX@ZA 10010fb0     BattleSpellsPanel.obj
- 0003:00001fb4       ?LoadImageAsPcx16@Era@@3P6GPAXPBD0HHHHH@ZA 10010fb4     BattleSpellsPanel.obj
- 0003:00001fb8       ?LoadTxt@Era@@3P6GPAXPBD@ZA 10010fb8     BattleSpellsPanel.obj
- 0003:00001fbc       ?MemFree@Era@@3P6GXPBX@ZA  10010fbc     BattleSpellsPanel.obj
- 0003:00001fc0       ?NameColor@Era@@3P6GXHPBD@ZA 10010fc0     BattleSpellsPanel.obj
- 0003:00001fc4       ?NotifyError@Era@@3P6GXPBD@ZA 10010fc4     BattleSpellsPanel.obj
- 0003:00001fc8       ?PatchExists@Era@@3P6G_NPBD@ZA 10010fc8     BattleSpellsPanel.obj
- 0003:00001fcc       ?PluginExists@Era@@3P6G_NPBD@ZA 10010fcc     BattleSpellsPanel.obj
- 0003:00001fd0       ?ReadSavegameSection@Era@@3P6GHHPAXPBD@ZA 10010fd0     BattleSpellsPanel.obj
- 0003:00001fd4       ?ReadStrFromIni@Era@@3P6G_NPBD00PAD@ZA 10010fd4     BattleSpellsPanel.obj
- 0003:00001fd8       ?RecallAPI@Era@@3P6GHPAUTHookContext@1@H@ZA 10010fd8     BattleSpellsPanel.obj
- 0003:00001fdc       ?RedirectFile@Era@@3P6GXXZA 10010fdc     BattleSpellsPanel.obj
- 0003:00001fe0       ?RedirectMemoryBlock@Era@@3P6GXPAXH0@ZA 10010fe0     BattleSpellsPanel.obj
- 0003:00001fe4       ?RegisterHandler@Era@@3P6GXP6GXPAUTEvent@1@@ZPBD@ZA 10010fe4     BattleSpellsPanel.obj
- 0003:00001fe8       ?ReloadErm@Era@@3P6GXXZA   10010fe8     BattleSpellsPanel.obj
- 0003:00001fec       ?ReportPluginVersion@Era@@3P6GXPBD@ZA 10010fec     BattleSpellsPanel.obj
- 0003:00001ff0       ?RestoreEventParams@Era@@3P6GXXZA 10010ff0     BattleSpellsPanel.obj
- 0003:00001ff4       ?SaveEventParams@Era@@3P6GXXZA 10010ff4     BattleSpellsPanel.obj
- 0003:00001ff8       ?SaveIni@Era@@3P6G_NPBD@ZA 10010ff8     BattleSpellsPanel.obj
- 0003:00001ffc       ?Splice@Era@@3P6GPAXPAX0HHPAHPAPAX@ZA 10010ffc     BattleSpellsPanel.obj
- 0003:00002000       ?_tr@Era@@3P6GPADPBDPAPBDH@ZA 10011000     BattleSpellsPanel.obj
- 0003:00002004       ?WriteAtCode@Era@@3P6GXHPAX0@ZA 10011004     BattleSpellsPanel.obj
- 0003:00002008       ?WriteSavegameSection@Era@@3P6GXHPAXPBD@ZA 10011008     BattleSpellsPanel.obj
- 0003:0000200c       ?WriteStrToIni@Era@@3P6G_NPBD000@ZA 1001100c     BattleSpellsPanel.obj
- 0003:00002010       ?GetDefaultMsgBoxItId@Era@@3P6GHXZA 10011010     BattleSpellsPanel.obj
- 0003:00002014       ?GetMaskMsgBoxItId@Era@@3P6GHXZA 10011014     BattleSpellsPanel.obj
- 0003:00002018       ?spellsStatBar@@3PAU_DlgStaticTextPcx8ed_@@A 10011018     BattleSpellsPanel.obj
- 0003:0000201c       ?calls_count@?1??GetPatcher@@YAPAVPatcher@@XZ@4HA 1001101c     BattleSpellsPanel.obj
- 0003:00002024       ___piob                    10011024     <common>
+ 0003:00001b64       ?saveCursor@@3PAHA         10010b64     BattleSpellsPanel.obj
+ 0003:00001b70       ?hAngel@Era@@3PAUHINSTANCE__@@A 10010b70     BattleSpellsPanel.obj
+ 0003:00001b74       ?hEra@Era@@3PAUHINSTANCE__@@A 10010b74     BattleSpellsPanel.obj
+ 0003:00001b78       ?myString@@3PADA           10010b78     BattleSpellsPanel.obj
+ 0003:00001f78       ?EventParams@Era@@3PAY0BA@HA 10010f78     BattleSpellsPanel.obj
+ 0003:00001f7c       ?ApiHook@Era@@3P6GPAXPAXH0@ZA 10010f7c     BattleSpellsPanel.obj
+ 0003:00001f80       ?ClearAllIniCache@Era@@3P6GXXZA 10010f80     BattleSpellsPanel.obj
+ 0003:00001f84       ?ClearIniCache@Era@@3P6GXPBD@ZA 10010f84     BattleSpellsPanel.obj
+ 0003:00001f88       ?ExecErmCmd@Era@@3P6GXPBD@ZA 10010f88     BattleSpellsPanel.obj
+ 0003:00001f8c       ?ExtractErm@Era@@3P6GXXZA  10010f8c     BattleSpellsPanel.obj
+ 0003:00001f90       ?FatalError@Era@@3P6GXPBD@ZA 10010f90     BattleSpellsPanel.obj
+ 0003:00001f94       ?FireErmEvent@Era@@3P6GXH@ZA 10010f94     BattleSpellsPanel.obj
+ 0003:00001f98       ?FireEvent@Era@@3P6GXPBDPAXH@ZA 10010f98     BattleSpellsPanel.obj
+ 0003:00001f9c       ?GetButtonID@Era@@3P6GHPBD@ZA 10010f9c     BattleSpellsPanel.obj
+ 0003:00001fa0       ?GetEraVersion@Era@@3P6GPBDXZA 10010fa0     BattleSpellsPanel.obj
+ 0003:00001fa4       ?GetVersionNum@Era@@3P6GHXZA 10010fa4     BattleSpellsPanel.obj
+ 0003:00001fa8       ?GetGameState@Era@@3P6GXPAUTGameState@1@@ZA 10010fa8     BattleSpellsPanel.obj
+ 0003:00001fac       ?GetRealAddr@Era@@3P6GPAXPAX@ZA 10010fac     BattleSpellsPanel.obj
+ 0003:00001fb0       ?GlobalRedirectFile@Era@@3P6GXXZA 10010fb0     BattleSpellsPanel.obj
+ 0003:00001fb4       ?Hook@Era@@3P6GPAXPAXHH0@ZA 10010fb4     BattleSpellsPanel.obj
+ 0003:00001fb8       ?HookCode@Era@@3P6GPAXPAXP6GHPAUTHookContext@1@@ZPAPAX@ZA 10010fb8     BattleSpellsPanel.obj
+ 0003:00001fbc       ?LoadImageAsPcx16@Era@@3P6GPAXPBD0HHHHH@ZA 10010fbc     BattleSpellsPanel.obj
+ 0003:00001fc0       ?LoadTxt@Era@@3P6GPAXPBD@ZA 10010fc0     BattleSpellsPanel.obj
+ 0003:00001fc4       ?MemFree@Era@@3P6GXPBX@ZA  10010fc4     BattleSpellsPanel.obj
+ 0003:00001fc8       ?NameColor@Era@@3P6GXHPBD@ZA 10010fc8     BattleSpellsPanel.obj
+ 0003:00001fcc       ?NotifyError@Era@@3P6GXPBD@ZA 10010fcc     BattleSpellsPanel.obj
+ 0003:00001fd0       ?PatchExists@Era@@3P6G_NPBD@ZA 10010fd0     BattleSpellsPanel.obj
+ 0003:00001fd4       ?PluginExists@Era@@3P6G_NPBD@ZA 10010fd4     BattleSpellsPanel.obj
+ 0003:00001fd8       ?ReadSavegameSection@Era@@3P6GHHPAXPBD@ZA 10010fd8     BattleSpellsPanel.obj
+ 0003:00001fdc       ?ReadStrFromIni@Era@@3P6G_NPBD00PAD@ZA 10010fdc     BattleSpellsPanel.obj
+ 0003:00001fe0       ?RecallAPI@Era@@3P6GHPAUTHookContext@1@H@ZA 10010fe0     BattleSpellsPanel.obj
+ 0003:00001fe4       ?RedirectFile@Era@@3P6GXXZA 10010fe4     BattleSpellsPanel.obj
+ 0003:00001fe8       ?RedirectMemoryBlock@Era@@3P6GXPAXH0@ZA 10010fe8     BattleSpellsPanel.obj
+ 0003:00001fec       ?RegisterHandler@Era@@3P6GXP6GXPAUTEvent@1@@ZPBD@ZA 10010fec     BattleSpellsPanel.obj
+ 0003:00001ff0       ?ReloadErm@Era@@3P6GXXZA   10010ff0     BattleSpellsPanel.obj
+ 0003:00001ff4       ?ReportPluginVersion@Era@@3P6GXPBD@ZA 10010ff4     BattleSpellsPanel.obj
+ 0003:00001ff8       ?RestoreEventParams@Era@@3P6GXXZA 10010ff8     BattleSpellsPanel.obj
+ 0003:00001ffc       ?SaveEventParams@Era@@3P6GXXZA 10010ffc     BattleSpellsPanel.obj
+ 0003:00002000       ?SaveIni@Era@@3P6G_NPBD@ZA 10011000     BattleSpellsPanel.obj
+ 0003:00002004       ?Splice@Era@@3P6GPAXPAX0HHPAHPAPAX@ZA 10011004     BattleSpellsPanel.obj
+ 0003:00002008       ?_tr@Era@@3P6GPADPBDPAPBDH@ZA 10011008     BattleSpellsPanel.obj
+ 0003:0000200c       ?WriteAtCode@Era@@3P6GXHPAX0@ZA 1001100c     BattleSpellsPanel.obj
+ 0003:00002010       ?WriteSavegameSection@Era@@3P6GXHPAXPBD@ZA 10011010     BattleSpellsPanel.obj
+ 0003:00002014       ?WriteStrToIni@Era@@3P6G_NPBD000@ZA 10011014     BattleSpellsPanel.obj
+ 0003:00002018       ?GetDefaultMsgBoxItId@Era@@3P6GHXZA 10011018     BattleSpellsPanel.obj
+ 0003:0000201c       ?GetMaskMsgBoxItId@Era@@3P6GHXZA 1001101c     BattleSpellsPanel.obj
+ 0003:00002020       ?spellsStatBar@@3PAU_DlgStaticTextPcx8ed_@@A 10011020     BattleSpellsPanel.obj
+ 0003:00002024       ?calls_count@?1??GetPatcher@@YAPAVPatcher@@XZ@4HA 10011024     BattleSpellsPanel.obj
+ 0003:0000202c       ___piob                    1001102c     <common>
  0003:00002040       __bufin                    10011040     <common>
  0003:00003040       __nstream                  10012040     <common>
  0003:00003044       ___sse2_available          10012044     <common>

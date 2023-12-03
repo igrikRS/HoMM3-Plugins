@@ -65,7 +65,7 @@ _int_ __stdcall Y_BATTLE_Proc(HiHook* hook, _BattleMgr_* bm, _EventMsg_* msg)
 {
     if ( msg->type == MT_KEYDOWN ) {
         if ( msg->subtype == HK_Q ) {
-            if ( (bm->isNotAI[0] && !bm->isNotAI[1]) || (!bm->isNotAI[0] && bm->isNotAI[1]) ) {
+            if ( (bm->isHuman[0] && !bm->isHuman[1]) || (!bm->isHuman[0] && bm->isHuman[1]) ) {
 
                 if ( b_MsgBox( json_Combat[0], MBX_OKCANCEL) ) {                    
 

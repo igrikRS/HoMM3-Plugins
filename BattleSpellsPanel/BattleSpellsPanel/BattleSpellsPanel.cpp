@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "..\..\include\homm3.h"
-#include "..\..\include\HoMM3_Dlg.cpp"
+#include "..\..\..\include\homm3.h"
+#include "..\..\..\include\HoMM3_Dlg.cpp"
 
 #include "era.h"
 using namespace Era;
@@ -71,7 +71,7 @@ int __stdcall Y_Dlg_ShowHeroSpells_Proc(_CustomDlg_* dlg, _EventMsg_* msg)
         
         if (msg->subtype == MST_RBUTTONDOWN) { // ПКМ
             if (msg->item_id >= 10 && msg->item_id < 70) {
-                Y_MsgBox_ShowSpellDescription(msg->item_id, o_BattleMgr->spec_terr_type, o_BattleMgr->hero[SideMenu], -1, -1);
+                Y_MsgBox_ShowSpellDescription(msg->item_id, o_BattleMgr->special_Ground, o_BattleMgr->hero[SideMenu], -1, -1);
             }
         }
 
@@ -107,7 +107,7 @@ int Y_Dlg_ShowHeroSpells(_Hero_* hero, int x, int y)
     int spellsCount = 0;
 
     for(int i = 10; i < 70; i++)
-        if ( hero->spell_level[i] )
+        if ( hero->spells_available[i] )
             spellsCount++;
 
     if (!spellsCount)
@@ -129,7 +129,7 @@ int Y_Dlg_ShowHeroSpells(_Hero_* hero, int x, int y)
 
     int k = 0;
     for(int i = 10; i < 70; i++) {
-        if (hero->spell_level[i]) {
+        if (hero->spells_available[i]) {
             dlg->AddItem(_DlgStaticDef_::Create(pos+dx*(k%8), pos+dy*(k/8), 48, 36, i, SpellInt_DEF, i+1, 0, 18));  
 
             k++;
@@ -173,7 +173,7 @@ int __stdcall Y_Battle_Proc_UserActions(HiHook* h, _BattleMgr_* bm, _EventMsg_* 
                 if (msg->subtype == MST_RBUTTONDOWN)  // ПКМ
                 {
                     if ( playerSpellsMenu[OwnerMenu][bttnID] >= 10 )
-                        Y_MsgBox_ShowSpellDescription(playerSpellsMenu[OwnerMenu][bttnID], bm->spec_terr_type, bm->hero[SideMenu], msg->x_abs, msg->y_abs);
+                        Y_MsgBox_ShowSpellDescription(playerSpellsMenu[OwnerMenu][bttnID], bm->special_Ground, bm->hero[SideMenu], msg->x_abs, msg->y_abs);
 
                 }
                 if (msg->subtype == MST_LBUTTONCLICK)  // ЛКМ
@@ -212,11 +212,11 @@ int __stdcall Y_Battle_Proc_UserActions(HiHook* h, _BattleMgr_* bm, _EventMsg_* 
                 int spellUsed = playerSpellsMenu[OwnerMenu][bttnID];
 
                 if ( !bm->isTactics && spellUsed >= 10) { // если заклинание настроено, и не фаза тактики
-                    if ( !bm->sideIsCasted[SideMenu] || bm->cheat_NoCastLimit ) {
-                        if ( !bm->hero[SideMenu]->spell_level[spellUsed] ) { // у героя нет такого заклинания
+                    if ( !bm->isCasted[SideMenu] || bm->cheatNoSpellLimit ) {
+                        if ( !bm->hero[SideMenu]->spells_available[spellUsed] ) { // у героя нет такого заклинания
                             b_MsgBox(o_GENRLTXT_TXT->GetString(676), 1);
                         } else { // заклинание есть
-                            int manaCost = bm->hero[SideMenu]->GetSpellCost(spellUsed, bm->army[SideMenu], bm->spec_terr_type);
+                            int manaCost = bm->hero[SideMenu]->GetSpellCost(spellUsed, bm->army[SideMenu], bm->special_Ground);
                             int heroMana = bm->hero[SideMenu]->spell_points;
                             if ( heroMana >= manaCost ) {
                                 bm->UserChooseSpellTarget(spellUsed, 0);
@@ -248,17 +248,17 @@ int __stdcall Y_BattleMgr_CreateSpellsMenu(LoHook* h, HookContext* c)
     // поэтому нет смысла проверять на "видимую битву"
 
     // если оба компы: спелл-меню нет
-    if ( !bm->isNotAI[0] && !bm->isNotAI[1] ) 
+    if ( !bm->isHuman[0] && !bm->isHuman[1] ) 
         return EXEC_DEFAULT;    
 
     // если оба люди: спелл-меню нет
-    if ( bm->isHuman[0] && bm->isHuman[1] ) 
+    if ( bm->isLocalHuman[0] && bm->isLocalHuman[1] ) 
         return EXEC_DEFAULT;
 
     int meID = o_GameMgr->GetMeID();
 
     // проверяем левую сторону
-    if ( bm->isHuman[0] && bm->owner_id[0] == meID ) {
+    if ( bm->isLocalHuman[0] && bm->playerID[0] == meID ) {
         if ( bm->hero[0] && bm->CanUseAnySpell(0, 1) ) {
             SpellMenu = true;
             OwnerMenu = meID;
@@ -266,7 +266,7 @@ int __stdcall Y_BattleMgr_CreateSpellsMenu(LoHook* h, HookContext* c)
         }
     }
     // проверяем правую сторону
-    if ( bm->isHuman[1] && bm->owner_id[1] == meID ) {
+    if ( bm->isLocalHuman[1] && bm->playerID[1] == meID ) {
         if ( bm->hero[1] && bm->CanUseAnySpell(1, 1)  ) {
             SpellMenu = true;
             OwnerMenu = meID;

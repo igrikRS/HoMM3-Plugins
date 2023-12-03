@@ -143,8 +143,8 @@ int __stdcall Y_Battle_Hint_SpellDescr_Prepare(LoHook* h, HookContext* c)
 			{
 				int hex_id = DwordAt(c->ebp +12);
 				if ( spell == SPL_RESURRECTION )
-					stack = CALL_4(_BattleStack_*, __thiscall, 0x5A3FD0, bm, bm->current_side, hex_id, 0);
-				else stack = CALL_3(_BattleStack_*, __thiscall, 0x5A4260, bm, bm->current_side, hex_id);
+					stack = CALL_4(_BattleStack_*, __thiscall, 0x5A3FD0, bm, bm->currentActiveSide, hex_id, 0);
+				else stack = CALL_3(_BattleStack_*, __thiscall, 0x5A4260, bm, bm->currentActiveSide, hex_id);
 
 			} else return EXEC_DEFAULT; // если всё же не получилось - выход
 		}
@@ -152,18 +152,18 @@ int __stdcall Y_Battle_Hint_SpellDescr_Prepare(LoHook* h, HookContext* c)
 		// если стек НЕ мертв
 		if ( ! ( stack->creature.flags & BCF_DIE)  )
 		{
-			if ( !(stack->CanUseSpell(spell, bm->current_side, 1, 0) ) ) 
+			if ( !(stack->CanUseSpell(spell, bm->currentActiveSide, 1, 0) ) ) 
 			{
 				return EXEC_DEFAULT;
 			}
 		}
 
-		_Hero_* hero = bm->hero[bm->current_side];
+		_Hero_* hero = bm->hero[bm->currentActiveSide];
 
 		if (hero) 
 		{
-			lvl_spell = hero->Get_School_Level_Of_Spell(spell, bm->spec_terr_type);
-			spell_power = bm->hero_spellPower[bm->current_side];
+			lvl_spell = hero->Get_School_Level_Of_Spell(spell, bm->special_Ground);
+			spell_power = bm->heroSpellPower[bm->currentActiveSide];
 		}
 
 		damage = spell_power * o_Spell[spell].eff_power + o_Spell[spell].effect[lvl_spell];
