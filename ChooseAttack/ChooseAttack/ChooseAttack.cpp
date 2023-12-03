@@ -262,15 +262,30 @@ void initNewStackAttackType(bool redraw = false)
 ///////////////////////////////////////////////////////////////////
 
 // проверка на возможность колдовать монстром
-_bool8_ __stdcall Y_BattleMgr_CanCast(HiHook* hook, _BattleMgr_ *bm, _int_ side, _bool8_ isHeroSpell)
+_bool8_ __stdcall Y_BattleMgr_CanCast(HiHook* hook, _BattleMgr_ * bm, _int_ side, _bool8_ isHeroSpell)
 {
-    if (isHeroSpell != TRUE && ( currentType == MELEE || currentType == SHOOT || currentType == MOOVE) ) {
-        return FALSE;
-    }
+    _bool8_ result = CALL_3(_bool8_, __thiscall, hook->GetDefaultFunc(), bm, side, isHeroSpell);
+    _BattleStack_* stack = bm->GetCurrentStack();
+    if (stack && stack->creature_id == CID_ENCHANTER)
+        return result;
 
-    return CALL_3(_bool8_, __thiscall, hook->GetDefaultFunc(), bm, side, isHeroSpell);
+    if (isHeroSpell != TRUE && ( currentType == MELEE || currentType == SHOOT || currentType == MOOVE) )
+        return FALSE;
+
+    return result;
 }
 
+// проверка на возможность стрельбы уже во время исполнения атаки монстром
+_LHF_(Y_BattleMgr_MakeAttack_isStackCanShoot)
+{
+    _BattleStack_* stack = (_BattleStack_*)c->edi;
+
+    if (!(stack->creature.flags & BCF_CAN_SHOOT) || currentType == MELEE)
+         c->return_address = 0x4458E2; // рукопашная
+    else c->return_address = 0x445835; // стрелять (переход на следующие проверки)
+
+    return NO_EXEC_DEFAULT;
+}
 
 // проверка на возможность стрелять монстром
 _LHF_(Y_BattleMgr_CanStackShoot)
@@ -515,6 +530,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
         _PI->WriteLoHook(0x442635, Y_BattleMgr_CanStackShoot);
         _PI->WriteLoHook(0x75E0E7, Y_BattleMgr_WOG_HarpyReturn);
         _PI->WriteHiHook(0x41FA10, SPLICE_, EXTENDED_, THISCALL_, Y_BattleMgr_CanCast);
+
+        // проверка на возможность стрельбы уже во время исполнения атаки монстром
+        _PI->WriteCodePatch(0x445829, "%n", 12); // 12 nops
+        _PI->WriteLoHook(0x445829, Y_BattleMgr_MakeAttack_isStackCanShoot);
 
         // нажатие на кнопку автоматической битвы
         _PI->WriteLoHook(0x47478A, Y_ClickAutoBattleButton_A_id2004);
