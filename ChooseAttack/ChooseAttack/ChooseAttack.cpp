@@ -8,7 +8,7 @@ Patcher* _P;
 PatcherInstance* _PI;
 
 ///////////////////////////////////////////////////////////////////
-// тут по хорошему стоило бы создать класс, но мне почему-то уже влом
+// С‚СѓС‚ РїРѕ С…РѕСЂРѕС€РµРјСѓ СЃС‚РѕРёР»Рѕ Р±С‹ СЃРѕР·РґР°С‚СЊ РєР»Р°СЃСЃ, РЅРѕ РјРЅРµ РїРѕС‡РµРјСѓ-С‚Рѕ СѓР¶Рµ РІР»РѕРј
 char* ButtonName;
 char* ButtonHints[10];
 char* ButtonRmc[10];
@@ -29,7 +29,7 @@ _int8_ typesIterator;
 
 #define BTTN_ID 2020
 
-// просто объявление функции для удобства
+// РїСЂРѕСЃС‚Рѕ РѕР±СЉСЏРІР»РµРЅРёРµ С„СѓРЅРєС†РёРё РґР»СЏ СѓРґРѕР±СЃС‚РІР°
 void SendNetData_AttackType(int type);
 
 ///////////////////////////////////////////////////////////////////
@@ -70,7 +70,7 @@ int __stdcall ReadJsonConfig()
 
 ///////////////////////////////////////////////////////////////////
 
-// функция очистки массива действий
+// С„СѓРЅРєС†РёСЏ РѕС‡РёСЃС‚РєРё РјР°СЃСЃРёРІР° РґРµР№СЃС‚РІРёР№
 void arrayTypesClear()
 {
     for (int i=0; i<10; i++) {
@@ -80,8 +80,8 @@ void arrayTypesClear()
     currentType = NONE;
 }
 
-// функция вставки действия в массив действий
-// в дополнение проверяет на уникальность, исключая дублирование действия
+// С„СѓРЅРєС†РёСЏ РІСЃС‚Р°РІРєРё РґРµР№СЃС‚РІРёСЏ РІ РјР°СЃСЃРёРІ РґРµР№СЃС‚РІРёР№
+// РІ РґРѕРїРѕР»РЅРµРЅРёРµ РїСЂРѕРІРµСЂСЏРµС‚ РЅР° СѓРЅРёРєР°Р»СЊРЅРѕСЃС‚СЊ, РёСЃРєР»СЋС‡Р°СЏ РґСѓР±Р»РёСЂРѕРІР°РЅРёРµ РґРµР№СЃС‚РІРёСЏ
 int arrayTypesPush(int type)
 {
     typesIterator = 0;
@@ -100,7 +100,7 @@ int arrayTypesPush(int type)
     return -1;
 }
 
-// функция получения следующего действия в массиве
+// С„СѓРЅРєС†РёСЏ РїРѕР»СѓС‡РµРЅРёСЏ СЃР»РµРґСѓСЋС‰РµРіРѕ РґРµР№СЃС‚РІРёСЏ РІ РјР°СЃСЃРёРІРµ
 int arrayTypesGetNextType()
 {
     if (currentType == NONE)
@@ -115,7 +115,7 @@ int arrayTypesGetNextType()
 
 ///////////////////////////////////////////////////////////////////
 
-// обновление кнопки выбора типа действия
+// РѕР±РЅРѕРІР»РµРЅРёРµ РєРЅРѕРїРєРё РІС‹Р±РѕСЂР° С‚РёРїР° РґРµР№СЃС‚РІРёСЏ
 void updateAttackTypeButton(int type, bool redraw = false)
 {
     if (o_BattleMgr->dlg)
@@ -129,8 +129,8 @@ void updateAttackTypeButton(int type, bool redraw = false)
             bttn->short_tip_text = ButtonHints[type];
             bttn->full_tip_text = ButtonRmc[currentType];
 
-            // функция сетевой отсылки текущего действия
-            // сама внутри проверяет сетевая ли игра, и нужно ли отсылать
+            // С„СѓРЅРєС†РёСЏ СЃРµС‚РµРІРѕР№ РѕС‚СЃС‹Р»РєРё С‚РµРєСѓС‰РµРіРѕ РґРµР№СЃС‚РІРёСЏ
+            // СЃР°РјР° РІРЅСѓС‚СЂРё РїСЂРѕРІРµСЂСЏРµС‚ СЃРµС‚РµРІР°СЏ Р»Рё РёРіСЂР°, Рё РЅСѓР¶РЅРѕ Р»Рё РѕС‚СЃС‹Р»Р°С‚СЊ
             SendNetData_AttackType(type);
 
             if (type == NONE) {
@@ -169,7 +169,7 @@ void updateAttackTypeButton(int type, bool redraw = false)
                         y -= 10;
                 }
 
-                // обновить кнопку переключения
+                // РѕР±РЅРѕРІРёС‚СЊ РєРЅРѕРїРєСѓ РїРµСЂРµРєР»СЋС‡РµРЅРёСЏ
                 CALL_4(void, __thiscall, 0x472E30, o_BattleMgr->dlg, 0, -65535, 0xFFFF); 
                 o_WndMgr->RedrawScreenRect(x, y, 44, 36);
                 o_BattleMgr->lastMoveToIndex = -1;
@@ -182,8 +182,8 @@ void updateAttackTypeButton(int type, bool redraw = false)
     }
 }
 
-// при получении стеком хода: 
-// настраиваем кнопку выбора действия в соответствии с параметрами стека
+// РїСЂРё РїРѕР»СѓС‡РµРЅРёРё СЃС‚РµРєРѕРј С…РѕРґР°: 
+// РЅР°СЃС‚СЂР°РёРІР°РµРј РєРЅРѕРїРєСѓ РІС‹Р±РѕСЂР° РґРµР№СЃС‚РІРёСЏ РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ РїР°СЂР°РјРµС‚СЂР°РјРё СЃС‚РµРєР°
 void initNewStackAttackType(bool redraw = false)
 {
      arrayTypesClear();
@@ -232,8 +232,8 @@ void initNewStackAttackType(bool redraw = false)
             }
             arrayTypesPush(CAST);
 
-            // если монстр НЕ может стрелять - запишем рукопашку
-            // чтобы стрельба шла всегда раньше рукопашки (смотреть блок ниже)
+            // РµСЃР»Рё РјРѕРЅСЃС‚СЂ РќР• РјРѕР¶РµС‚ СЃС‚СЂРµР»СЏС‚СЊ - Р·Р°РїРёС€РµРј СЂСѓРєРѕРїР°С€РєСѓ
+            // С‡С‚РѕР±С‹ СЃС‚СЂРµР»СЊР±Р° С€Р»Р° РІСЃРµРіРґР° СЂР°РЅСЊС€Рµ СЂСѓРєРѕРїР°С€РєРё (СЃРјРѕС‚СЂРµС‚СЊ Р±Р»РѕРє РЅРёР¶Рµ)
             if( !stack->CanShoot(0) ) {
                 arrayTypesPush(MELEE);
             }
@@ -261,7 +261,7 @@ void initNewStackAttackType(bool redraw = false)
 
 ///////////////////////////////////////////////////////////////////
 
-// проверка на возможность колдовать монстром
+// РїСЂРѕРІРµСЂРєР° РЅР° РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ РєРѕР»РґРѕРІР°С‚СЊ РјРѕРЅСЃС‚СЂРѕРј
 _bool8_ __stdcall Y_BattleMgr_CanCast(HiHook* hook, _BattleMgr_ *bm, _int_ side, _bool8_ isHeroSpell)
 {
     if (isHeroSpell != TRUE && ( currentType == MELEE || currentType == SHOOT || currentType == MOOVE) ) {
@@ -272,7 +272,7 @@ _bool8_ __stdcall Y_BattleMgr_CanCast(HiHook* hook, _BattleMgr_ *bm, _int_ side,
 }
 
 
-// проверка на возможность стрелять монстром
+// РїСЂРѕРІРµСЂРєР° РЅР° РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ СЃС‚СЂРµР»СЏС‚СЊ РјРѕРЅСЃС‚СЂРѕРј
 _LHF_(Y_BattleMgr_CanStackShoot)
 {
     if (currentType == MELEE) {
@@ -282,7 +282,7 @@ _LHF_(Y_BattleMgr_CanStackShoot)
     return EXEC_DEFAULT;
 }
 
-// проверка на возврат гарпии
+// РїСЂРѕРІРµСЂРєР° РЅР° РІРѕР·РІСЂР°С‚ РіР°СЂРїРёРё
 _LHF_(Y_BattleMgr_WOG_HarpyReturn)
 {   
     if (currentType == NO_RETURN) {
@@ -294,7 +294,7 @@ _LHF_(Y_BattleMgr_WOG_HarpyReturn)
     return EXEC_DEFAULT;
 }
 
-// нажатие правой кнопкой мыши на кнопку переключения атаки (окно с описанием)
+// РЅР°Р¶Р°С‚РёРµ РїСЂР°РІРѕР№ РєРЅРѕРїРєРѕР№ РјС‹С€Рё РЅР° РєРЅРѕРїРєСѓ РїРµСЂРµРєР»СЋС‡РµРЅРёСЏ Р°С‚Р°РєРё (РѕРєРЅРѕ СЃ РѕРїРёСЃР°РЅРёРµРј)
 _byte_ __stdcall Y_BattleMgr_MouseClickRMC_OnButton(HiHook* hook, _Dlg_* dlg, _EventMsg_* msg)
 {
     if (msg && msg->item_id == BTTN_ID) {
@@ -304,8 +304,8 @@ _byte_ __stdcall Y_BattleMgr_MouseClickRMC_OnButton(HiHook* hook, _Dlg_* dlg, _E
     return CALL_2(_byte_, __thiscall, hook->GetDefaultFunc(), dlg, msg);
 }
 
-// нажатие левой кнопкой мыши на кнопку переключения атаки (ПЕРЕКЛЮЧЕНИЕ)
-// горячая клавиша S
+// РЅР°Р¶Р°С‚РёРµ Р»РµРІРѕР№ РєРЅРѕРїРєРѕР№ РјС‹С€Рё РЅР° РєРЅРѕРїРєСѓ РїРµСЂРµРєР»СЋС‡РµРЅРёСЏ Р°С‚Р°РєРё (РџР•Р Р•РљР›Р®Р§Р•РќРР•)
+// РіРѕСЂСЏС‡Р°СЏ РєР»Р°РІРёС€Р° S
 _LHF_(Y_BattleMgr_ProcessAction_LMC)
 {
     int item_id = c->eax;
@@ -319,14 +319,14 @@ _LHF_(Y_BattleMgr_ProcessAction_LMC)
     return EXEC_DEFAULT;
 }
 
-// при установке активного стека
+// РїСЂРё СѓСЃС‚Р°РЅРѕРІРєРµ Р°РєС‚РёРІРЅРѕРіРѕ СЃС‚РµРєР°
 _LHF_(Y_BattleMgr_SetActiveStack)
 {
     initNewStackAttackType(FALSE);
     return EXEC_DEFAULT;
 }
 
-// после колдовства заклинания героем
+// РїРѕСЃР»Рµ РєРѕР»РґРѕРІСЃС‚РІР° Р·Р°РєР»РёРЅР°РЅРёСЏ РіРµСЂРѕРµРј
 _LHF_(Y_LoHook_BM_AfterHeroSpellCast)
 {
     if (!o_BattleMgr->IsHiddenBattle()) {
@@ -335,19 +335,19 @@ _LHF_(Y_LoHook_BM_AfterHeroSpellCast)
     return EXEC_DEFAULT;
 }
 
-// добавление кнопки на экран битвы
+// РґРѕР±Р°РІР»РµРЅРёРµ РєРЅРѕРїРєРё РЅР° СЌРєСЂР°РЅ Р±РёС‚РІС‹
 _LHF_(Y_AddChooseAttackButton)
 {
     arrayTypesClear();
 
-    // создаём кнопку переключения типа атаки
+    // СЃРѕР·РґР°С‘Рј РєРЅРѕРїРєСѓ РїРµСЂРµРєР»СЋС‡РµРЅРёСЏ С‚РёРїР° Р°С‚Р°РєРё
     _DlgButton_* bttn = _DlgButton_::Create(658, 4, 44, 36, BTTN_ID, ButtonName, 0, 1, 0, HK_ALT, 0 );
 
-    // устанавливаем описания
+    // СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј РѕРїРёСЃР°РЅРёСЏ
     bttn->short_tip_text = ButtonHints[currentType];
     bttn->full_tip_text = ButtonRmc[currentType];
 
-    // добавляем кнопку в лист боевых кнопок
+    // РґРѕР±Р°РІР»СЏРµРј РєРЅРѕРїРєСѓ РІ Р»РёСЃС‚ Р±РѕРµРІС‹С… РєРЅРѕРїРѕРє
     CALL_4(void, __thiscall, 0x5FE2D0, c->esi, *(int*)(c->esi+8), 1, &bttn);
 
     return EXEC_DEFAULT;
@@ -355,7 +355,7 @@ _LHF_(Y_AddChooseAttackButton)
 
 _LHF_(Y_ClickAutoBattleButton_A_id2004) {
 
-    // сообщение: вы точно хотите включить автоматическую видимую битву?
+    // СЃРѕРѕР±С‰РµРЅРёРµ: РІС‹ С‚РѕС‡РЅРѕ С…РѕС‚РёС‚Рµ РІРєР»СЋС‡РёС‚СЊ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєСѓСЋ РІРёРґРёРјСѓСЋ Р±РёС‚РІСѓ?
     if (!b_MsgBox(AutoBattleQuestion, MBX_OKCANCEL)) {
         c->return_address = 0x47480F;
         return NO_EXEC_DEFAULT;
@@ -372,61 +372,61 @@ _LHF_(LoHook_InitTxtFiles)
 {    
     ReadJsonConfig();
 
-    // id = 2003 (настройки)
+    // id = 2003 (РЅР°СЃС‚СЂРѕР№РєРё)
     _PI->WriteByte(0x46B3D9 +1, 4); 
     _PI->WriteByte(0x46B3D3 +1, 44);
     _PI->WriteDword(0x46B3C9 +1, (int)"icm003q.def");
 
-    // id = 2001 (сдаться)
+    // id = 2001 (СЃРґР°С‚СЊСЃСЏ)
     _PI->WriteByte(0x46B2CF +1, 51); 
     _PI->WriteByte(0x46B2CB +1, 44);
     _PI->WriteDword(0x46B2BF +1, (int)"icm001q.def");
 
-     // id = 2002 (убежать)
+     // id = 2002 (СѓР±РµР¶Р°С‚СЊ)
     _PI->WriteByte(0x46B354 +1, 98); 
     _PI->WriteByte(0x46B34E +1, 44);
     _PI->WriteDword(0x46B344 +1, (int)"icm002q.def");
 
-    // id = 2004 (автобитва)
+    // id = 2004 (Р°РІС‚РѕР±РёС‚РІР°)
     _PI->WriteByte(0x46B45E +1, 145); 
     _PI->WriteByte(0x46B458 +1, 44);
     _PI->WriteDword(0x46B44E +1, (int)"icm004q.def");
     
-    // id = 2300 (тактика - следующее существо)
+    // id = 2300 (С‚Р°РєС‚РёРєР° - СЃР»РµРґСѓСЋС‰РµРµ СЃСѓС‰РµСЃС‚РІРѕ)
     _PI->WriteDword(0x46BC1F +1, 192);
     _PI->WriteDword(0x46B800 +1, 188);
 
-    // id = 30722 (тактика - начать битву)
+    // id = 30722 (С‚Р°РєС‚РёРєР° - РЅР°С‡Р°С‚СЊ Р±РёС‚РІСѓ)
     _PI->WriteDword(0x46BC8F +1, 398);
     _PI->WriteDword(0x46BC88 +1, 188);
     _PI->WriteDword(0x46BC7C +1, (int)"icm012q.def");
 
-    // id = 2005 (окно лога)
+    // id = 2005 (РѕРєРЅРѕ Р»РѕРіР°)
     _PI->WriteDword(0x46B807 +1, 194);
     _PI->WriteDword(0x46B800 +1, 390);
 
-    // id = 2006 (стрелка лога вверх)
+    // id = 2006 (СЃС‚СЂРµР»РєР° Р»РѕРіР° РІРІРµСЂС…)
     _PI->WriteDword(0x46B87E +1, 590); 
 
-    // id = 2007 (стрелка лога вниз)
+    // id = 2007 (СЃС‚СЂРµР»РєР° Р»РѕРіР° РІРЅРёР·)
     _PI->WriteDword(0x46B917 +1, 590); 
 
-    // id = 2008 (колдовство)
+    // id = 2008 (РєРѕР»РґРѕРІСЃС‚РІРѕ)
     _PI->WriteDword(0x46B4E6 +1, 611); 
     _PI->WriteByte(0x46B4E0 +1, 44);
     _PI->WriteDword(0x46B4D6 +1, (int)"icm005q.def");
 
-    // id = 2009 (ждать)
+    // id = 2009 (Р¶РґР°С‚СЊ)
     _PI->WriteDword(0x46B56E +1, 705); 
     _PI->WriteByte(0x46B568 +1, 44);
     _PI->WriteDword(0x46B55E +1, (int)"icm006q.def");
 
-     // id = 2010 (в защите)
+     // id = 2010 (РІ Р·Р°С‰РёС‚Рµ)
     _PI->WriteDword(0x46B5F6 +1, 752); 
     _PI->WriteByte(0x46B5F0 +1, 44);
     _PI->WriteDword(0x46B5E6 +1, (int)"icm007q.def");
 
-    // id = 2 (чат)
+    // id = 2 (С‡Р°С‚)
     _PI->WriteDword(0x471ED9 +1, 195);
     _PI->WriteDword(0x471ECF +1, 390);
 
@@ -435,7 +435,7 @@ _LHF_(LoHook_InitTxtFiles)
 
 ///////////////////////////////////////////////////////////////////
 
-// отсылка данных по сети
+// РѕС‚СЃС‹Р»РєР° РґР°РЅРЅС‹С… РїРѕ СЃРµС‚Рё
 #define NETMSG_ID 1989
 
 void SendNetData_AttackType(int type) 
@@ -469,7 +469,7 @@ void SendNetData_AttackType(int type)
     }
 }
 
-// получение и обработка данных по сети
+// РїРѕР»СѓС‡РµРЅРёРµ Рё РѕР±СЂР°Р±РѕС‚РєР° РґР°РЅРЅС‹С… РїРѕ СЃРµС‚Рё
 _dword_ __stdcall Y_HiHook_BM_GetNetData(HiHook* hook, _dword_ a1)
 {
     _dword_ netData = CALL_1(_dword_, __fastcall, hook->GetDefaultFunc(), a1);
@@ -501,35 +501,35 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
         _PI = _P->CreateInstance("igrik.choose_attack_button");
         ConnectEra();
 
-        // инициализация параметров (при старте карты)
+        // РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РїР°СЂР°РјРµС‚СЂРѕРІ (РїСЂРё СЃС‚Р°СЂС‚Рµ РєР°СЂС‚С‹)
         _PI->WriteLoHook(0x4EEAC0, LoHook_InitTxtFiles); 
 
-        // добавление кнопки на экран битвы
+        // РґРѕР±Р°РІР»РµРЅРёРµ РєРЅРѕРїРєРё РЅР° СЌРєСЂР°РЅ Р±РёС‚РІС‹
         _PI->WriteLoHook(0x46B664, Y_AddChooseAttackButton);
 
-        // взаимодействия с кнопокой по ЛКМ и ПКМ
+        // РІР·Р°РёРјРѕРґРµР№СЃС‚РІРёСЏ СЃ РєРЅРѕРїРѕРєРѕР№ РїРѕ Р›РљРњ Рё РџРљРњ
         _PI->WriteHiHook(0x474714, CALL_, EXTENDED_, THISCALL_, Y_BattleMgr_MouseClickRMC_OnButton);
         _PI->WriteLoHook(0x474764, Y_BattleMgr_ProcessAction_LMC); 
 
-        // установка событий обработки типа действия
+        // СѓСЃС‚Р°РЅРѕРІРєР° СЃРѕР±С‹С‚РёР№ РѕР±СЂР°Р±РѕС‚РєРё С‚РёРїР° РґРµР№СЃС‚РІРёСЏ
         _PI->WriteLoHook(0x442635, Y_BattleMgr_CanStackShoot);
         _PI->WriteLoHook(0x75E0E7, Y_BattleMgr_WOG_HarpyReturn);
         _PI->WriteHiHook(0x41FA10, SPLICE_, EXTENDED_, THISCALL_, Y_BattleMgr_CanCast);
 
-        // нажатие на кнопку автоматической битвы
+        // РЅР°Р¶Р°С‚РёРµ РЅР° РєРЅРѕРїРєСѓ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРѕР№ Р±РёС‚РІС‹
         _PI->WriteLoHook(0x47478A, Y_ClickAutoBattleButton_A_id2004);
 
-        // при установке активного стека (обновить кнопку)
+        // РїСЂРё СѓСЃС‚Р°РЅРѕРІРєРµ Р°РєС‚РёРІРЅРѕРіРѕ СЃС‚РµРєР° (РѕР±РЅРѕРІРёС‚СЊ РєРЅРѕРїРєСѓ)
         _PI->WriteLoHook(0x477D98, Y_BattleMgr_SetActiveStack); 
 
-        // после каста героем (обновить кнопку)
+        // РїРѕСЃР»Рµ РєР°СЃС‚Р° РіРµСЂРѕРµРј (РѕР±РЅРѕРІРёС‚СЊ РєРЅРѕРїРєСѓ)
         _PI->WriteLoHook(0x478997, Y_LoHook_BM_AfterHeroSpellCast);
 
-        // восстанавливаем оригинальное действие кнопки "В защите"
-        // на которое ставит свой хук WOG
+        // РІРѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµРј РѕСЂРёРіРёРЅР°Р»СЊРЅРѕРµ РґРµР№СЃС‚РІРёРµ РєРЅРѕРїРєРё "Р’ Р·Р°С‰РёС‚Рµ"
+        // РЅР° РєРѕС‚РѕСЂРѕРµ СЃС‚Р°РІРёС‚ СЃРІРѕР№ С…СѓРє WOG
         _PI->WriteHexPatch(0x47265C, "B8 08000000 E9 64FFFFFF");
 
-        // получение данных по сети
+        // РїРѕР»СѓС‡РµРЅРёРµ РґР°РЅРЅС‹С… РїРѕ СЃРµС‚Рё
         // send 0x4787BC
         // get 0x473D27
         _PI->WriteHiHook(0x473D27, CALL_, EXTENDED_, FASTCALL_, Y_HiHook_BM_GetNetData);
