@@ -144,18 +144,18 @@ void Spells(PatcherInstance* _PI)
     // патчи без Tiphon.dll
     if (!TIPHON)
     {
+        // отключено, потому что ломает авторские карты! (03.12.2023)
         // запрет выдачи заклинаний у артефактов
-        _PI->WriteHiHook(0x4D9763, CALL_, EXTENDED_, THISCALL_, Y_ArtGive_Spell);
-        _PI->WriteHiHook(0x4D9786, CALL_, EXTENDED_, THISCALL_, Y_ArtGive_Spell);
-        _PI->WriteHiHook(0x4D9798, CALL_, EXTENDED_, THISCALL_, Y_ArtGive_Spell);
+        //_PI->WriteHiHook(0x4D9763, CALL_, EXTENDED_, THISCALL_, Y_ArtGive_Spell);
+        //_PI->WriteHiHook(0x4D9786, CALL_, EXTENDED_, THISCALL_, Y_ArtGive_Spell);
+        //_PI->WriteHiHook(0x4D9798, CALL_, EXTENDED_, THISCALL_, Y_ArtGive_Spell);
         // заполняем таблицу при загрузке карты
         _PI->WriteHiHook(0x4C2445, CALL_, EXTENDED_, THISCALL_, Y_ArtGive_LoadSpells);
-        // запрет выдачи заклинаний у томов магии и шляпы школяра
-        _PI->WriteHiHook(0x4D961F, CALL_, EXTENDED_, THISCALL_, Y_ArtGive_AllSpells);
-        _PI->WriteHiHook(0x4D9673, CALL_, EXTENDED_, THISCALL_, Y_ArtGive_AllSpells);
-        _PI->WriteHiHook(0x4D9673, CALL_, EXTENDED_, THISCALL_, Y_ArtGive_AllSpells);
-        _PI->WriteHiHook(0x4D9720, CALL_, EXTENDED_, THISCALL_, Y_ArtGive_AllSpells);
-        //_PI->WriteHiHook(0x4D9673, CALL_, EXTENDED_, THISCALL_, Y_ArtGive_AllSpells);
+        // запрет выдачи заклинаний у томов магии
+        //_PI->WriteHiHook(0x4D961F, CALL_, EXTENDED_, THISCALL_, Y_ArtGive_AllSpells); // том воздуха
+        //_PI->WriteHiHook(0x4D9673, CALL_, EXTENDED_, THISCALL_, Y_ArtGive_AllSpells); // том огня
+        //_PI->WriteHiHook(0x4D9720, CALL_, EXTENDED_, THISCALL_, Y_ArtGive_AllSpells); // том земли
+        //_PI->WriteHiHook(0x4D96C8, CALL_, EXTENDED_, THISCALL_, Y_ArtGive_AllSpells); // том воды
     }
 
     // заклинание забывчивось на Продвинутом уровне действует на один целевой отряд (баг СОДа)
