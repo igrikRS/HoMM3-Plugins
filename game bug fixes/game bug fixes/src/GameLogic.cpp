@@ -265,4 +265,11 @@ void GameLogic(PatcherInstance* _PI)
     // (привет WoG и его стена огня у Огненных Лошадей)
     _PI->WriteLoHook(0x46681B, Y_FixCrash_RemoveObstacle);
 
+    //// ЧИТ-Меню ////
+    // Увеличиваем кол-во заклинаний 999 -> 9999
+    _PI->WriteWord(0x4F508F +4, 9999);
+    _PI->WriteWord(0x4F50DE +4, 9999);
+    _PI->WriteWord(0x4F511A +4, 9999);
+    // Увеличиваем кол-во существ 5 -> 100
+    _PI->WriteByte(0x4F4ED2 +1, 100);
 }
