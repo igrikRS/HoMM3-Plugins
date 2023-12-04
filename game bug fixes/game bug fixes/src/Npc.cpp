@@ -1,24 +1,23 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////// добавление расчета силы командиров для AI (Fight_Value и AI_Value) /////////////////////////
 
-_int64_ getAIValue_NPC(int heroID){
+_int64_ getAIValue_NPC(int heroID) {
+    _int64_ value = 50;
 
     if ( heroID < 0 && heroID >= o_HeroesCount )
-        return 0; // выход, если номер героя неправильный
+        return value; // выход, если номер героя неправильный
 
-    _Npc_* npc = GetNpc(heroID);	// структура командира
-    if ( npc->on < 1 || npc->alive ) 
-        return 0;	// выход, если командиров нет (-1), уволен или мертв
+    _Npc_* npc = GetNpc(heroID);    // структура командира
+    if ( !npc || npc->on < 1 || npc->alive )
+        return value;   // выход, если командиров нет (-1), уволен или мертв
 
     _Hero_* hero = o_GameMgr->GetHero(heroID);
 
-    _int64_ value = 0;
-
-    int attNPC = Get_NpcSkillPower(npc, 0);		attNPC += hero->primary_skill[0];	
-    int defNPC = Get_NpcSkillPower(npc, 1);		defNPC += hero->primary_skill[1];
-    int hpNPC = Get_NpcSkillPower(npc, 2);	
-    int damageNPC = Get_NpcSkillPower(npc, 3);	
-    int speedNPC = Get_NpcSkillPower(npc, 5);								
+    int attNPC = Get_NpcSkillPower(npc, 0);     attNPC += hero->primary_skill[0];
+    int defNPC = Get_NpcSkillPower(npc, 1);     defNPC += hero->primary_skill[1];
+    int hpNPC = Get_NpcSkillPower(npc, 2);
+    int damageNPC = Get_NpcSkillPower(npc, 3);
+    int speedNPC = Get_NpcSkillPower(npc, 5);
     int isShoot = npc->specBon[0] & 0x10 ? 2 : 1;
 
     value = (_int64_)((attNPC * damageNPC * speedNPC * isShoot + defNPC * hpNPC) >> 2); 
@@ -51,7 +50,7 @@ _int_ __stdcall get_AIValue_Hook(HiHook* hook, int army)
         value = INT_MAX - random;
     }
 
-    return value; 
+    return value;
 }
 
 
@@ -117,7 +116,7 @@ void Npc(PatcherInstance* _PI)
     _PI->WriteLoHook(0x5C1867, get_AIValue_And_NPC_Error);
     _PI->WriteLoHook(0x42758F, get_AIValue_And_NPC_Error);
     _PI->WriteLoHook(0x42CA6B, get_AIValue_And_NPC_Error);
-    _PI->WriteLoHook(0x52846A, get_AIValue_And_NPC_Error);	
+    _PI->WriteLoHook(0x52846A, get_AIValue_And_NPC_Error);
 
     // фикс переполнения AI_Value, когда армия у ИИ слишком большая
     _PI->WriteHiHook(0x42C830, SPLICE_, EXTENDED_, THISCALL_, AI_ArmyExchanging_GetAddStack_Value_And_Place);
@@ -125,7 +124,7 @@ void Npc(PatcherInstance* _PI)
     // исправление бага блока командира, когда защита падала из-за флага "в защите"
     _PI->WriteCodePatch(0x76E7D7, "%n", 24); // 15 nop 
     _PI->WriteCodePatch(0x76E80B, "%n", 13); // 13 nop
-    _PI->WriteHexPatch(0x76E7D7, "8B4D 08 C601 01 C641 02 04");	
+    _PI->WriteHexPatch(0x76E7D7, "8B4D 08 C601 01 C641 02 04");
 
     // исправление одного из багов Астрального духа
     // убираем WoG сообщение, которое вызывает непонятную ошибку
