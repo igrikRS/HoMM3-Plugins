@@ -27,6 +27,8 @@ static int currentType = NONE;
 _byte_ typesArray[10];
 _int8_ typesIterator;
 
+_byte_ saveNpcTypesAction[156];
+
 #define BTTN_ID 2020
 
 // просто объявление функции для удобства
@@ -113,25 +115,35 @@ int arrayTypesGetNextType()
     return typesArray[typesIterator];
 }
 
+_bool8_ isTypeExist(int type)
+{
+    if (type == NONE) 
+        return false;
+
+    for (int i=0; i<10; i++) {
+        if(typesArray[i] == type) {
+            typesIterator = i;
+            return true;
+        }
+    }
+    return false;
+}
+
 ///////////////////////////////////////////////////////////////////
 
 // обновление кнопки выбора типа действия
 void updateAttackTypeButton(int type, bool redraw = false)
-{
+{    
     if (o_BattleMgr->dlg)
     {
         _DlgButton_* bttn = (_DlgButton_*)o_BattleMgr->dlg->GetItem(BTTN_ID);
         if (bttn)
-        {
+        {      
             currentType = type;
             bttn->def_frame_index = type*3;
             bttn->press_def_frame_index = type*3 +1;
             bttn->short_tip_text = ButtonHints[type];
             bttn->full_tip_text = ButtonRmc[currentType];
-
-            // функция сетевой отсылки текущего действия
-            // сама внутри проверяет сетевая ли игра, и нужно ли отсылать
-            SendNetData_AttackType(type);
 
             if (type == NONE) {
                 // DlgItem_Send6Cmd2Item
@@ -189,12 +201,16 @@ void initNewStackAttackType(bool redraw = false)
      arrayTypesClear();
      updateAttackTypeButton(NONE, redraw);
 
+    // функция сетевой отсылки текущего действия
+    SendNetData_AttackType(NONE);
+
     _BattleMgr_* bm = o_BattleMgr;
 
     if(bm->isTactics) { return; }
 
-    int activeStackID = 21*bm->currentStackSide + bm->currentStackIndex;    
-    _BattleStack_* stack = &bm->stack[bm->currentStackSide][bm->currentStackIndex];
+    //int activeStackID = 21*bm->currentStackSide + bm->currentStackIndex;    
+    //_BattleStack_* stack = &bm->stack[bm->currentStackSide][bm->currentStackIndex];
+    _BattleStack_* stack = bm->GetCurrentStack();
 
     if(!stack) { return; }
 
@@ -204,12 +220,12 @@ void initNewStackAttackType(bool redraw = false)
     }    
 
     if (bm->autoCombatOn || o_AutoSolo || bm->IsStackAutoControlledByAI(stack) ) {
-        updateAttackTypeButton(NONE, redraw);  
+        // updateAttackTypeButton(NONE, redraw);  
         return;
     }
 
     if (stack->creature_id >= CID_CATAPULT && stack->creature_id <= CID_ARROW_TOWER ) {
-        updateAttackTypeButton(NONE, redraw);
+        // updateAttackTypeButton(NONE, redraw);
         return;
     }
 
@@ -219,7 +235,8 @@ void initNewStackAttackType(bool redraw = false)
             stack->creature_id == CID_ARCHANGEL ||
             stack->creature_id == CID_SUPREME_ARCHANGEL) {
             if (currentType == NONE) {
-                updateAttackTypeButton(CAST, redraw);
+                // updateAttackTypeButton(CAST, redraw);
+                currentType = CAST;
             }
             arrayTypesPush(CAST);
             arrayTypesPush(MOOVE);
@@ -228,7 +245,8 @@ void initNewStackAttackType(bool redraw = false)
 
         if ( stack->CanCastSpellAkaFaerieDragon() ) {
             if (currentType == NONE) {
-                updateAttackTypeButton(CAST, redraw);
+               // updateAttackTypeButton(CAST, redraw);
+               currentType = CAST;
             }
             arrayTypesPush(CAST);
 
@@ -243,7 +261,8 @@ void initNewStackAttackType(bool redraw = false)
 
     if( stack->CanShoot(0) ) {
         if (currentType == NONE) {
-            updateAttackTypeButton(SHOOT, redraw);
+            // updateAttackTypeButton(SHOOT, redraw);
+            currentType = SHOOT;
         }
         arrayTypesPush(SHOOT);
         arrayTypesPush(MELEE);
@@ -252,11 +271,29 @@ void initNewStackAttackType(bool redraw = false)
 
     if ( stack->WOG_isHarpy() ) {
         if (currentType == NONE) {
-            updateAttackTypeButton(RETURN, redraw);
+            // updateAttackTypeButton(RETURN, redraw);
+            currentType = RETURN;
         }
         arrayTypesPush(RETURN);
         arrayTypesPush(NO_RETURN);
     }
+
+
+
+    if (stack && stack->creature_id >= CID_COMMANDER_FIRST_A && stack->creature_id <= CID_COMMANDER_LAST_D )
+    {
+        _Hero_* hero = bm->hero[bm->currentStackSide];
+        if (hero && hero->id)
+        {
+            _byte_ saveType = saveNpcTypesAction[HID_MALCOM];
+
+            if (isTypeExist(saveType))
+                currentType = saveType;
+        }
+    }
+
+    updateAttackTypeButton(currentType, redraw);
+    SendNetData_AttackType(currentType);
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -328,6 +365,7 @@ _LHF_(Y_BattleMgr_ProcessAction_LMC)
         if (currentType != NONE) {            
             int type = arrayTypesGetNextType();
             updateAttackTypeButton(type, TRUE);
+            saveNpcTypesAction[HID_MALCOM] = type;
         }
     }
 
