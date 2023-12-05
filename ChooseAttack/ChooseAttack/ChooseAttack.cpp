@@ -9,9 +9,11 @@ PatcherInstance* _PI;
 
 ///////////////////////////////////////////////////////////////////
 // тут по хорошему стоило бы создать класс, но мне почему-то уже влом
+#define COUNT_TYPES 10
+
 char* ButtonName;
-char* ButtonHints[10];
-char* ButtonRmc[10];
+char* ButtonHints[COUNT_TYPES];
+char* ButtonRmc[COUNT_TYPES];
 char* AutoBattleQuestion;
 
 #define NONE 0
@@ -24,7 +26,7 @@ char* AutoBattleQuestion;
 
 static int currentType = NONE;
 
-_byte_ typesArray[10];
+_byte_ typesArray[COUNT_TYPES];
 _int8_ typesIterator;
 
 _byte_ saveNpcTypesAction[156];
@@ -75,7 +77,7 @@ int __stdcall ReadJsonConfig()
 // функция очистки массива действий
 void arrayTypesClear()
 {
-    for (int i=0; i<10; i++) {
+    for (int i=0; i<COUNT_TYPES; i++) {
         typesArray[i] = NONE;
     }
     typesIterator = -1;
@@ -88,7 +90,7 @@ int arrayTypesPush(int type)
 {
     typesIterator = 0;
 
-    for (int i=0; i<10; i++) {
+    for (int i=0; i<COUNT_TYPES; i++) {
         if(typesArray[i] == type) {
             return i;
         }
@@ -98,7 +100,7 @@ int arrayTypesPush(int type)
            return i;
         }
     }
-    b_MsgBox("typesArray is Full!", 5);
+    b_MsgBox("DEBUG!!!\n\ntypesArray is Full!", 5);
     return -1;
 }
 
@@ -109,7 +111,7 @@ int arrayTypesGetNextType()
         return NONE;
 
     typesIterator++;
-    if (typesIterator >= 10 || typesArray[typesIterator] == NONE) 
+    if (typesIterator >= COUNT_TYPES || typesArray[typesIterator] == NONE) 
         typesIterator = 0;
 
     return typesArray[typesIterator];
@@ -120,7 +122,7 @@ _bool8_ isTypeExist(int type)
     if (type == NONE) 
         return false;
 
-    for (int i=0; i<10; i++) {
+    for (int i=0; i<COUNT_TYPES; i++) {
         if(typesArray[i] == type) {
             typesIterator = i;
             return true;
@@ -208,8 +210,6 @@ void initNewStackAttackType(bool redraw = false)
 
     if(bm->isTactics) { return; }
 
-    //int activeStackID = 21*bm->currentStackSide + bm->currentStackIndex;    
-    //_BattleStack_* stack = &bm->stack[bm->currentStackSide][bm->currentStackIndex];
     _BattleStack_* stack = bm->GetCurrentStack();
 
     if(!stack) { return; }
@@ -220,12 +220,10 @@ void initNewStackAttackType(bool redraw = false)
     }    
 
     if (bm->autoCombatOn || o_AutoSolo || bm->IsStackAutoControlledByAI(stack) ) {
-        // updateAttackTypeButton(NONE, redraw);  
         return;
     }
 
     if (stack->creature_id >= CID_CATAPULT && stack->creature_id <= CID_ARROW_TOWER ) {
-        // updateAttackTypeButton(NONE, redraw);
         return;
     }
 
@@ -235,7 +233,6 @@ void initNewStackAttackType(bool redraw = false)
             stack->creature_id == CID_ARCHANGEL ||
             stack->creature_id == CID_SUPREME_ARCHANGEL) {
             if (currentType == NONE) {
-                // updateAttackTypeButton(CAST, redraw);
                 currentType = CAST;
             }
             arrayTypesPush(CAST);
@@ -245,7 +242,6 @@ void initNewStackAttackType(bool redraw = false)
 
         if ( stack->CanCastSpellAkaFaerieDragon() ) {
             if (currentType == NONE) {
-               // updateAttackTypeButton(CAST, redraw);
                currentType = CAST;
             }
             arrayTypesPush(CAST);
@@ -261,7 +257,6 @@ void initNewStackAttackType(bool redraw = false)
 
     if( stack->CanShoot(0) ) {
         if (currentType == NONE) {
-            // updateAttackTypeButton(SHOOT, redraw);
             currentType = SHOOT;
         }
         arrayTypesPush(SHOOT);
@@ -271,7 +266,6 @@ void initNewStackAttackType(bool redraw = false)
 
     if ( stack->WOG_isHarpy() ) {
         if (currentType == NONE) {
-            // updateAttackTypeButton(RETURN, redraw);
             currentType = RETURN;
         }
         arrayTypesPush(RETURN);
@@ -283,9 +277,9 @@ void initNewStackAttackType(bool redraw = false)
     if (stack && stack->creature_id >= CID_COMMANDER_FIRST_A && stack->creature_id <= CID_COMMANDER_LAST_D )
     {
         _Hero_* hero = bm->hero[bm->currentStackSide];
-        if (hero && hero->id)
+        if (hero)
         {
-            _byte_ saveType = saveNpcTypesAction[HID_MALCOM];
+            _byte_ saveType = saveNpcTypesAction[hero->id];
 
             if (isTypeExist(saveType))
                 currentType = saveType;
@@ -357,7 +351,7 @@ _byte_ __stdcall Y_BattleMgr_MouseClickRMC_OnButton(HiHook* hook, _Dlg_* dlg, _E
 }
 
 // нажатие левой кнопкой мыши на кнопку переключения атаки (ПЕРЕКЛЮЧЕНИЕ)
-// горячая клавиша S
+// горячая клавиша ALT
 _LHF_(Y_BattleMgr_ProcessAction_LMC)
 {
     int item_id = c->eax;
@@ -365,7 +359,18 @@ _LHF_(Y_BattleMgr_ProcessAction_LMC)
         if (currentType != NONE) {            
             int type = arrayTypesGetNextType();
             updateAttackTypeButton(type, TRUE);
-            saveNpcTypesAction[HID_MALCOM] = type;
+            
+            _BattleMgr_* bm = o_BattleMgr;
+            _BattleStack_* stack = bm->GetCurrentStack();
+
+            if (stack && stack->creature_id >= CID_COMMANDER_FIRST_A && stack->creature_id <= CID_COMMANDER_LAST_D )
+            {
+                _Hero_* hero = bm->hero[bm->currentStackSide];
+                if (hero)
+                {
+                   saveNpcTypesAction[hero->id] = type;
+                }
+            }
         }
     }
 
