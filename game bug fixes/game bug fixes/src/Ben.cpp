@@ -34,9 +34,9 @@ void Ben(PatcherInstance* _PI)
     // Arrow towers damage bug fix
     // for cases:
     // Armorer sec.skill, Stoning of creature, Air shield spell
-    _PI->WriteByte(0x41E3A4, 0x4D);
-    _PI->WriteByte(0x41E4DF, 0x4D);
-    _PI->WriteByte(0x465944, 0x4D);
+    _PI->WriteByte(0x41E3A3 +1, 0x4D);
+    _PI->WriteByte(0x41E4DF +1, 0x4D);
+    _PI->WriteByte(0x465943 +1, 0x4D);
 
     // fix Fortress attack and defense bonuses for defended Hero
     _PI->WriteByte(0x4639FE, 0x77);
