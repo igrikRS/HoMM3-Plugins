@@ -292,6 +292,13 @@ void GameLogic(PatcherInstance* _PI)
     // командиры, имеющие флаг стрельбы и двойной атаки, в рукопашной бъют один раз. Исправим это, ибо они уникальны
     _PI->WriteLoHook(0x441BAA, Y_NPC_FixDoubleAttackOnMelle);
 
+    // © daemon_n
+    // Ошибка бонуса опыта существ для члена "модификатор", где имеем некорректный тип данных (знаковый) для структуры:
+    // Суть в подмене типа копирования символов со знакового на беззнаковое ( MOVSX -> MOVZX )
+    _PI->WriteByte(0x71C7A7 +1, 0xB6);
+    _PI->WriteByte(0x71C7B3 +1, 0xB6);
+    _PI->WriteByte(0x71C7D2 +1, 0xB6);
+
     // убираем клонов из показа в диалоге результатов битвы
     _PI->WriteLoHook(0x4708FC, Y_Dlg_BattleResults_IgnoreClones);
 
