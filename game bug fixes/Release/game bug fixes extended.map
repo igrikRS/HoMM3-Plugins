@@ -1,6 +1,6 @@
  game bug fixes extended
 
- Timestamp is 6571c1a0 (Thu Dec 07 15:59:12 2023)
+ Timestamp is 6571d294 (Thu Dec 07 17:11:32 2023)
 
  Preferred load address is 10000000
 
@@ -99,7 +99,7 @@
  0001:00001a80       ?AIMgr_Stack_SetHexes_WayToMoveLength@@YGEPAVHiHook@@IPAU_BattleStack_@@HHHHH@Z 10002a80 f   game bug fixes.obj
  0001:00001b80       ?Y_FixBattle_StackStepBack@@YGHPAVLoHook@@PAUHookContext@@@Z 10002b80 f   game bug fixes.obj
  0001:00001c00       ?Y_NPC_FixDoubleAttackOnMelle@@YGHPAVLoHook@@PAUHookContext@@@Z 10002c00 f   game bug fixes.obj
- 0001:00001c40       ?Y_Dlg_BattleResults@@YGHPAVLoHook@@PAUHookContext@@@Z 10002c40 f   game bug fixes.obj
+ 0001:00001c40       ?Y_Dlg_BattleResults_IgnoreClones@@YGHPAVLoHook@@PAUHookContext@@@Z 10002c40 f   game bug fixes.obj
  0001:00001c70       ?GameLogic@@YAXPAVPatcherInstance@@@Z 10002c70 f   game bug fixes.obj
  0001:00001e50       ?Y_BeforeWog@@YGHPAVLoHook@@PAUHookContext@@@Z 10002e50 f   game bug fixes.obj
  0001:00001e70       ?Y_AftereWog@@YGHPAVLoHook@@PAUHookContext@@@Z 10002e70 f   game bug fixes.obj
@@ -257,8 +257,8 @@
  0001:00007d6f       __putwch_nolock            10008d6f f   LIBCMT:putwch.obj
  0001:00007e34       __mbtowc_l                 10008e34 f   LIBCMT:mbtowc.obj
  0001:00007f4b       _mbtowc                    10008f4b f   LIBCMT:mbtowc.obj
- 0001:00007f70       __alloca_probe             10008f70     LIBCMT:chkstk.obj
  0001:00007f70       __chkstk                   10008f70 f   LIBCMT:chkstk.obj
+ 0001:00007f70       __alloca_probe             10008f70     LIBCMT:chkstk.obj
  0001:00007f9c       __fcloseall                10008f9c f   LIBCMT:closeall.obj
  0001:0000803b       __flush                    1000903b f   LIBCMT:fflush.obj
  0001:000080a3       __fflush_nolock            100090a3 f   LIBCMT:fflush.obj
@@ -373,8 +373,8 @@
  0002:00000140       ___xp_z                    1000b140     LIBCMT:crt0init.obj
  0002:00000144       ___xt_a                    1000b144     LIBCMT:crt0init.obj
  0002:00000148       ___xt_z                    1000b148     LIBCMT:crt0init.obj
- 0002:0000016c       __pDefaultRawDllMain       1000b16c     LIBCMT:dllcrt0.obj
  0002:0000016c       __pRawDllMain              1000b16c     LIBCMT:dllcrt0.obj
+ 0002:0000016c       __pDefaultRawDllMain       1000b16c     LIBCMT:dllcrt0.obj
  0002:00000178       ??_C@_1O@CEDCILHN@?$AA?$CI?$AAn?$AAu?$AAl?$AAl?$AA?$CJ?$AA?$AA@ 1000b178     LIBCMT:output.obj
  0002:00000188       ??_C@_06OJHGLDPL@?$CInull?$CJ?$AA@ 1000b188     LIBCMT:output.obj
  0002:00000190       ___lookuptable             1000b190     LIBCMT:output.obj

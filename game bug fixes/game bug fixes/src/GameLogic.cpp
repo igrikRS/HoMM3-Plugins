@@ -221,7 +221,7 @@ _LHF_(Y_NPC_FixDoubleAttackOnMelle)
 }
 
 // убираем клонов из показа в диалоге результатов битвы
-_LHF_(Y_Dlg_BattleResults)
+_LHF_(Y_Dlg_BattleResults_IgnoreClones)
 {
     _BattleStack_* stack = (_BattleStack_*)(c->eax -96);
 
@@ -293,7 +293,7 @@ void GameLogic(PatcherInstance* _PI)
     _PI->WriteLoHook(0x441BAA, Y_NPC_FixDoubleAttackOnMelle);
 
     // убираем клонов из показа в диалоге результатов битвы
-    _PI->WriteLoHook(0x4708FC, Y_Dlg_BattleResults);
+    _PI->WriteLoHook(0x4708FC, Y_Dlg_BattleResults_IgnoreClones);
 
     ///////////////////////////////////////////////////////////////////////////
     ///////////////////////// Фиксы крит.крашей игры //////////////////////////
