@@ -312,7 +312,7 @@ int __stdcall Y_Dlg_AddCreatures_Init_Leave(HiHook* hook, _Hero_* hero, _Army_* 
 // Причина в построении вектора пути для боевых машин (© daemon_n)
 _LHF_(Gem_OnBattleStackCheckReachability)
 {
-    _BattleStack_* stack = (_BattleStack_*)(c->ebp +0x8);
+    _BattleStack_* stack = (_BattleStack_*)c->ecx;
 
     if (stack && (stack->creature.flags & BCF_CANT_MOVE || CALL_1(_bool8_, __fastcall, 0x47AAB0, stack->creature_id)) )
     {
