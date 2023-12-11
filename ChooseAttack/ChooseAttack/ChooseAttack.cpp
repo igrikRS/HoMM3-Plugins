@@ -309,7 +309,7 @@ _bool8_ __stdcall Y_BattleMgr_CanCast(HiHook* hook, _BattleMgr_ * bm, _int_ side
 // проверка на возможность стрельбы уже во время исполнения атаки монстром
 _LHF_(Y_BattleMgr_MakeAttack_isStackCanShoot)
 {
-    _BattleStack_* stack = (_BattleStack_*)c->edi;
+    _BattleStack_* stack = (_BattleStack_*)c->esi;
 
     if (!(stack->creature.flags & BCF_CAN_SHOOT) || currentType == MELEE)
          c->return_address = 0x4458E2; // рукопашная
