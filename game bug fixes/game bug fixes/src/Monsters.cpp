@@ -308,12 +308,26 @@ int __stdcall Y_Dlg_AddCreatures_Init_Leave(HiHook* hook, _Hero_* hero, _Army_* 
     return CALL_3(int, __fastcall, hook->GetDefaultFunc(), hero, army, creatureType);
 }
 
+// баг, из-за которого палатки могут атаковать вблизи. 
+// Причина в построении вектора пути для боевых машин (© daemon_n)
+_LHF_(Gem_OnBattleStackCheckReachability)
+{
+    _BattleStack_* stack = (_BattleStack_*)(c->ebp +0x8);
+
+    if (stack && (stack->creature.flags & BCF_CANT_MOVE || CALL_1(_bool8_, __fastcall, 0x47AAB0, stack->creature_id)) )
+    {
+        c->return_address = 0x4B332A;
+        return NO_EXEC_DEFAULT;
+    }
+
+    return EXEC_DEFAULT;
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void Monsters(PatcherInstance* _PI)
 {
-
     // исправления стрельбы при отрицат.боезапасе
     // при передаче хода стеку
     _PI->WriteLoHook(0x464D75, setActStack);
@@ -371,11 +385,13 @@ void Monsters(PatcherInstance* _PI)
     _PI->WriteHiHook(0x5D16B0, SPLICE_, EXTENDED_, FASTCALL_, Y_Dlg_AddCreatures_Init_Leave);
 
     // убираем отображение двух ошибок от опыта существ
-    // 0x717B37 TError(15, 222, aCrexpoUnknownS);
-    // 0x717FAB TError(15, 286, aCrexpoUnknow_0);    
     _PI->WriteCodePatch(0x717B37, "%n", 20); // 20 nops
     _PI->WriteCodePatch(0x717FAB, "%n", 20); // 20 nops
 
+    // баг, из-за которого палатки могут атаковать вблизи. 
+    // Причина в построении вектора гексов целей
+    // © daemon_n    
+    _PI->WriteLoHook(0x4B3309, Gem_OnBattleStackCheckReachability);
 
     // меняем картинки оставления монстров и для эстетики
     // и для того, чтобы визуально понимать, что мы вносили правку
