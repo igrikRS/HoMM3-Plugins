@@ -323,6 +323,27 @@ _LHF_(Gem_OnBattleStackCheckReachability)
     return EXEC_DEFAULT;
 }
 
+
+// исправление диалога присоединения монстров
+// в Воге нет проверки на присоединение монстров с кол-вом меньше одного
+_LHF_(Y_Fix_CrChangeDialog)
+{
+    for(int i=0; i<7; ++i)
+    {
+        _int_ adress = (0x83F354 +i*4);
+        _int_ type = IntAt(adress);
+        _int_ count = IntAt(adress +28);
+
+        if (type != ID_NONE && count < 1)
+        {
+            IntAt(adress) = ID_NONE; // type = -1
+            IntAt(adress +28) = 0;   // count = 0
+        }
+    }
+
+    return EXEC_DEFAULT;
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -336,8 +357,11 @@ void Monsters(PatcherInstance* _PI)
     // второй выстрел монстрами
     _PI->WriteLoHook(0x43FF92, monstreShoot);	
     // второй выстрел баллистой
-    _PI->WriteLoHook(0x43FFF4, monstreShoot);	
+    _PI->WriteLoHook(0x43FFF4, monstreShoot);
 
+    // исправление диалога присоединения монстров
+    // в Воге нет проверки на присоединение монстров с кол-вом меньше одного
+    _PI->WriteLoHook(0x714BE5, Y_Fix_CrChangeDialog);
 
     // исправление бага палатки, когда на её ходу невозможно убежать или сделать другие действия
     _PI->WriteByte(0x75C82C, 0xEB);

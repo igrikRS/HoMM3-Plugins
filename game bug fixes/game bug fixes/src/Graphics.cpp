@@ -14,7 +14,7 @@ int __stdcall Fix_ForceFieldShadow(LoHook *h, HookContext *c)
 // значит восстановим вручную
 int __stdcall Y_RestoreBattleShadow(LoHook *h, HookContext *c)
 {
-    o_BATTLE_CursorShadow = DwordAt(c->ebp -0x1C);
+    o_Battle_CursorShadow = DwordAt(c->ebp -0x1C);
     return EXEC_DEFAULT;
 }
 
