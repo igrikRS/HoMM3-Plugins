@@ -67,6 +67,18 @@ _int64_ __stdcall Y_DlgSpellBook_FixDecription_SpellPower(HiHook* hook, _Hero_ *
     return power;
 }
 
+// исправление бага WOG: IDummy(0x83EEFC) иногда может возвращать мусор см.функцию 0x75D654
+_int_ __stdcall Y_Fix_WoG_HeroGetSpellSpecialityEffect(HiHook* hook, _Hero_* hero, _int_ spellId, _int_ monLevel, _int_ damage)
+{
+    _int_ result = 0;
+    if (hero)
+    {
+        hero->GetSpell_Specialisation_PowerBonuses(spellId, damage, monLevel);
+    }
+    WOG_IDummy = result;
+    return result;
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -133,6 +145,9 @@ void Spells(PatcherInstance* _PI)
 
     // корректировка описаний заклинаний в книге (не учитывались бонусы специалистов по заклинаниям)
     _PI->WriteHiHook(0x59BFFD, CALL_, SAFE_, THISCALL_, Y_DlgSpellBook_FixDecription_SpellPower);
+
+    // исправление бага WOG: IDummy(0x83EEFC) иногда может возвращать мусор см.функцию 0x75D654
+    _PI->WriteHiHook(0x5A1C7B, CALL_, EXTENDED_, THISCALL_, Y_Fix_WoG_HeroGetSpellSpecialityEffect);
 
     // фиксим неотображение Монолитов и Подземных врат в диалоге заклинания Просмотр Земли и Воздуха		
     _PI->WriteLoHook(0x5FC3EC, Y_Fix_ViewEarthOrAirSpell_Add_Monoliths_Prepare);
