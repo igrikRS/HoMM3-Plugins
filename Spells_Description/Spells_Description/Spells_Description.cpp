@@ -7,19 +7,111 @@ PatcherInstance* _PI;
 struct _TXT_;
 _TXT_* SpDescr_TXT;
 
-// StrToInt(SpDescr_TXT->GetString(0));
+char myString[1024];
+#define MyString  (char*)myString
+
+_bool8_ SacrificeType;
+_BattleStack_* SacrificeStack;
+
+enum SPELL_TYPE
+{
+    BUFF      = 0,
+    EMPTY_1   = 1,
+    DAMAGE    = 2,
+    RECOVERY  = 3,
+    CURE      = 4,
+    SACRIFICE = 5,
+    TELEPORT  = 6,
+    REMOVE_OBSTACLE = 7,
+};
+
+enum STRING_ID
+{
+    NONE               = 0,
+    NONE_1             = 1,
+    BATTLE_DAMAGE      = 2,
+    BATTLE_RECOVERY    = 3,
+    BATTLE_CURE        = 4,
+    BATTLE_SACRIFICE_1 = 5,
+    BATTLE_SACRIFICE_2 = 6,
+    NONE_4             = 7,
+    BOOK_DAMAGE        = 8,
+    BOOK_CURE          = 9,
+    BOOK_HYPNOTIZE     = 10,
+    BOOK_LAND_MINE     = 11,
+    BOOK_RECOVERY      = 12,
+    BOOK_CHAIN_LIGHTNING = 13,
+    BOOK_SUMMON        = 14,
+    BATTLE_ARCHANGEL   = 15,
+    BATTLE_PIT_LORD    = 16
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////// вспомогательные функции ///////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 // получения номера строки с текстом
 // в зависимости от локализации игры
 int GetString_Localosation(int string_id)
 {
 	if (isRusLangWoG) 
-		string_id += 15;
+		string_id += 17;
 
 	return string_id;
 }
 
+// получить номер строки в текстовом файле
+int GetSpellType(int spellId)
+{
+    int result = 0;
+	// проверяем нужно ли модифицировать строку
+	// в зависимости от заклинания
+	switch ( spellId )
+	{
+	    case SPL_MAGIC_ARROW: 
+	    case SPL_ICE_BOLT:
+        //case SPL_FROST_RING:
+	    case SPL_LIGHTNING_BOLT:
+	    case SPL_IMPLOSION:
+	    case SPL_CHAIN_LIGHTNING:
+	    case SPL_TITANS_LIGHTNING_BOLT:
+	    case SPL_FIREBALL:
+	    case SPL_INFERNO:
+	    case SPL_METEOR_SHOWER:
+            result = SPELL_TYPE::DAMAGE;
+		    break;
 
+	    case SPL_RESURRECTION:
+	    case SPL_ANIMATE_DEAD:
+            result = SPELL_TYPE::RECOVERY;
+		    break;
+
+	    case SPL_CURE:
+            result = SPELL_TYPE::CURE;
+		    break;
+
+        case SPL_SACRIFICE:
+            result = SPELL_TYPE::SACRIFICE;
+		    break;
+
+        case SPL_TELEPORT:
+            result = SPELL_TYPE::TELEPORT;
+		    break;
+
+        case SPL_REMOVE_OBSTACLE:
+            result = SPELL_TYPE::REMOVE_OBSTACLE;
+		    break;
+
+	    default: 
+            result = SPELL_TYPE::BUFF;
+		    break;
+	}
+
+    return result;
+}
+
+
+// получение силы сопростивления
 int WoG_GetResistGolem(int spell_id, int damage, _BattleStack_* stack)
 {
 	int result = 0;
@@ -38,6 +130,8 @@ int WoG_GetResistGolem(int spell_id, int damage, _BattleStack_* stack)
 	return result;
 }
 
+
+// получение кол-ва убитых от ударного заклинания
 int BattleStack_Get_Killed_From_Damage(_BattleStack_* stack, int damage, int param)
 {
 	int killed = 0;
@@ -71,13 +165,17 @@ int BattleStack_Get_Killed_From_Damage(_BattleStack_* stack, int damage, int par
 
 				// если стек мертвый, его lost_hp не обнулены
 				// поэтому будет считаться неправильно. А мы обнуляем.
-				if ( stack->creature.flags & BCF_DIE)
+				if (stack->creature.flags & BCF_DIE)
 					lost_hp = 0;
 
 				int resurect_hp = damage - lost_hp -1;
 				if ( resurect_hp > 0 )
 				{
 					killed = (resurect_hp / stack->creature.hit_points) +1;
+
+                    // На заметку! Для оживления мертвецов
+                    // когда (stack->count_current < 1) возможно нужно сделать декремент
+					// --killed;
 				} 
 			}
 		}
@@ -86,139 +184,199 @@ int BattleStack_Get_Killed_From_Damage(_BattleStack_* stack, int damage, int par
 	return killed;	
 }
 
+// получение силы заклинания монстра WoG
+int GetWoGCreatureSpellPower(_BattleStack_* stack)
+{
+    int result = 0;
+    if (stack->creature_id == CID_FAERIE_DRAGON)
+    {
+        result = stack->count_current * 5; 
+    } 
+    else if (stack->creature_id >= CID_COMMANDER_FIRST_A || stack->creature_id <= CID_COMMANDER_LAST_D)
+    {
+        result = stack->GetNPCMagicPower();
+    }
+    return result;
+}
 
+// создание и запись модифицированной строки в o_TextBuffer
+_bool8_ SetModifiedHintTo_TextBuffer(_BattleMgr_* bm, _BattleStack_* stack, _int_ spellId, _int_ spellType, _int_ creatureSpellPower)
+{
+    if (!stack) return FALSE;
 
-int __stdcall Y_Battle_Hint_SpellDescr_Prepare(LoHook* h, HookContext* c)
-{	
-	int spell = DwordAt(c->ebp +8);
-	int str_hint_id = 0; // номер строки в текстовом файле (если 0, то хук вообще пропускаем)
-
-	// проверяем нужно ли модифицировать строку
-	// в зависимости от заклинания
-	switch ( spell )
-	{
-	case SPL_MAGIC_ARROW: 
-	case SPL_ICE_BOLT:
-	case SPL_LIGHTNING_BOLT:
-	case SPL_IMPLOSION:
-	case SPL_CHAIN_LIGHTNING:
-	case SPL_TITANS_LIGHTNING_BOLT:
-	case SPL_FIREBALL:
-	case SPL_INFERNO:
-	case SPL_METEOR_SHOWER:
-		str_hint_id = 2;
-		break;
-
-	case SPL_RESURRECTION:
-	case SPL_ANIMATE_DEAD:
-		str_hint_id = 3;
-		break;
-
-	case SPL_CURE:
-		str_hint_id = 4;
-		break;
-
-	default: 
-		str_hint_id = 0;
-		break;
-	}
+	int spell_power = 1;
+	int spell_lvl = 0;
+	int killed = 0;
+    int damage = 0;    
 	
-	// если строку хинта заклинания модифицируем
-	if (str_hint_id) 
+	// если стек НЕ мертв
+	if ( ! ( stack->creature.flags & BCF_DIE) )
 	{
-		int damage = 0;
-		int spell_power = 1;
-		int lvl_spell = 0;
-		int killed = 0;
-		
-		_BattleMgr_* bm = o_BattleMgr;
-		_BattleHex_* hex = (_BattleHex_*)c->edi;
-		_BattleStack_* stack = hex->GetCreature();
-
-		if ( !stack ) 
+		if ( spellId != SPL_SACRIFICE && !(stack->CanUseSpell(spellId, bm->currentActiveSide, 1, 0) ) ) 
 		{
-			// если воскрешение, то мы не сможем получить стек через гекс
-			// поэтому пытаемся получить через другие функции
-			if ( str_hint_id == 3 ) 
-			{
-				int hex_id = DwordAt(c->ebp +12);
-				if ( spell == SPL_RESURRECTION )
-					stack = CALL_4(_BattleStack_*, __thiscall, 0x5A3FD0, bm, bm->currentActiveSide, hex_id, 0);
-				else stack = CALL_3(_BattleStack_*, __thiscall, 0x5A4260, bm, bm->currentActiveSide, hex_id);
-
-			} else return EXEC_DEFAULT; // если всё же не получилось - выход
+			return FALSE;
 		}
-		
-		// если стек НЕ мертв
-		if ( ! ( stack->creature.flags & BCF_DIE)  )
-		{
-			if ( !(stack->CanUseSpell(spell, bm->currentActiveSide, 1, 0) ) ) 
-			{
-				return EXEC_DEFAULT;
-			}
-		}
+	}
 
-		_Hero_* hero = bm->hero[bm->currentActiveSide];
+	_Hero_* hero = bm->hero[bm->currentActiveSide];
 
-		if (hero) 
-		{
-			lvl_spell = hero->Get_School_Level_Of_Spell(spell, bm->special_Ground);
-			spell_power = bm->heroSpellPower[bm->currentActiveSide];
-		}
+	if (hero) 
+	{
+		spell_lvl = hero->Get_School_Level_Of_Spell(spellId, bm->special_Ground);
+		spell_power = bm->heroSpellPower[bm->currentActiveSide];
+	}
 
-		damage = spell_power * o_Spell[spell].eff_power + o_Spell[spell].effect[lvl_spell];
+    // если колдует монстр - затираем данные силы каста от героя
+    if (creatureSpellPower)
+    {
+        spell_lvl = HSSL_ADVANCED;
+        spell_power = creatureSpellPower;
+    }
 
-		if (hero) 
-		{
-			if (o_Spell[spell].flags & SPF_DAMAGE )
-				damage = (int)hero->Get_Spell_Power_Bonus_Arts_And_Sorcery(spell, damage, stack ); 
-			else 
-			{	
-				damage += hero->GetSpell_Specialisation_PowerBonuses(spell, damage, stack->creature.level);	
-			}
-		}
+	damage = spell_power * o_Spell[spellId].eff_power + o_Spell[spellId].effect[spell_lvl];
 
-		if ( stack )
-		{
-			if ( !(o_Spell[spell].flags & SPF_FRIENDLY_HAS_MASS) ) 
-			{
-				int resist = WoG_GetResistGolem(spell, damage, stack);
-				damage = stack->GetResistSpellProtection(spell, resist);
-			}	
-		}
-
-		if (str_hint_id == 4 ) 
-		{ // если лечение
-			if (stack->lost_hp < damage) 
-			{
-				damage = stack->lost_hp; // точное кол-во сколько вылечит hp
-			}
-			// проверяем язык игры и по ней корректируем номер строки
-			str_hint_id = GetString_Localosation(str_hint_id);
-
-			sprintf(o_TextBuffer, SpDescr_TXT->GetString( str_hint_id ), (_cstr_)c->eax, damage );
-		} 
+	if (hero) 
+	{
+		if (o_Spell[spellId].flags & SPF_DAMAGE )
+			damage = (int)hero->Get_Spell_Power_Bonus_Arts_And_Sorcery(spellId, damage, stack ); 
 		else 
-		{
-			killed = BattleStack_Get_Killed_From_Damage(stack, damage, str_hint_id);
-
-			// проверяем язык игры и по ней корректируем номер строки
-			str_hint_id = GetString_Localosation(str_hint_id);
-
-			sprintf(o_TextBuffer, SpDescr_TXT->GetString( str_hint_id ), o_Spell[spell].name, (_cstr_)c->eax, damage, killed );
+		{	
+			damage += hero->GetSpell_Specialisation_PowerBonuses(spellId, damage, stack->creature.level);	
 		}
+	}
+
+	if ( !(o_Spell[spellId].flags & SPF_FRIENDLY_HAS_MASS) ) 
+	{
+		int resist = WoG_GetResistGolem(spellId, damage, stack);
+		damage = stack->GetResistSpellProtection(spellId, resist);
+	}
+
+    _cstr_ stackName = GetCreatureName(stack->creature_id, stack->count_current);
+    _int_ stringHintId = GetString_Localosation(spellType);
+
+    if (spellType == SPELL_TYPE::CURE) 
+	{
+		if (stack->lost_hp < damage) 
+		{
+			damage = stack->lost_hp;
+		}
+		sprintf(o_TextBuffer, SpDescr_TXT->GetString( stringHintId ), stackName, damage );
+	}
+    else if (spellType == SPELL_TYPE::SACRIFICE)
+    {
+        if (SacrificeType)
+        {
+            _int32_ lostHealth = (stack->count_at_start * stack->creature.hit_points) - stack->GetFullHealth(0);
+            killed = stack->count_at_start - stack->count_current;
+            SacrificeStack = stack;
+            sprintf(o_TextBuffer, SpDescr_TXT->GetString( stringHintId ), stackName, lostHealth, killed );
+        }
+        else
+        {
+            if (!SacrificeStack) return FALSE;
+
+            _int32_ currentHealth = stack->GetFullHealth(0) + damage*stack->count_current;
+            _int32_ canResurrectCount = currentHealth / SacrificeStack->creature.hit_points;
+
+            killed = SacrificeStack->count_at_start - SacrificeStack->count_current;
+            if (canResurrectCount > killed) canResurrectCount = killed;
+
+            sprintf(o_TextBuffer, SpDescr_TXT->GetString( stringHintId +1 ), stackName, currentHealth, canResurrectCount );
+        }
+    }
+	else 
+	{
+		killed = BattleStack_Get_Killed_From_Damage(stack, damage, spellType);
+		sprintf(o_TextBuffer, SpDescr_TXT->GetString( stringHintId ), o_Spell[spellId].name, stackName, damage, killed );
+	}
+
+    return TRUE;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////// перехваты игровых функций /////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+// модификация хинта в бою при применении заклинания
+void __stdcall Y_BattleMgr_BattleLog_PrepareSpellMessage(HiHook* hook, _BattleMgr_* bm, _int32_ spellId, _int32_ gexId, _bool8_ type)
+{
+    if (bm->IsHiddenBattle()) return;
+
+    _BattleHex_ hex = bm->hex[gexId];
+    _BattleStack_* stack = hex.GetCreature();
+    _int32_ spellType = GetSpellType(spellId);
+    _bool8_ isModifedString = false;
+
+    switch (spellType)
+    {
+        case SPELL_TYPE::DAMAGE: 
+            isModifedString = true;
+            break;
+        case SPELL_TYPE::RECOVERY:
+            if ( spellId == SPL_RESURRECTION )
+				stack = bm->Get_BattleStack_Resurrect(bm->currentActiveSide, gexId, 0);
+			else stack = bm->Get_BattleStack_AnimatedDead(bm->currentActiveSide, gexId);
+            
+            if (stack)
+                isModifedString = true;
+            break;
+        case SPELL_TYPE::CURE:
+            isModifedString = true;
+            break;
+        case SPELL_TYPE::SACRIFICE:
+            if (type)
+                stack = bm->Get_BattleStack_Resurrect(bm->currentActiveSide, gexId, 0);
+            else 
+                stack = hex.GetCreature();
+            SacrificeType = type;
+            isModifedString = true;
+            break;
+        case SPELL_TYPE::TELEPORT:
+            if (o_ChooseHexBySpellTeleport)
+            {
+                bm->AddHintMessage(o_GENRLTXT_TXT->GetString(27));
+                return;
+            }
+            break;
+        case SPELL_TYPE::REMOVE_OBSTACLE:
+            bm->AddHintMessage(o_GENRLTXT_TXT->GetString(552));
+            return;
+            break;
+
+        default:  break;
+    }
+
+    if (isModifedString)
+    {
+        _int_ power = 0;
+        // но если колдует монстр, то получаем его силу закла
+        if (bm->action == bm->BA_MONSTER_SPELL)
+        {
+            _BattleStack_* stackActive = o_BattleMgr->GetCurrentStack();
+            if (stackActive)
+                power = GetWoGCreatureSpellPower(stackActive);
+        }
+        isModifedString = SetModifiedHintTo_TextBuffer(bm, stack, spellId, spellType, power);
+    }
+
+    if (!isModifedString)
+    {
+        if (stack) 
+        {
+            char* creatureName = GetCreatureName(stack->creature_id, stack->count_current);
+            sprintf(o_TextBuffer, o_GENRLTXT_TXT->GetString(29), o_Spell[spellId].name, creatureName); 
+        }
+        else sprintf(o_TextBuffer, o_GENRLTXT_TXT->GetString(28), o_Spell[spellId].name);
+    }
+    bm->AddHintMessage(o_TextBuffer);
+}
 
 
-		c->return_address = 0x5A8BBF;
-		return NO_EXEC_DEFAULT;
-	} 
 
-	else return EXEC_DEFAULT;
-} 
-
+// модификация описания заклинания в книге
 int __stdcall Y_DlgSpellBook_ModifSpell_Description(LoHook* h, HookContext* c)
 {
-	int string = 0; // номер строки в текстовом файле (0 - не модифицировать)
+	int string = STRING_ID::NONE; // номер строки в текстовом файле (NONE - не модифицировать)
 
 	int spell_pow = c->eax;
 	int spell_lvl = DwordAt(c->ebp -16);
@@ -237,34 +395,34 @@ int __stdcall Y_DlgSpellBook_ModifSpell_Description(LoHook* h, HookContext* c)
 	}
 
 	if ( o_Spell[spell_id].flags & SPF_DAMAGE )	{
-		string = 6;
+		string = STRING_ID::BOOK_DAMAGE;
 	}
 
 	switch (spell_id)
 	{
 	case SPL_FIRE_WALL:
-		string = 6; 
+        string = STRING_ID::BOOK_DAMAGE; 
 		break;
 
 	case SPL_CURE: 
-		string = 7; 
+        string = STRING_ID::BOOK_CURE; 
 		break;
 
 	case SPL_HYPNOTIZE: 
-		string = 8; 
+        string = STRING_ID::BOOK_HYPNOTIZE; 
 		break;
 
 	case SPL_LAND_MINE: 
-		string = 9; 
+        string = STRING_ID::BOOK_LAND_MINE; 
 		break;
 
 	case SPL_RESURRECTION: 
 	case SPL_ANIMATE_DEAD:
-		string = 10; 
+        string = STRING_ID::BOOK_RECOVERY; 
 		break;
 
 	case SPL_CHAIN_LIGHTNING: 
-		string = 11; 
+        string = STRING_ID::BOOK_CHAIN_LIGHTNING; 
 		break;
 
 	case SPL_FIRE_ELEMENTAL: 
@@ -275,14 +433,14 @@ int __stdcall Y_DlgSpellBook_ModifSpell_Description(LoHook* h, HookContext* c)
 		// специальная проверка на ReMagic
 		if ( !GetWoGOptionsStatus(726) ) 
 		{
-			string = 12;
+            string = STRING_ID::BOOK_SUMMON;
 			damage *= (int)(hero->primary_skill[3]);
 		}
 		break;
 
-	default: 
-		if ( string != 6 )
-			string = 0;
+	default:
+        if ( string != STRING_ID::BOOK_DAMAGE )
+            string = STRING_ID::NONE;
 		break;
 	}
 
@@ -314,7 +472,7 @@ int __stdcall Y_Battle_Hint_Prepare_ResurrectArchangel(LoHook* h, HookContext* c
 	
 	// получаем структуры активного и целевого стека
 	_BattleStack_* stack_active = (_BattleStack_*)c->ebx;
-	_BattleStack_* stack_target = o_BattleMgr->Get_Resurrect_BattleStack(side, gex_id, 1);
+	_BattleStack_* stack_target = o_BattleMgr->Get_BattleStack_Resurrect(side, gex_id, 1);
 
     if (!stack_target) {     
         // если целевой стек не найден, ищем через оригинальную функцию
@@ -327,9 +485,9 @@ int __stdcall Y_Battle_Hint_Prepare_ResurrectArchangel(LoHook* h, HookContext* c
 
 	// в зависимости от адреса возврата понимаем какой из двух хуков срабатал
 	// и от этого выбираем тип строки из двух возможных 
-	int str_id = 13;
+    int str_id = STRING_ID::BATTLE_ARCHANGEL;
 	if ( c->return_address != 4794996 )  // dec: (0x492A6E +6)
-		str_id = 14;
+        str_id = STRING_ID::BATTLE_PIT_LORD;
 
 	// собираем текст подсказки
 	sprintf(o_TextBuffer, SpDescr_TXT->GetString(GetString_Localosation(str_id)), count, mon_name);
@@ -343,12 +501,37 @@ int __stdcall Y_Battle_Hint_Prepare_ResurrectArchangel(LoHook* h, HookContext* c
 int __stdcall Y_Fix_Funk_Get_Resurrect_Count(LoHook* h, HookContext* c)
 {
 	int mon_id = c->eax;
-	if ( mon_id == 13 || mon_id == 150 ) 
+	if ( mon_id == CID_ARCHANGEL || mon_id == CID_SUPREME_ARCHANGEL ) 
 		 c->return_address = 0x44705F;
 	else c->return_address = 0x447098;
 
 	return NO_EXEC_DEFAULT;
 }
+
+// показ при колдовстве Волшебного Дракона (и других существ - модификация WoG'a, например командиры)
+int __stdcall Y_Battle_Hint_Prepare_WoG_Creatures(LoHook* h, HookContext* c)
+{
+    _BattleStack_* stackTarget = (_BattleStack_*)c->eax;
+    if (!stackTarget) return EXEC_DEFAULT;
+    _BattleStack_* stackActive = o_BattleMgr->GetCurrentStack();
+
+    _int_ power = GetWoGCreatureSpellPower(stackActive);
+    if (!power) return EXEC_DEFAULT;
+
+    _int_ spellId = stackActive->faerie_dragon_spell;
+    _int_ spellType = GetSpellType(spellId);
+
+    // модифицируем хинт заклинания
+    if ( !SetModifiedHintTo_TextBuffer(o_BattleMgr, stackTarget, spellId, spellType, power) )
+        return EXEC_DEFAULT;
+        
+    c->return_address = 0x492E3B;
+    return NO_EXEC_DEFAULT;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////// инициализации ////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 int __stdcall Y_LoadAllTXTinGames(LoHook* h, HookContext* c)
 {
@@ -362,10 +545,7 @@ void StartPlugin()
 	// создаем загрузку необходимых тектовиков
 	_PI->WriteLoHook(0x4EDD65, Y_LoadAllTXTinGames);
 
-	_PI->WriteLoHook(0x5A8B90, Y_Battle_Hint_SpellDescr_Prepare);
-	_PI->WriteByte(0x5A8C31, 6); // модиф.свитч SPL_FIREBALL
-	_PI->WriteByte(0x5A8C32, 6); // модиф.свитч SPL_INFERNO
-	_PI->WriteByte(0x5A8C33, 6); // модиф.свитч SPL_METEOR_SHOWER
+    _PI->WriteHiHook(0x5A89A0, SPLICE_, EXTENDED_, THISCALL_, Y_BattleMgr_BattleLog_PrepareSpellMessage);
 
 	// модификация указания силы некоторых заклинаний в книге
 	_PI->WriteCodePatch(0x59BFBE, "%n", 12); // убираем проверку на флаг заклинания (потом проверяем сами)
@@ -375,6 +555,9 @@ void StartPlugin()
 	_PI->WriteLoHook(0x492A6E, Y_Battle_Hint_Prepare_ResurrectArchangel);
 	_PI->WriteLoHook(0x492AF6, Y_Battle_Hint_Prepare_ResurrectArchangel);
 	_PI->WriteLoHook(0x44705A, Y_Fix_Funk_Get_Resurrect_Count);
+
+    // показ при колдовстве Волшебного Дракона (и других существ - модификация WoG'a, например командиры)
+    _PI->WriteLoHook(0x492B8E, Y_Battle_Hint_Prepare_WoG_Creatures);
 
 	return;
 }
