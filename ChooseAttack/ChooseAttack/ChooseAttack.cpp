@@ -240,7 +240,7 @@ void initNewStackAttackType(bool redraw = false)
         }
 
 
-        if ( stack->CanCastSpellAkaFaerieDragon() ) {
+        if ( stack->CanCastSpellAkaFaerieDragon() || stack->CanCastSpellAkaElemental() ) {
             if (currentType == NONE) {
                currentType = CAST;
             }
