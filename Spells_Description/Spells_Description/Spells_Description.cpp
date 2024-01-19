@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "..\..\..\include\homm3.h"
 
+#pragma warning( disable : 4482 )
+
 Patcher* _P;
 PatcherInstance* _PI;
 
@@ -42,8 +44,8 @@ enum STRING_ID
     BOOK_RECOVERY      = 12,
     BOOK_CHAIN_LIGHTNING = 13,
     BOOK_SUMMON        = 14,
-    BATTLE_ARCHANGEL   = 15,
-    BATTLE_PIT_LORD    = 16
+    BATTLE_PIT_LORD    = 15,
+    BATTLE_ARCHANGEL   = 16
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -58,6 +60,19 @@ int GetString_Localosation(int string_id)
         string_id += 17;
 
     return string_id;
+}
+
+// перевод тысяч в k или M форматы
+char* FormatedNumber(char* source, int number)
+{
+    if (number >= 10000000)
+        sprintf(source, "%dM", number / 1000000);
+    else if (number >= 10000)
+        sprintf(source, "%dk", number / 1000);
+    else
+        sprintf(source, "%d", number);   
+
+    return source;
 }
 
 // получить номер строки в текстовом файле
@@ -253,6 +268,7 @@ _bool8_ SetModifiedHintTo_TextBuffer(_BattleMgr_* bm, _BattleStack_* stack, _int
 
     _cstr_ stackName = GetCreatureName(stack->creature_id, stack->count_current);
     _int_ stringHintId = GetString_Localosation(spellType);
+    char text1[128], text2[128];
 
     if (spellType == SPELL_TYPE::CURE)
     {
@@ -260,7 +276,7 @@ _bool8_ SetModifiedHintTo_TextBuffer(_BattleMgr_* bm, _BattleStack_* stack, _int
         {
             damage = stack->lost_hp;
         }
-        sprintf(o_TextBuffer, SpDescr_TXT->GetString( stringHintId ), stackName, damage );
+        sprintf(o_TextBuffer, SpDescr_TXT->GetString( stringHintId ), stackName, FormatedNumber(text1, damage) );
     }
     else if (spellType == SPELL_TYPE::SACRIFICE)
     {
@@ -269,7 +285,7 @@ _bool8_ SetModifiedHintTo_TextBuffer(_BattleMgr_* bm, _BattleStack_* stack, _int
             _int32_ lostHealth = (stack->count_at_start * stack->creature.hit_points) - stack->GetFullHealth(0);
             killed = stack->count_at_start - stack->count_current;
             SacrificeStack = stack;
-            sprintf(o_TextBuffer, SpDescr_TXT->GetString( stringHintId ), stackName, lostHealth, killed );
+            sprintf(o_TextBuffer, SpDescr_TXT->GetString( stringHintId ), stackName, FormatedNumber(text1, lostHealth), FormatedNumber(text2, killed) );
         }
         else
         {
@@ -277,17 +293,21 @@ _bool8_ SetModifiedHintTo_TextBuffer(_BattleMgr_* bm, _BattleStack_* stack, _int
 
             _int32_ currentHealth = stack->GetFullHealth(0) + damage*stack->count_current;
             _int32_ canResurrectCount = currentHealth / SacrificeStack->creature.hit_points;
+            _int32_ lostHealth = (SacrificeStack->count_at_start * SacrificeStack->creature.hit_points) - SacrificeStack->GetFullHealth(0);
 
             killed = SacrificeStack->count_at_start - SacrificeStack->count_current;
             if (canResurrectCount > killed) canResurrectCount = killed;
 
-            sprintf(o_TextBuffer, SpDescr_TXT->GetString( stringHintId +1 ), stackName, currentHealth, canResurrectCount );
+            char text3[128], text4[128];
+            sprintf(o_TextBuffer, SpDescr_TXT->GetString( stringHintId +1 ), stackName, 
+                FormatedNumber(text1, currentHealth), FormatedNumber(text2, lostHealth),
+                FormatedNumber(text3, canResurrectCount), FormatedNumber(text4, killed) );
         }
     }
     else
     {
         killed = BattleStack_Get_Killed_From_Damage(stack, damage, spellType);
-        sprintf(o_TextBuffer, SpDescr_TXT->GetString( stringHintId ), o_Spell[spellId].name, stackName, damage, killed );
+        sprintf(o_TextBuffer, SpDescr_TXT->GetString( stringHintId ), o_Spell[spellId].name, stackName, FormatedNumber(text1, damage), FormatedNumber(text2, killed) );
     }
 
     return TRUE;
@@ -491,7 +511,7 @@ int __stdcall Y_Battle_Hint_Prepare_ResurrectArchangel(LoHook* h, HookContext* c
         str_id = STRING_ID::BATTLE_PIT_LORD;
 
     // собираем текст подсказки
-    sprintf(o_TextBuffer, SpDescr_TXT->GetString(GetString_Localosation(str_id)), count, mon_name);
+    sprintf(o_TextBuffer, SpDescr_TXT->GetString(GetString_Localosation(str_id)), FormatedNumber(myString, count), mon_name);
 
     // пропускаем стандартный код игры
     c->return_address = 0x492E3B;
@@ -596,4 +616,3 @@ BOOL APIENTRY DllMain ( HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpRes
     }
     return TRUE;
 }
-
