@@ -545,9 +545,7 @@ int __stdcall Y_Battle_Hint_Prepare_WoG_Creatures(LoHook* h, HookContext* c)
 
     // модифицируем хинт заклинания
     if ( !SetModifiedHintTo_TextBuffer(o_BattleMgr, stackTarget, spellId, spellType, power) )
-    {
         return EXEC_DEFAULT;
-    }
 
     c->return_address = 0x492E3B;
     return NO_EXEC_DEFAULT;
