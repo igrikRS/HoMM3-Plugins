@@ -218,6 +218,7 @@ int GetWoGCreatureSpellPower(_BattleStack_* stack)
 _bool8_ SetModifiedHintTo_TextBuffer(_BattleMgr_* bm, _BattleStack_* stack, _int_ spellId, _int_ spellType, _int_ creatureSpellPower)
 {
     if (!stack) return FALSE;
+    if (spellType == SPELL_TYPE::BUFF) return FALSE;
 
     int spell_power = 1;
     int spell_lvl = 0;
@@ -544,7 +545,9 @@ int __stdcall Y_Battle_Hint_Prepare_WoG_Creatures(LoHook* h, HookContext* c)
 
     // модифицируем хинт заклинания
     if ( !SetModifiedHintTo_TextBuffer(o_BattleMgr, stackTarget, spellId, spellType, power) )
+    {
         return EXEC_DEFAULT;
+    }
 
     c->return_address = 0x492E3B;
     return NO_EXEC_DEFAULT;
