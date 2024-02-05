@@ -131,13 +131,16 @@ int __stdcall Y_ReplayBattle(HiHook* hook, _AdvMgr_* advMng, _dword_ MixedPos, _
 	_Npc_* npcD = 0;
 	_Npc_* npcDS = 0;
 	_Army_* armyAS = 0;
-	_Army_* armyDS = 0;
+	_Army_* armyDS = 0;    
 
-    _int_ goldAttacker = o_GameMgr->players[HrA->owner_id].resourses.gold;
-
+    _bool_ isSavedGold = false;
+    _int_ goldAttacker = 0;
     _int_ goldDefender = 0;
-    if ( OwnerD >= 0 )
-        _int_ goldDefender = o_GameMgr->players[OwnerD].resourses.gold;
+    if ( OwnerD >= 0 && OwnerD <=7 ) {
+        isSavedGold = true;
+        goldAttacker = o_GameMgr->players[HrA->owner_id].resourses.gold;
+        goldDefender = o_GameMgr->players[OwnerD].resourses.gold;
+    }
 
 	if (HrA) {
         o_AdvMgr->HeroActive_DeMobilize();
@@ -193,6 +196,8 @@ int __stdcall Y_ReplayBattle(HiHook* hook, _AdvMgr_* advMng, _dword_ MixedPos, _
 		}
 
 		if (isNeedReplay) {	//благодоря этой проверке пропускаем первый вызов битвы
+            CALL_0(void, __cdecl, 0x75ACDD); // void __cdecl CheckForCompleteAI()
+
 			// фикс призывов от опыта стеков (вызов существ в 1м раунде битвы)
 			o_BattleMgr->round = 0; 
 			BACall_Day = -1;
@@ -201,14 +206,11 @@ int __stdcall Y_ReplayBattle(HiHook* hook, _AdvMgr_* advMng, _dword_ MixedPos, _
 			o_QuickBattle = 0;						
 			hdv(_bool_, "HD.QuickCombat") = 0;
 
-            // возвращаем деньги атакующему
-            o_GameMgr->players[HrA->owner_id].resourses.gold = goldAttacker;
-
-            // возвращаем деньги защитнику
-            if ( OwnerD >= 0 )
+            if (isSavedGold) {
+                o_GameMgr->players[HrA->owner_id].resourses.gold = goldAttacker;
                 o_GameMgr->players[OwnerD].resourses.gold = goldDefender;
+            }
 			
-            // Сообщаем о переигровке ERM'у
 			FireEvent("OnBattleReplay", NULL, 0);
 		}
 
@@ -219,7 +221,7 @@ int __stdcall Y_ReplayBattle(HiHook* hook, _AdvMgr_* advMng, _dword_ MixedPos, _
 		// непосредственный вызов битвы
 		ret = CALL_11(int, __thiscall, hook->GetDefaultFunc(), advMng, MixedPos, HrA, MArrA, OwnerD, townD, HrD, MArrD, Pv3, Pv2, Pv1);
 
-		if ( isNeedReplay ) { // Сообщаем о переигровке ERM'у
+		if ( isNeedReplay ) {
 			FireEvent("OnBeforeBattleReplay", NULL, 0);
 		}
 	} while ( isNeedReplay );
