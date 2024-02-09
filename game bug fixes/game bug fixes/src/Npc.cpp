@@ -72,37 +72,6 @@ int __stdcall get_Fight_Value_Hook(LoHook* h, HookContext* c)
     return EXEC_DEFAULT;
 } 
 
-
-
-// фикс переполнения AI_Value, когда армия у ИИ слишком большая
-_int32_ __stdcall AI_ArmyExchanging_GetAddStack_Value_And_Place(HiHook* h, int this_, int a2, __int16 a3, int a4, char a5)
-{
-    _int32_ value = CALL_5(_int32_, __thiscall, h->GetDefaultFunc(), this_, a2, a3, a4, a5);
-
-    //if (value < -(2 << 20) ) {
-    //    //if ( value > -(INT_MAX >> 2) )
-    //    //    value = 0;
-    //    //else {
-    //    //    int random = Randint(550, 600);
-    //    //    value = INT_MAX - random;
-    //    //}
-
-    //    int random = Randint(1000, 2500);
-    //    value = -random;
-
-    //    //if (o_ActivePlayer->selected_hero_id == 24)
-    //    //{
-    //    //    countCalls++;
-    //    //    sprintf(MyString, "%d) value: %d", countCalls, value);
-    //    //    b_MsgBox(MyString, 5);
-    //    //}
-    //}
-
-    return value;
-}
-
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -111,15 +80,12 @@ void Npc(PatcherInstance* _PI)
     // добавляем расчет командиров в проверку Fight_Value
     _PI->WriteLoHook(0x41EAD2, get_Fight_Value_Hook);
     // добавляем в расчет AI_Value и расчет командиров
-     _PI->WriteHiHook(0x44A950, SPLICE_, EXTENDED_, THISCALL_, get_AIValue_Hook);
+    _PI->WriteHiHook(0x44A950, SPLICE_, EXTENDED_, THISCALL_, get_AIValue_Hook);
     // ставим лоухук, чтобы понять что идет расчет AI_Value без наличия героя
     _PI->WriteLoHook(0x5C1867, get_AIValue_And_NPC_Error);
     _PI->WriteLoHook(0x42758F, get_AIValue_And_NPC_Error);
     _PI->WriteLoHook(0x42CA6B, get_AIValue_And_NPC_Error);
     _PI->WriteLoHook(0x52846A, get_AIValue_And_NPC_Error);
-
-    // фикс переполнения AI_Value, когда армия у ИИ слишком большая
-    _PI->WriteHiHook(0x42C830, SPLICE_, EXTENDED_, THISCALL_, AI_ArmyExchanging_GetAddStack_Value_And_Place);
 
     // исправление бага блока командира, когда защита падала из-за флага "в защите"
     _PI->WriteCodePatch(0x76E7D7, "%n", 24); // 15 nop 
@@ -129,6 +95,11 @@ void Npc(PatcherInstance* _PI)
     // исправление одного из багов Астрального духа
     // убираем WoG сообщение, которое вызывает непонятную ошибку
     _PI->WriteHexPatch(0x76D4B3, "EB17");
+
+    // исправление бага, когда командир после пропуска хода может оказаться мёртвым
+    // затираем вызов функции CheckForAliveNPCAfterBattle в функции добавления опыта
+    // Она тут не нужна! Этот воговский хук стоит в добавлении опыта!
+    _PI->WriteCodePatch(0x76B39E, "%n", 7);
 
     // расширяем свитч хинтов колдовства для описаний командиров
     // и монстров с номером больше 134

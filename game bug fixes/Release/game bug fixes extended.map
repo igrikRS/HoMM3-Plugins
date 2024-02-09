@@ -1,13 +1,13 @@
  game bug fixes extended
 
- Timestamp is 65a837de (Wed Jan 17 23:26:06 2024)
+ Timestamp is 65c6647f (Fri Feb 09 20:44:31 2024)
 
  Preferred load address is 10000000
 
  Start         Length     Name                   Class
- 0001:00000000 00009a94H .text                   CODE
- 0001:00009aa0 00000000H .text$x                 CODE
- 0001:00009aa0 00000000H .text$yd                CODE
+ 0001:00000000 00009a64H .text                   CODE
+ 0001:00009a70 00000000H .text$x                 CODE
+ 0001:00009a70 00000000H .text$yd                CODE
  0002:00000000 00000114H .idata$5                DATA
  0002:00000114 00000004H .CRT$XCA                DATA
  0002:00000118 00000004H .CRT$XCZ                DATA
@@ -60,246 +60,245 @@
  0001:000008a0       ?get_AIValue_Hook@@YGHPAVHiHook@@H@Z 100018a0 f   game bug fixes.obj
  0001:00000910       ?get_AIValue_And_NPC_Error@@YGHPAVLoHook@@PAUHookContext@@@Z 10001910 f   game bug fixes.obj
  0001:00000920       ?get_Fight_Value_Hook@@YGHPAVLoHook@@PAUHookContext@@@Z 10001920 f   game bug fixes.obj
- 0001:00000950       ?AI_ArmyExchanging_GetAddStack_Value_And_Place@@YGHPAVHiHook@@HHFHD@Z 10001950 f   game bug fixes.obj
- 0001:00000980       ?Npc@@YAXPAVPatcherInstance@@@Z 10001980 f   game bug fixes.obj
- 0001:00000a80       ?setActStack@@YGHPAVLoHook@@PAUHookContext@@@Z 10001a80 f   game bug fixes.obj
- 0001:00000af0       ?catapultaShoot@@YGHPAVLoHook@@PAUHookContext@@@Z 10001af0 f   game bug fixes.obj
- 0001:00000b10       ?monstreShoot@@YGHPAVLoHook@@PAUHookContext@@@Z 10001b10 f   game bug fixes.obj
- 0001:00000b40       ?Y_FixBagCreatureGredeOfNeutrals@@YGHPAVHiHook@@PAU_Army_@@H@Z 10001b40 f   game bug fixes.obj
- 0001:00000b80       ?fixHarpyBinds@@YGHPAVLoHook@@PAUHookContext@@@Z 10001b80 f   game bug fixes.obj
- 0001:00000bb0       ?Y_FixMoveDarkDragonsAfterAttack@@YGEPAVHiHook@@PAU_BattleStack_@@HE@Z 10001bb0 f   game bug fixes.obj
- 0001:00000c00       ?Y_AntiKavalierAndFly@@YGHPAVLoHook@@PAUHookContext@@@Z 10001c00 f   game bug fixes.obj
- 0001:00000c30       ?ERM_Fix_EA_E@@YGHPAVHiHook@@PAU_BattleStack_@@@Z 10001c30 f   game bug fixes.obj
- 0001:00000cd0       ?Y_FixWoG_GetCreatureGrade@@YGHPAVLoHook@@PAUHookContext@@@Z 10001cd0 f   game bug fixes.obj
- 0001:00000d30       ?Y_SetWogHates@@YGHPAVLoHook@@PAUHookContext@@@Z 10001d30 f   game bug fixes.obj
- 0001:00000e70       ?Fix_WoG_GetCreatureGrade_Expo@@YGHPAVLoHook@@PAUHookContext@@@Z 10001e70 f   game bug fixes.obj
- 0001:00000e90       ?Fix_WoG_GetCreatureGrade_Town@@YGHPAVLoHook@@PAUHookContext@@@Z 10001e90 f   game bug fixes.obj
- 0001:00000eb0       ?Y_Dlg_AddCreatures_Init_Leave@@YGHPAVHiHook@@PAU_Hero_@@PAU_Army_@@H@Z 10001eb0 f   game bug fixes.obj
- 0001:00000eb0       ?Y_Dlg_AddCreatures_Init_Add@@YGHPAVHiHook@@PAU_Hero_@@HH@Z 10001eb0 f   game bug fixes.obj
- 0001:00000ee0       ?Gem_OnBattleStackCheckReachability@@YGHPAVLoHook@@PAUHookContext@@@Z 10001ee0 f   game bug fixes.obj
- 0001:00000f20       ?Y_Fix_CrChangeDialog@@YGHPAVLoHook@@PAUHookContext@@@Z 10001f20 f   game bug fixes.obj
- 0001:00001000       ?Monsters@@YAXPAVPatcherInstance@@@Z 10002000 f   game bug fixes.obj
- 0001:00001200       ?Fix_ForceFieldShadow@@YGHPAVLoHook@@PAUHookContext@@@Z 10002200 f   game bug fixes.obj
- 0001:00001230       ?Y_RestoreBattleShadow@@YGHPAVLoHook@@PAUHookContext@@@Z 10002230 f   game bug fixes.obj
- 0001:00001250       ?Graphics@@YAXPAVPatcherInstance@@@Z 10002250 f   game bug fixes.obj
- 0001:000014f0       ?Y_Fix_ViewEarthOrAirSpell_Add_Monoliths_Show@@YGHPAVLoHook@@PAUHookContext@@@Z 100024f0 f   game bug fixes.obj
- 0001:00001590       ?Y_Fix_ViewEarthOrAirSpell_Add_Monoliths_Prepare@@YGHPAVLoHook@@PAUHookContext@@@Z 10002590 f   game bug fixes.obj
- 0001:000015d0       ?Y_DlgSpellBook_FixDecription_SpellPower@@YG_JPAVHiHook@@PAU_Hero_@@HHPAU_BattleStack_@@@Z 100025d0 f   game bug fixes.obj
- 0001:00001620       ?Y_Fix_WoG_HeroGetSpellSpecialityEffect@@YGHPAVHiHook@@PAU_Hero_@@HHH@Z 10002620 f   game bug fixes.obj
- 0001:00001650       ?Y_Fix_ReportStatusMsg_CastArmageddonSpell@@YGHPAVHiHook@@PAU_BattleMgr_@@HHPAU_Hero_@@2PAU_BattleStack_@@H@Z 10002650 f   game bug fixes.obj
- 0001:000016a0       ?Y_ArtGive_LoadSpells@@YGHPAVHiHook@@HD@Z 100026a0 f   game bug fixes.obj
- 0001:000016e0       ?Spells@@YAXPAVPatcherInstance@@@Z 100026e0 f   game bug fixes.obj
- 0001:000017a0       ?Y_FixClone_SOD_CreatureDoubleWide@@YGHPAVLoHook@@PAUHookContext@@@Z 100027a0 f   game bug fixes.obj
- 0001:00001820       ?Y_FixClone@@YGHPAVLoHook@@PAUHookContext@@@Z 10002820 f   game bug fixes.obj
- 0001:00001a40       ?Y_SetCanselWitchHut@@YGHPAVHiHook@@PAU_Hero_@@HE@Z 10002a40 f   game bug fixes.obj
- 0001:00001a80       ?Y_SetCanselScholarlySS@@YGHPAVLoHook@@PAUHookContext@@@Z 10002a80 f   game bug fixes.obj
- 0001:00001b10       ?R_FixAI_ConfluxNerchant@@YGHPAVLoHook@@PAUHookContext@@@Z 10002b10 f   game bug fixes.obj
- 0001:00001b40       ?Y_WoG_MixedPos_Fix@@YGIPAVHiHook@@HHH@Z 10002b40 f   game bug fixes.obj
- 0001:00001b70       ?Y_WoG_UnMixedPos_Fix@@YGXPAVHiHook@@IIII@Z 10002b70 f   game bug fixes.obj
- 0001:00001bb0       ?Y_AIMgr_Stack_MinRoundToReachHex@@YGHPAVHiHook@@IPAU_BattleStack_@@H@Z 10002bb0 f   game bug fixes.obj
- 0001:00001bf0       ?Y_FixCrash_CastSpell_38@@YGHPAVLoHook@@PAUHookContext@@@Z 10002bf0 f   game bug fixes.obj
- 0001:00001c30       ?Y_FixCrash_RemoveObstacle@@YGHPAVLoHook@@PAUHookContext@@@Z 10002c30 f   game bug fixes.obj
- 0001:00001c60       ?AIMgr_Stack_SetHexes_WayToMoveLength@@YGEPAVHiHook@@IPAU_BattleStack_@@HHHHH@Z 10002c60 f   game bug fixes.obj
- 0001:00001d60       ?Y_FixBattle_StackStepBack@@YGHPAVLoHook@@PAUHookContext@@@Z 10002d60 f   game bug fixes.obj
- 0001:00001de0       ?Y_NPC_FixDoubleAttackOnMelle@@YGHPAVLoHook@@PAUHookContext@@@Z 10002de0 f   game bug fixes.obj
- 0001:00001e20       ?Y_Dlg_BattleResults_IgnoreClones@@YGHPAVLoHook@@PAUHookContext@@@Z 10002e20 f   game bug fixes.obj
- 0001:00001e50       ?Gem_OnAfterArtSpellCasting@@YGHPAVLoHook@@PAUHookContext@@@Z 10002e50 f   game bug fixes.obj
- 0001:00001e70       ?GameLogic@@YAXPAVPatcherInstance@@@Z 10002e70 f   game bug fixes.obj
- 0001:000020a0       ?Y_BeforeWog@@YGHPAVLoHook@@PAUHookContext@@@Z 100030a0 f   game bug fixes.obj
- 0001:000020c0       ?Y_AftereWog@@YGHPAVLoHook@@PAUHookContext@@@Z 100030c0 f   game bug fixes.obj
- 0001:000020d0       ?HooksInit@@YAXPAVPatcher@@PAVPatcherInstance@@@Z 100030d0 f   game bug fixes.obj
- 0001:00002160       _DllMain@12                10003160 f   game bug fixes.obj
- 0001:000021fc       @__security_check_cookie@4 100031fc f   LIBCMT:secchk.obj
- 0001:0000220b       _free                      1000320b f   LIBCMT:free.obj
- 0001:00002299       __CRT_INIT@12              10003299 f   LIBCMT:dllcrt0.obj
- 0001:000024c4       __DllMainCRTStartup@12     100034c4 f   LIBCMT:dllcrt0.obj
- 0001:000024f0       _strlen                    100034f0 f   LIBCMT:strlen.obj
- 0001:0000257b       ?_CallMemberFunction0@@YGXPAX0@Z 1000357b f   LIBCMT:_trnsctrl_.obj
- 0001:00002582       ___report_gsfailure        10003582 f   LIBCMT:gs_report.obj
- 0001:00002690       _memmove                   10003690 f   LIBCMT:memmove.obj
- 0001:000029f5       __initp_misc_invarg        100039f5 f   LIBCMT:invarg.obj
- 0001:00002a04       __invoke_watson            10003a04 f   LIBCMT:invarg.obj
- 0001:00002b2c       __invalid_parameter        10003b2c f   LIBCMT:invarg.obj
- 0001:00002b52       __get_errno_from_oserr     10003b52 f   LIBCMT:dosmap.obj
- 0001:00002b94       __errno                    10003b94 f   LIBCMT:dosmap.obj
- 0001:00002ba7       ___doserrno                10003ba7 f   LIBCMT:dosmap.obj
- 0001:00002bba       __dosmaperr                10003bba f   LIBCMT:dosmap.obj
- 0001:00002bdd       ??0_LocaleUpdate@@QAE@PAUlocaleinfo_struct@@@Z 10003bdd f i LIBCMT:output.obj
- 0001:00002c64       _strcpy_s                  10003c64 f   LIBCMT:strcpy_s.obj
- 0001:00002ccc       _V6_HeapAlloc              10003ccc f   LIBCMT:malloc.obj
- 0001:00002d1b       _malloc                    10003d1b f   LIBCMT:malloc.obj
- 0001:00002de5       __heap_init                10003de5 f   LIBCMT:heapinit.obj
- 0001:00002e15       __heap_term                10003e15 f   LIBCMT:heapinit.obj
- 0001:00002e89       __mtinitlocks              10003e89 f   LIBCMT:mlock.obj
- 0001:00002ed4       __mtdeletelocks            10003ed4 f   LIBCMT:mlock.obj
- 0001:00002f2b       __unlock                   10003f2b f   LIBCMT:mlock.obj
- 0001:00002f42       __mtinitlocknum            10003f42 f   LIBCMT:mlock.obj
- 0001:00003005       __lock                     10004005 f   LIBCMT:mlock.obj
- 0001:00003038       ___sbh_find_block          10004038 f   LIBCMT:sbheap.obj
- 0001:00003068       ___sbh_free_block          10004068 f   LIBCMT:sbheap.obj
- 0001:0000337e       ___sbh_alloc_new_region    1000437e f   LIBCMT:sbheap.obj
- 0001:0000342e       ___sbh_alloc_new_group     1000442e f   LIBCMT:sbheap.obj
- 0001:00003536       ___sbh_resize_block        10004536 f   LIBCMT:sbheap.obj
- 0001:00003817       ___sbh_alloc_block         10004817 f   LIBCMT:sbheap.obj
- 0001:00003afc       __SEH_prolog4              10004afc f   LIBCMT:sehprolg4.obj
- 0001:00003b41       __SEH_epilog4              10004b41 f   LIBCMT:sehprolg4.obj
- 0001:00003b60       __except_handler4          10004b60 f   LIBCMT:chandler4.obj
- 0001:00003cf0       _memset                    10004cf0 f   LIBCMT:memset.obj
- 0001:00003d70       _memcpy                    10004d70 f   LIBCMT:memcpy.obj
- 0001:000040e0       _strcmp                    100050e0 f   LIBCMT:strcmp.obj
- 0001:00004222       ___onexitinit              10005222 f   LIBCMT:onexit.obj
- 0001:00004253       __onexit                   10005253 f   LIBCMT:onexit.obj
- 0001:0000428f       _atexit                    1000528f f   LIBCMT:onexit.obj
- 0001:000042a6       __initp_heap_handler       100052a6 f   LIBCMT:handler.obj
- 0001:000042b5       __callnewh                 100052b5 f   LIBCMT:handler.obj
- 0001:000042dd       __encode_pointer           100052dd f   LIBCMT:tidtable.obj
- 0001:0000434f       __encoded_null             1000534f f   LIBCMT:tidtable.obj
- 0001:00004358       __decode_pointer           10005358 f   LIBCMT:tidtable.obj
- 0001:000043ca       ___crtTlsAlloc@4           100053ca f   LIBCMT:tidtable.obj
- 0001:000043d3       ___set_flsgetvalue         100053d3 f   LIBCMT:tidtable.obj
- 0001:00004407       __mtterm                   10005407 f   LIBCMT:tidtable.obj
- 0001:00004444       __initptd                  10005444 f   LIBCMT:tidtable.obj
- 0001:0000452b       __getptd_noexit            1000552b f   LIBCMT:tidtable.obj
- 0001:000045a4       __getptd                   100055a4 f   LIBCMT:tidtable.obj
- 0001:000045be       __freefls@4                100055be f   LIBCMT:tidtable.obj
- 0001:000046ed       __freeptd                  100056ed f   LIBCMT:tidtable.obj
- 0001:0000475b       __mtinit                   1000575b f   LIBCMT:tidtable.obj
- 0001:000048e8       __malloc_crt               100058e8 f   LIBCMT:crtheap.obj
- 0001:0000492d       __calloc_crt               1000592d f   LIBCMT:crtheap.obj
- 0001:00004979       __realloc_crt              10005979 f   LIBCMT:crtheap.obj
- 0001:000049c7       __crt_waiting_on_module_handle 100059c7 f   LIBCMT:crt0dat.obj
- 0001:000049f7       __amsg_exit                100059f7 f   LIBCMT:crt0dat.obj
- 0001:00004a20       ___crtCorExitProcess       10005a20 f   LIBCMT:crt0dat.obj
- 0001:00004a4b       ___crtExitProcess          10005a4b f   LIBCMT:crt0dat.obj
- 0001:00004a63       __lockexit                 10005a63 f   LIBCMT:crt0dat.obj
- 0001:00004a6c       __unlockexit               10005a6c f   LIBCMT:crt0dat.obj
- 0001:00004a92       __initterm_e               10005a92 f   LIBCMT:crt0dat.obj
- 0001:00004ab6       __cinit                    10005ab6 f   LIBCMT:crt0dat.obj
- 0001:00004c67       __exit                     10005c67 f   LIBCMT:crt0dat.obj
- 0001:00004c7d       __cexit                    10005c7d f   LIBCMT:crt0dat.obj
- 0001:00004c8c       __init_pointers            10005c8c f   LIBCMT:crt0dat.obj
- 0001:00004cda       __ioinit                   10005cda f   LIBCMT:ioinit.obj
- 0001:00004f2e       __ioterm                   10005f2e f   LIBCMT:ioinit.obj
- 0001:00004f7c       __setenvp                  10005f7c f   LIBCMT:stdenvp.obj
- 0001:000051f4       __setargv                  100061f4 f   LIBCMT:stdargv.obj
- 0001:000052af       ___crtGetEnvironmentStringsA 100062af f   LIBCMT:a_env.obj
- 0001:000053e6       __RTC_Initialize           100063e6 f   LIBCMT:_initsect_.obj
- 0001:0000540c       __RTC_Terminate            1000640c f   LIBCMT:_initsect_.obj
- 0001:00005432       __initp_misc_winxfltr      10006432 f   LIBCMT:winxfltr.obj
- 0001:00005433       __XcptFilter               10006433 f   LIBCMT:winxfltr.obj
- 0001:00005593       ___CppXcptFilter           10006593 f   LIBCMT:winxfltr.obj
- 0001:000055b3       ___security_init_cookie    100065b3 f   LIBCMT:gs_support.obj
- 0001:00005649       ___DestructExceptionObject 10006649 f   LIBCMT:frame.obj
- 0001:0000569e       ?terminate@@YAXXZ          1000669e f   LIBCMT:hooks.obj
- 0001:000056d7       __initp_eh_hooks           100066d7 f   LIBCMT:hooks.obj
- 0001:000056f0       __CallSettingFrame@12      100066f0 f   LIBCMT:lowhelpr.obj
- 0001:00005717       __NLG_Return               10006717     LIBCMT:lowhelpr.obj
- 0001:0000573c       __crt_debugger_hook        1000673c f   LIBCMT:dbghook.obj
- 0001:000057cb       __VEC_memcpy               100067cb f   LIBCMT:p4_memcpy.obj
- 0001:000058fe       __get_sse2_info            100068fe f   LIBCMT:cpu_disp.obj
- 0001:00005960       ___sse2_available_init     10006960 f   LIBCMT:cpu_disp.obj
- 0001:0000596d       __lseeki64_nolock          1000696d f   LIBCMT:lseeki64.obj
- 0001:000059f2       __write_nolock             100069f2 f   LIBCMT:write.obj
- 0001:00006125       __write                    10007125 f   LIBCMT:write.obj
- 0001:00006201       __isatty                   10007201 f   LIBCMT:isatty.obj
- 0001:00006265       ___initstdio               10007265 f   LIBCMT:_file.obj
- 0001:00006316       ___endstdio                10007316 f   LIBCMT:_file.obj
- 0001:00006336       __lock_file                10007336 f   LIBCMT:_file.obj
- 0001:00006377       __lock_file2               10007377 f   LIBCMT:_file.obj
- 0001:000063a9       __unlock_file              100073a9 f   LIBCMT:_file.obj
- 0001:000063e5       __unlock_file2             100073e5 f   LIBCMT:_file.obj
- 0001:00006414       __fileno                   10007414 f   LIBCMT:fileno.obj
- 0001:0000666c       ___updatetmbcinfo          1000766c f   LIBCMT:mbctype.obj
- 0001:0000678c       __setmbcp_nolock           1000778c f   LIBCMT:mbctype.obj
- 0001:00006971       __setmbcp                  10007971 f   LIBCMT:mbctype.obj
- 0001:00006b0b       ___initmbctable            10007b0b f   LIBCMT:mbctype.obj
- 0001:00006b29       ___freetlocinfo            10007b29 f   LIBCMT:setlocal.obj
- 0001:00006c72       ___addlocaleref            10007c72 f   LIBCMT:setlocal.obj
- 0001:00006d01       ___removelocaleref         10007d01 f   LIBCMT:setlocal.obj
- 0001:00006dd8       ___updatetlocinfo          10007dd8 f   LIBCMT:setlocal.obj
- 0001:00006e4e       __initp_misc_cfltcvt_tab   10007e4e f   LIBCMT:cmiscdat.obj
- 0001:00006e6f       __isleadbyte_l             10007e6f f i LIBCMT:_wctype.obj
- 0001:00006ea7       _isleadbyte                10007ea7 f i LIBCMT:_wctype.obj
- 0001:00006ec0       __aulldvrm                 10007ec0 f   LIBCMT:ulldvrm.obj
- 0001:00006f55       __NMSG_WRITE               10007f55 f   LIBCMT:crt0msg.obj
- 0001:00007100       __FF_MSGBANNER             10008100 f   LIBCMT:crt0msg.obj
- 0001:00007139       __initp_misc_initcrit      10008139 f   LIBCMT:initcrit.obj
- 0001:00007148       ___crtInitCritSecAndSpinCount 10008148 f   LIBCMT:initcrit.obj
- 0001:000071a8       __local_unwind4            100081a8 f   LIBCMT:exsup4.obj
- 0001:0000727e       __seh_longjmp_unwind4@4    1000827e f   LIBCMT:exsup4.obj
- 0001:0000729a       @_EH4_CallFilterFunc@8     1000829a f   LIBCMT:exsup4.obj
- 0001:000072b1       @_EH4_TransferToHandler@8  100082b1 f   LIBCMT:exsup4.obj
- 0001:000072ca       @_EH4_GlobalUnwind@4       100082ca f   LIBCMT:exsup4.obj
- 0001:000072e4       @_EH4_LocalUnwind@16       100082e4 f   LIBCMT:exsup4.obj
- 0001:00007300       __ValidateImageBase        10008300 f   LIBCMT:pesect.obj
- 0001:00007340       __FindPESection            10008340 f   LIBCMT:pesect.obj
- 0001:00007390       __IsNonwritableInCurrentImage 10008390 f   LIBCMT:pesect.obj
- 0001:000074a4       __VEC_memzero              100084a4 f   LIBCMT:p4_memset.obj
- 0001:00007533       __msize                    10008533 f   LIBCMT:msize.obj
- 0001:000075d6       __calloc_impl              100085d6 f   LIBCMT:calloc_impl.obj
- 0001:000076f4       _realloc                   100086f4 f   LIBCMT:realloc.obj
- 0001:0000790f       __initp_misc_winsig        1000890f f   LIBCMT:winsig.obj
- 0001:00007964       ___get_sigabrt             10008964 f   LIBCMT:winsig.obj
- 0001:00007971       _raise                     10008971 f   LIBCMT:winsig.obj
- 0001:00007b21       __initp_misc_rand_s        10008b21 f   LIBCMT:rand_s.obj
- 0001:00007b30       __initp_misc_purevirt      10008b30 f   LIBCMT:inithelp.obj
- 0001:00007b92       __ismbblead                10008b92 f   LIBCMT:ismbbyte.obj
- 0001:00007baa       _abort                     10008baa f   LIBCMT:abort.obj
- 0001:00007cc4       __global_unwind2           10008cc4 f   LIBCMT:exsup.obj
- 0001:00007d29       __local_unwind2            10008d29 f   LIBCMT:exsup.obj
- 0001:00007dad       __abnormal_termination     10008dad f   LIBCMT:exsup.obj
- 0001:00007dd0       __NLG_Notify1              10008dd0 f   LIBCMT:exsup.obj
- 0001:00007dd9       __NLG_Notify               10008dd9 f   LIBCMT:exsup.obj
- 0001:00007df0       __NLG_Dispatch             10008df0     LIBCMT:exsup.obj
- 0001:00007df0       __NLG_Dispatch2            10008df0     LIBCMT:exsup.obj
- 0001:00007df8       __NLG_Call                 10008df8 f   LIBCMT:exsup.obj
- 0001:00007dfa       __NLG_Return2              10008dfa     LIBCMT:exsup.obj
- 0001:00007dfb       __free_osfhnd              10008dfb f   LIBCMT:osfinfo.obj
- 0001:00007e81       __get_osfhandle            10008e81 f   LIBCMT:osfinfo.obj
- 0001:00007ef8       ___lock_fhandle            10008ef8 f   LIBCMT:osfinfo.obj
- 0001:00007f98       __unlock_fhandle           10008f98 f   LIBCMT:osfinfo.obj
- 0001:00007fbf       __putwch_nolock            10008fbf f   LIBCMT:putwch.obj
- 0001:00008084       __mbtowc_l                 10009084 f   LIBCMT:mbtowc.obj
- 0001:0000819b       _mbtowc                    1000919b f   LIBCMT:mbtowc.obj
- 0001:000081c0       __chkstk                   100091c0 f   LIBCMT:chkstk.obj
- 0001:000081c0       __alloca_probe             100091c0     LIBCMT:chkstk.obj
- 0001:000081eb       __fcloseall                100091eb f   LIBCMT:closeall.obj
- 0001:0000828a       __flush                    1000928a f   LIBCMT:fflush.obj
- 0001:000082f2       __fflush_nolock            100092f2 f   LIBCMT:fflush.obj
- 0001:00008414       __flushall                 10009414 f   LIBCMT:fflush.obj
- 0001:0000841d       __freea                    1000941d f i LIBCMT:a_map.obj
- 0001:000087e2       ___crtLCMapStringA         100097e2 f   LIBCMT:a_map.obj
- 0001:000089e1       ___crtGetStringTypeA       100099e1 f   LIBCMT:a_str.obj
- 0001:00008a23       ___free_lc_time            10009a23 f   LIBCMT:inittime.obj
- 0001:00008bb8       ___free_lconv_num          10009bb8 f   LIBCMT:initnum.obj
- 0001:00008bfd       ___free_lconv_mon          10009bfd f   LIBCMT:initmon.obj
- 0001:00008c8b       _strcat_s                  10009c8b f   LIBCMT:strcat_s.obj
- 0001:00008d00       _strcspn                   10009d00 f   LIBCMT:strcspn.obj
- 0001:00008d46       _strncpy_s                 10009d46 f   LIBCMT:strncpy_s.obj
- 0001:00008e00       _strpbrk                   10009e00 f   LIBCMT:strpbrk.obj
- 0001:00008e40       __fptrap                   10009e40 f   LIBCMT:crt0fp.obj
- 0001:00009078       _strtol                    1000a078 f   LIBCMT:strtol.obj
- 0001:000090a3       ___crtMessageBoxA          1000a0a3 f   LIBCMT:crtmbox.obj
- 0001:0000920c       __set_error_mode           1000a20c f   LIBCMT:errmode.obj
- 0001:00009260       __allmul                   1000a260 f   LIBCMT:llmul.obj
- 0001:00009294       _atol                      1000a294 f   LIBCMT:atox.obj
- 0001:000092aa       ___initconout              1000a2aa f   LIBCMT:initcon.obj
- 0001:000092c9       ___termcon                 1000a2c9 f   LIBCMT:initcon.obj
- 0001:000092f6       __fclose_nolock            1000a2f6 f   LIBCMT:fclose.obj
- 0001:0000936d       _fclose                    1000a36d f   LIBCMT:fclose.obj
- 0001:000093e9       __commit                   1000a3e9 f   LIBCMT:commit.obj
- 0001:000094ca       ___ansicp                  1000a4ca f   LIBCMT:convrtcp.obj
- 0001:00009513       ___convertcp               1000a513 f   LIBCMT:convrtcp.obj
- 0001:000096d0       __alloca_probe_16          1000a6d0 f   LIBCMT:alloca16.obj
- 0001:000096e6       __alloca_probe_8           1000a6e6     LIBCMT:alloca16.obj
- 0001:000096fc       __isctype_l                1000a6fc f   LIBCMT:isctype.obj
- 0001:000097b4       __close_nolock             1000a7b4 f   LIBCMT:close.obj
- 0001:00009850       __close                    1000a850 f   LIBCMT:close.obj
- 0001:0000991d       __freebuf                  1000a91d f   LIBCMT:_freebuf.obj
- 0001:00009950       ___ascii_strnicmp          1000a950 f   LIBCMT:_strnicm.obj
- 0001:000099d0       _strchr                    1000a9d0 f   LIBCMT:strchr.obj
- 0001:000099d6       ___from_strstr_to_strchr   1000a9d6     LIBCMT:strchr.obj
- 0001:00009a8e       _RtlUnwind@16              1000aa8e f   kernel32:KERNEL32.dll
+ 0001:00000950       ?Npc@@YAXPAVPatcherInstance@@@Z 10001950 f   game bug fixes.obj
+ 0001:00000a50       ?setActStack@@YGHPAVLoHook@@PAUHookContext@@@Z 10001a50 f   game bug fixes.obj
+ 0001:00000ac0       ?catapultaShoot@@YGHPAVLoHook@@PAUHookContext@@@Z 10001ac0 f   game bug fixes.obj
+ 0001:00000ae0       ?monstreShoot@@YGHPAVLoHook@@PAUHookContext@@@Z 10001ae0 f   game bug fixes.obj
+ 0001:00000b10       ?Y_FixBagCreatureGredeOfNeutrals@@YGHPAVHiHook@@PAU_Army_@@H@Z 10001b10 f   game bug fixes.obj
+ 0001:00000b50       ?fixHarpyBinds@@YGHPAVLoHook@@PAUHookContext@@@Z 10001b50 f   game bug fixes.obj
+ 0001:00000b80       ?Y_FixMoveDarkDragonsAfterAttack@@YGEPAVHiHook@@PAU_BattleStack_@@HE@Z 10001b80 f   game bug fixes.obj
+ 0001:00000bd0       ?Y_AntiKavalierAndFly@@YGHPAVLoHook@@PAUHookContext@@@Z 10001bd0 f   game bug fixes.obj
+ 0001:00000c00       ?ERM_Fix_EA_E@@YGHPAVHiHook@@PAU_BattleStack_@@@Z 10001c00 f   game bug fixes.obj
+ 0001:00000ca0       ?Y_FixWoG_GetCreatureGrade@@YGHPAVLoHook@@PAUHookContext@@@Z 10001ca0 f   game bug fixes.obj
+ 0001:00000d00       ?Y_SetWogHates@@YGHPAVLoHook@@PAUHookContext@@@Z 10001d00 f   game bug fixes.obj
+ 0001:00000e40       ?Fix_WoG_GetCreatureGrade_Expo@@YGHPAVLoHook@@PAUHookContext@@@Z 10001e40 f   game bug fixes.obj
+ 0001:00000e60       ?Fix_WoG_GetCreatureGrade_Town@@YGHPAVLoHook@@PAUHookContext@@@Z 10001e60 f   game bug fixes.obj
+ 0001:00000e80       ?Y_Dlg_AddCreatures_Init_Leave@@YGHPAVHiHook@@PAU_Hero_@@PAU_Army_@@H@Z 10001e80 f   game bug fixes.obj
+ 0001:00000e80       ?Y_Dlg_AddCreatures_Init_Add@@YGHPAVHiHook@@PAU_Hero_@@HH@Z 10001e80 f   game bug fixes.obj
+ 0001:00000eb0       ?Gem_OnBattleStackCheckReachability@@YGHPAVLoHook@@PAUHookContext@@@Z 10001eb0 f   game bug fixes.obj
+ 0001:00000ef0       ?Y_Fix_CrChangeDialog@@YGHPAVLoHook@@PAUHookContext@@@Z 10001ef0 f   game bug fixes.obj
+ 0001:00000fd0       ?Monsters@@YAXPAVPatcherInstance@@@Z 10001fd0 f   game bug fixes.obj
+ 0001:000011d0       ?Fix_ForceFieldShadow@@YGHPAVLoHook@@PAUHookContext@@@Z 100021d0 f   game bug fixes.obj
+ 0001:00001200       ?Y_RestoreBattleShadow@@YGHPAVLoHook@@PAUHookContext@@@Z 10002200 f   game bug fixes.obj
+ 0001:00001220       ?Graphics@@YAXPAVPatcherInstance@@@Z 10002220 f   game bug fixes.obj
+ 0001:000014c0       ?Y_Fix_ViewEarthOrAirSpell_Add_Monoliths_Show@@YGHPAVLoHook@@PAUHookContext@@@Z 100024c0 f   game bug fixes.obj
+ 0001:00001560       ?Y_Fix_ViewEarthOrAirSpell_Add_Monoliths_Prepare@@YGHPAVLoHook@@PAUHookContext@@@Z 10002560 f   game bug fixes.obj
+ 0001:000015a0       ?Y_DlgSpellBook_FixDecription_SpellPower@@YG_JPAVHiHook@@PAU_Hero_@@HHPAU_BattleStack_@@@Z 100025a0 f   game bug fixes.obj
+ 0001:000015f0       ?Y_Fix_WoG_HeroGetSpellSpecialityEffect@@YGHPAVHiHook@@PAU_Hero_@@HHH@Z 100025f0 f   game bug fixes.obj
+ 0001:00001620       ?Y_Fix_ReportStatusMsg_CastArmageddonSpell@@YGHPAVHiHook@@PAU_BattleMgr_@@HHPAU_Hero_@@2PAU_BattleStack_@@H@Z 10002620 f   game bug fixes.obj
+ 0001:00001670       ?Y_ArtGive_LoadSpells@@YGHPAVHiHook@@HD@Z 10002670 f   game bug fixes.obj
+ 0001:000016b0       ?Spells@@YAXPAVPatcherInstance@@@Z 100026b0 f   game bug fixes.obj
+ 0001:00001770       ?Y_FixClone_SOD_CreatureDoubleWide@@YGHPAVLoHook@@PAUHookContext@@@Z 10002770 f   game bug fixes.obj
+ 0001:000017f0       ?Y_FixClone@@YGHPAVLoHook@@PAUHookContext@@@Z 100027f0 f   game bug fixes.obj
+ 0001:00001a10       ?Y_SetCanselWitchHut@@YGHPAVHiHook@@PAU_Hero_@@HE@Z 10002a10 f   game bug fixes.obj
+ 0001:00001a50       ?Y_SetCanselScholarlySS@@YGHPAVLoHook@@PAUHookContext@@@Z 10002a50 f   game bug fixes.obj
+ 0001:00001ae0       ?R_FixAI_ConfluxNerchant@@YGHPAVLoHook@@PAUHookContext@@@Z 10002ae0 f   game bug fixes.obj
+ 0001:00001b10       ?Y_WoG_MixedPos_Fix@@YGIPAVHiHook@@HHH@Z 10002b10 f   game bug fixes.obj
+ 0001:00001b40       ?Y_WoG_UnMixedPos_Fix@@YGXPAVHiHook@@IIII@Z 10002b40 f   game bug fixes.obj
+ 0001:00001b80       ?Y_AIMgr_Stack_MinRoundToReachHex@@YGHPAVHiHook@@IPAU_BattleStack_@@H@Z 10002b80 f   game bug fixes.obj
+ 0001:00001bc0       ?Y_FixCrash_CastSpell_38@@YGHPAVLoHook@@PAUHookContext@@@Z 10002bc0 f   game bug fixes.obj
+ 0001:00001c00       ?Y_FixCrash_RemoveObstacle@@YGHPAVLoHook@@PAUHookContext@@@Z 10002c00 f   game bug fixes.obj
+ 0001:00001c30       ?AIMgr_Stack_SetHexes_WayToMoveLength@@YGEPAVHiHook@@IPAU_BattleStack_@@HHHHH@Z 10002c30 f   game bug fixes.obj
+ 0001:00001d30       ?Y_FixBattle_StackStepBack@@YGHPAVLoHook@@PAUHookContext@@@Z 10002d30 f   game bug fixes.obj
+ 0001:00001db0       ?Y_NPC_FixDoubleAttackOnMelle@@YGHPAVLoHook@@PAUHookContext@@@Z 10002db0 f   game bug fixes.obj
+ 0001:00001df0       ?Y_Dlg_BattleResults_IgnoreClones@@YGHPAVLoHook@@PAUHookContext@@@Z 10002df0 f   game bug fixes.obj
+ 0001:00001e20       ?Gem_OnAfterArtSpellCasting@@YGHPAVLoHook@@PAUHookContext@@@Z 10002e20 f   game bug fixes.obj
+ 0001:00001e40       ?GameLogic@@YAXPAVPatcherInstance@@@Z 10002e40 f   game bug fixes.obj
+ 0001:00002070       ?Y_BeforeWog@@YGHPAVLoHook@@PAUHookContext@@@Z 10003070 f   game bug fixes.obj
+ 0001:00002090       ?Y_AftereWog@@YGHPAVLoHook@@PAUHookContext@@@Z 10003090 f   game bug fixes.obj
+ 0001:000020a0       ?HooksInit@@YAXPAVPatcher@@PAVPatcherInstance@@@Z 100030a0 f   game bug fixes.obj
+ 0001:00002130       _DllMain@12                10003130 f   game bug fixes.obj
+ 0001:000021cc       @__security_check_cookie@4 100031cc f   LIBCMT:secchk.obj
+ 0001:000021db       _free                      100031db f   LIBCMT:free.obj
+ 0001:00002269       __CRT_INIT@12              10003269 f   LIBCMT:dllcrt0.obj
+ 0001:00002494       __DllMainCRTStartup@12     10003494 f   LIBCMT:dllcrt0.obj
+ 0001:000024c0       _strlen                    100034c0 f   LIBCMT:strlen.obj
+ 0001:0000254b       ?_CallMemberFunction0@@YGXPAX0@Z 1000354b f   LIBCMT:_trnsctrl_.obj
+ 0001:00002552       ___report_gsfailure        10003552 f   LIBCMT:gs_report.obj
+ 0001:00002660       _memmove                   10003660 f   LIBCMT:memmove.obj
+ 0001:000029c5       __initp_misc_invarg        100039c5 f   LIBCMT:invarg.obj
+ 0001:000029d4       __invoke_watson            100039d4 f   LIBCMT:invarg.obj
+ 0001:00002afc       __invalid_parameter        10003afc f   LIBCMT:invarg.obj
+ 0001:00002b22       __get_errno_from_oserr     10003b22 f   LIBCMT:dosmap.obj
+ 0001:00002b64       __errno                    10003b64 f   LIBCMT:dosmap.obj
+ 0001:00002b77       ___doserrno                10003b77 f   LIBCMT:dosmap.obj
+ 0001:00002b8a       __dosmaperr                10003b8a f   LIBCMT:dosmap.obj
+ 0001:00002bad       ??0_LocaleUpdate@@QAE@PAUlocaleinfo_struct@@@Z 10003bad f i LIBCMT:output.obj
+ 0001:00002c34       _strcpy_s                  10003c34 f   LIBCMT:strcpy_s.obj
+ 0001:00002c9c       _V6_HeapAlloc              10003c9c f   LIBCMT:malloc.obj
+ 0001:00002ceb       _malloc                    10003ceb f   LIBCMT:malloc.obj
+ 0001:00002db5       __heap_init                10003db5 f   LIBCMT:heapinit.obj
+ 0001:00002de5       __heap_term                10003de5 f   LIBCMT:heapinit.obj
+ 0001:00002e59       __mtinitlocks              10003e59 f   LIBCMT:mlock.obj
+ 0001:00002ea4       __mtdeletelocks            10003ea4 f   LIBCMT:mlock.obj
+ 0001:00002efb       __unlock                   10003efb f   LIBCMT:mlock.obj
+ 0001:00002f12       __mtinitlocknum            10003f12 f   LIBCMT:mlock.obj
+ 0001:00002fd5       __lock                     10003fd5 f   LIBCMT:mlock.obj
+ 0001:00003008       ___sbh_find_block          10004008 f   LIBCMT:sbheap.obj
+ 0001:00003038       ___sbh_free_block          10004038 f   LIBCMT:sbheap.obj
+ 0001:0000334e       ___sbh_alloc_new_region    1000434e f   LIBCMT:sbheap.obj
+ 0001:000033fe       ___sbh_alloc_new_group     100043fe f   LIBCMT:sbheap.obj
+ 0001:00003506       ___sbh_resize_block        10004506 f   LIBCMT:sbheap.obj
+ 0001:000037e7       ___sbh_alloc_block         100047e7 f   LIBCMT:sbheap.obj
+ 0001:00003acc       __SEH_prolog4              10004acc f   LIBCMT:sehprolg4.obj
+ 0001:00003b11       __SEH_epilog4              10004b11 f   LIBCMT:sehprolg4.obj
+ 0001:00003b30       __except_handler4          10004b30 f   LIBCMT:chandler4.obj
+ 0001:00003cc0       _memset                    10004cc0 f   LIBCMT:memset.obj
+ 0001:00003d40       _memcpy                    10004d40 f   LIBCMT:memcpy.obj
+ 0001:000040b0       _strcmp                    100050b0 f   LIBCMT:strcmp.obj
+ 0001:000041f2       ___onexitinit              100051f2 f   LIBCMT:onexit.obj
+ 0001:00004223       __onexit                   10005223 f   LIBCMT:onexit.obj
+ 0001:0000425f       _atexit                    1000525f f   LIBCMT:onexit.obj
+ 0001:00004276       __initp_heap_handler       10005276 f   LIBCMT:handler.obj
+ 0001:00004285       __callnewh                 10005285 f   LIBCMT:handler.obj
+ 0001:000042ad       __encode_pointer           100052ad f   LIBCMT:tidtable.obj
+ 0001:0000431f       __encoded_null             1000531f f   LIBCMT:tidtable.obj
+ 0001:00004328       __decode_pointer           10005328 f   LIBCMT:tidtable.obj
+ 0001:0000439a       ___crtTlsAlloc@4           1000539a f   LIBCMT:tidtable.obj
+ 0001:000043a3       ___set_flsgetvalue         100053a3 f   LIBCMT:tidtable.obj
+ 0001:000043d7       __mtterm                   100053d7 f   LIBCMT:tidtable.obj
+ 0001:00004414       __initptd                  10005414 f   LIBCMT:tidtable.obj
+ 0001:000044fb       __getptd_noexit            100054fb f   LIBCMT:tidtable.obj
+ 0001:00004574       __getptd                   10005574 f   LIBCMT:tidtable.obj
+ 0001:0000458e       __freefls@4                1000558e f   LIBCMT:tidtable.obj
+ 0001:000046bd       __freeptd                  100056bd f   LIBCMT:tidtable.obj
+ 0001:0000472b       __mtinit                   1000572b f   LIBCMT:tidtable.obj
+ 0001:000048b8       __malloc_crt               100058b8 f   LIBCMT:crtheap.obj
+ 0001:000048fd       __calloc_crt               100058fd f   LIBCMT:crtheap.obj
+ 0001:00004949       __realloc_crt              10005949 f   LIBCMT:crtheap.obj
+ 0001:00004997       __crt_waiting_on_module_handle 10005997 f   LIBCMT:crt0dat.obj
+ 0001:000049c7       __amsg_exit                100059c7 f   LIBCMT:crt0dat.obj
+ 0001:000049f0       ___crtCorExitProcess       100059f0 f   LIBCMT:crt0dat.obj
+ 0001:00004a1b       ___crtExitProcess          10005a1b f   LIBCMT:crt0dat.obj
+ 0001:00004a33       __lockexit                 10005a33 f   LIBCMT:crt0dat.obj
+ 0001:00004a3c       __unlockexit               10005a3c f   LIBCMT:crt0dat.obj
+ 0001:00004a62       __initterm_e               10005a62 f   LIBCMT:crt0dat.obj
+ 0001:00004a86       __cinit                    10005a86 f   LIBCMT:crt0dat.obj
+ 0001:00004c37       __exit                     10005c37 f   LIBCMT:crt0dat.obj
+ 0001:00004c4d       __cexit                    10005c4d f   LIBCMT:crt0dat.obj
+ 0001:00004c5c       __init_pointers            10005c5c f   LIBCMT:crt0dat.obj
+ 0001:00004caa       __ioinit                   10005caa f   LIBCMT:ioinit.obj
+ 0001:00004efe       __ioterm                   10005efe f   LIBCMT:ioinit.obj
+ 0001:00004f4c       __setenvp                  10005f4c f   LIBCMT:stdenvp.obj
+ 0001:000051c4       __setargv                  100061c4 f   LIBCMT:stdargv.obj
+ 0001:0000527f       ___crtGetEnvironmentStringsA 1000627f f   LIBCMT:a_env.obj
+ 0001:000053b6       __RTC_Initialize           100063b6 f   LIBCMT:_initsect_.obj
+ 0001:000053dc       __RTC_Terminate            100063dc f   LIBCMT:_initsect_.obj
+ 0001:00005402       __initp_misc_winxfltr      10006402 f   LIBCMT:winxfltr.obj
+ 0001:00005403       __XcptFilter               10006403 f   LIBCMT:winxfltr.obj
+ 0001:00005563       ___CppXcptFilter           10006563 f   LIBCMT:winxfltr.obj
+ 0001:00005583       ___security_init_cookie    10006583 f   LIBCMT:gs_support.obj
+ 0001:00005619       ___DestructExceptionObject 10006619 f   LIBCMT:frame.obj
+ 0001:0000566e       ?terminate@@YAXXZ          1000666e f   LIBCMT:hooks.obj
+ 0001:000056a7       __initp_eh_hooks           100066a7 f   LIBCMT:hooks.obj
+ 0001:000056c0       __CallSettingFrame@12      100066c0 f   LIBCMT:lowhelpr.obj
+ 0001:000056e7       __NLG_Return               100066e7     LIBCMT:lowhelpr.obj
+ 0001:0000570c       __crt_debugger_hook        1000670c f   LIBCMT:dbghook.obj
+ 0001:0000579b       __VEC_memcpy               1000679b f   LIBCMT:p4_memcpy.obj
+ 0001:000058ce       __get_sse2_info            100068ce f   LIBCMT:cpu_disp.obj
+ 0001:00005930       ___sse2_available_init     10006930 f   LIBCMT:cpu_disp.obj
+ 0001:0000593d       __lseeki64_nolock          1000693d f   LIBCMT:lseeki64.obj
+ 0001:000059c2       __write_nolock             100069c2 f   LIBCMT:write.obj
+ 0001:000060f5       __write                    100070f5 f   LIBCMT:write.obj
+ 0001:000061d1       __isatty                   100071d1 f   LIBCMT:isatty.obj
+ 0001:00006235       ___initstdio               10007235 f   LIBCMT:_file.obj
+ 0001:000062e6       ___endstdio                100072e6 f   LIBCMT:_file.obj
+ 0001:00006306       __lock_file                10007306 f   LIBCMT:_file.obj
+ 0001:00006347       __lock_file2               10007347 f   LIBCMT:_file.obj
+ 0001:00006379       __unlock_file              10007379 f   LIBCMT:_file.obj
+ 0001:000063b5       __unlock_file2             100073b5 f   LIBCMT:_file.obj
+ 0001:000063e4       __fileno                   100073e4 f   LIBCMT:fileno.obj
+ 0001:0000663c       ___updatetmbcinfo          1000763c f   LIBCMT:mbctype.obj
+ 0001:0000675c       __setmbcp_nolock           1000775c f   LIBCMT:mbctype.obj
+ 0001:00006941       __setmbcp                  10007941 f   LIBCMT:mbctype.obj
+ 0001:00006adb       ___initmbctable            10007adb f   LIBCMT:mbctype.obj
+ 0001:00006af9       ___freetlocinfo            10007af9 f   LIBCMT:setlocal.obj
+ 0001:00006c42       ___addlocaleref            10007c42 f   LIBCMT:setlocal.obj
+ 0001:00006cd1       ___removelocaleref         10007cd1 f   LIBCMT:setlocal.obj
+ 0001:00006da8       ___updatetlocinfo          10007da8 f   LIBCMT:setlocal.obj
+ 0001:00006e1e       __initp_misc_cfltcvt_tab   10007e1e f   LIBCMT:cmiscdat.obj
+ 0001:00006e3f       __isleadbyte_l             10007e3f f i LIBCMT:_wctype.obj
+ 0001:00006e77       _isleadbyte                10007e77 f i LIBCMT:_wctype.obj
+ 0001:00006e90       __aulldvrm                 10007e90 f   LIBCMT:ulldvrm.obj
+ 0001:00006f25       __NMSG_WRITE               10007f25 f   LIBCMT:crt0msg.obj
+ 0001:000070d0       __FF_MSGBANNER             100080d0 f   LIBCMT:crt0msg.obj
+ 0001:00007109       __initp_misc_initcrit      10008109 f   LIBCMT:initcrit.obj
+ 0001:00007118       ___crtInitCritSecAndSpinCount 10008118 f   LIBCMT:initcrit.obj
+ 0001:00007178       __local_unwind4            10008178 f   LIBCMT:exsup4.obj
+ 0001:0000724e       __seh_longjmp_unwind4@4    1000824e f   LIBCMT:exsup4.obj
+ 0001:0000726a       @_EH4_CallFilterFunc@8     1000826a f   LIBCMT:exsup4.obj
+ 0001:00007281       @_EH4_TransferToHandler@8  10008281 f   LIBCMT:exsup4.obj
+ 0001:0000729a       @_EH4_GlobalUnwind@4       1000829a f   LIBCMT:exsup4.obj
+ 0001:000072b4       @_EH4_LocalUnwind@16       100082b4 f   LIBCMT:exsup4.obj
+ 0001:000072d0       __ValidateImageBase        100082d0 f   LIBCMT:pesect.obj
+ 0001:00007310       __FindPESection            10008310 f   LIBCMT:pesect.obj
+ 0001:00007360       __IsNonwritableInCurrentImage 10008360 f   LIBCMT:pesect.obj
+ 0001:00007474       __VEC_memzero              10008474 f   LIBCMT:p4_memset.obj
+ 0001:00007503       __msize                    10008503 f   LIBCMT:msize.obj
+ 0001:000075a6       __calloc_impl              100085a6 f   LIBCMT:calloc_impl.obj
+ 0001:000076c4       _realloc                   100086c4 f   LIBCMT:realloc.obj
+ 0001:000078df       __initp_misc_winsig        100088df f   LIBCMT:winsig.obj
+ 0001:00007934       ___get_sigabrt             10008934 f   LIBCMT:winsig.obj
+ 0001:00007941       _raise                     10008941 f   LIBCMT:winsig.obj
+ 0001:00007af1       __initp_misc_rand_s        10008af1 f   LIBCMT:rand_s.obj
+ 0001:00007b00       __initp_misc_purevirt      10008b00 f   LIBCMT:inithelp.obj
+ 0001:00007b62       __ismbblead                10008b62 f   LIBCMT:ismbbyte.obj
+ 0001:00007b7a       _abort                     10008b7a f   LIBCMT:abort.obj
+ 0001:00007c94       __global_unwind2           10008c94 f   LIBCMT:exsup.obj
+ 0001:00007cf9       __local_unwind2            10008cf9 f   LIBCMT:exsup.obj
+ 0001:00007d7d       __abnormal_termination     10008d7d f   LIBCMT:exsup.obj
+ 0001:00007da0       __NLG_Notify1              10008da0 f   LIBCMT:exsup.obj
+ 0001:00007da9       __NLG_Notify               10008da9 f   LIBCMT:exsup.obj
+ 0001:00007dc0       __NLG_Dispatch             10008dc0     LIBCMT:exsup.obj
+ 0001:00007dc0       __NLG_Dispatch2            10008dc0     LIBCMT:exsup.obj
+ 0001:00007dc8       __NLG_Call                 10008dc8 f   LIBCMT:exsup.obj
+ 0001:00007dca       __NLG_Return2              10008dca     LIBCMT:exsup.obj
+ 0001:00007dcb       __free_osfhnd              10008dcb f   LIBCMT:osfinfo.obj
+ 0001:00007e51       __get_osfhandle            10008e51 f   LIBCMT:osfinfo.obj
+ 0001:00007ec8       ___lock_fhandle            10008ec8 f   LIBCMT:osfinfo.obj
+ 0001:00007f68       __unlock_fhandle           10008f68 f   LIBCMT:osfinfo.obj
+ 0001:00007f8f       __putwch_nolock            10008f8f f   LIBCMT:putwch.obj
+ 0001:00008054       __mbtowc_l                 10009054 f   LIBCMT:mbtowc.obj
+ 0001:0000816b       _mbtowc                    1000916b f   LIBCMT:mbtowc.obj
+ 0001:00008190       __chkstk                   10009190 f   LIBCMT:chkstk.obj
+ 0001:00008190       __alloca_probe             10009190     LIBCMT:chkstk.obj
+ 0001:000081bb       __fcloseall                100091bb f   LIBCMT:closeall.obj
+ 0001:0000825a       __flush                    1000925a f   LIBCMT:fflush.obj
+ 0001:000082c2       __fflush_nolock            100092c2 f   LIBCMT:fflush.obj
+ 0001:000083e4       __flushall                 100093e4 f   LIBCMT:fflush.obj
+ 0001:000083ed       __freea                    100093ed f i LIBCMT:a_map.obj
+ 0001:000087b2       ___crtLCMapStringA         100097b2 f   LIBCMT:a_map.obj
+ 0001:000089b1       ___crtGetStringTypeA       100099b1 f   LIBCMT:a_str.obj
+ 0001:000089f3       ___free_lc_time            100099f3 f   LIBCMT:inittime.obj
+ 0001:00008b88       ___free_lconv_num          10009b88 f   LIBCMT:initnum.obj
+ 0001:00008bcd       ___free_lconv_mon          10009bcd f   LIBCMT:initmon.obj
+ 0001:00008c5b       _strcat_s                  10009c5b f   LIBCMT:strcat_s.obj
+ 0001:00008cd0       _strcspn                   10009cd0 f   LIBCMT:strcspn.obj
+ 0001:00008d16       _strncpy_s                 10009d16 f   LIBCMT:strncpy_s.obj
+ 0001:00008dd0       _strpbrk                   10009dd0 f   LIBCMT:strpbrk.obj
+ 0001:00008e10       __fptrap                   10009e10 f   LIBCMT:crt0fp.obj
+ 0001:00009048       _strtol                    1000a048 f   LIBCMT:strtol.obj
+ 0001:00009073       ___crtMessageBoxA          1000a073 f   LIBCMT:crtmbox.obj
+ 0001:000091dc       __set_error_mode           1000a1dc f   LIBCMT:errmode.obj
+ 0001:00009230       __allmul                   1000a230 f   LIBCMT:llmul.obj
+ 0001:00009264       _atol                      1000a264 f   LIBCMT:atox.obj
+ 0001:0000927a       ___initconout              1000a27a f   LIBCMT:initcon.obj
+ 0001:00009299       ___termcon                 1000a299 f   LIBCMT:initcon.obj
+ 0001:000092c6       __fclose_nolock            1000a2c6 f   LIBCMT:fclose.obj
+ 0001:0000933d       _fclose                    1000a33d f   LIBCMT:fclose.obj
+ 0001:000093b9       __commit                   1000a3b9 f   LIBCMT:commit.obj
+ 0001:0000949a       ___ansicp                  1000a49a f   LIBCMT:convrtcp.obj
+ 0001:000094e3       ___convertcp               1000a4e3 f   LIBCMT:convrtcp.obj
+ 0001:000096a0       __alloca_probe_16          1000a6a0 f   LIBCMT:alloca16.obj
+ 0001:000096b6       __alloca_probe_8           1000a6b6     LIBCMT:alloca16.obj
+ 0001:000096cc       __isctype_l                1000a6cc f   LIBCMT:isctype.obj
+ 0001:00009784       __close_nolock             1000a784 f   LIBCMT:close.obj
+ 0001:00009820       __close                    1000a820 f   LIBCMT:close.obj
+ 0001:000098ed       __freebuf                  1000a8ed f   LIBCMT:_freebuf.obj
+ 0001:00009920       ___ascii_strnicmp          1000a920 f   LIBCMT:_strnicm.obj
+ 0001:000099a0       _strchr                    1000a9a0 f   LIBCMT:strchr.obj
+ 0001:000099a6       ___from_strstr_to_strchr   1000a9a6     LIBCMT:strchr.obj
+ 0001:00009a5e       _RtlUnwind@16              1000aa5e f   kernel32:KERNEL32.dll
  0002:00000000       __imp__GetProcAddress@8    1000b000     kernel32:KERNEL32.dll
  0002:00000004       __imp__LoadLibraryA@4      1000b004     kernel32:KERNEL32.dll
  0002:00000008       __imp__GetLastError@0      1000b008     kernel32:KERNEL32.dll
@@ -820,28 +819,28 @@
  0003:00003070       ___active_heap             10011070     <common>
  0003:00003074       __acmdln                   10011074     <common>
 
- entry point at        0001:000024c4
+ entry point at        0001:00002494
 
  Static symbols
 
- 0001:000023ce       ___DllMainCRTStartup       100033ce f   LIBCMT:dllcrt0.obj
- 0001:00004168       __onexit_nolock            10005168 f   LIBCMT:onexit.obj
- 0001:00004a75       __initterm                 10005a75 f   LIBCMT:crt0dat.obj
- 0001:00004b3b       _doexit                    10005b3b f   LIBCMT:crt0dat.obj
- 0001:0000505a       _parse_cmdline             1000605a f   LIBCMT:stdargv.obj
- 0001:00005744       _fastcopy_I                10006744 f   LIBCMT:p4_memcpy.obj
- 0001:000058ae       _has_osfxsr_set            100068ae f   LIBCMT:cpu_disp.obj
- 0001:00006446       ?CPtoLCID@@YAHH@Z          10007446 f   LIBCMT:mbctype.obj
- 0001:00006475       ?setSBCS@@YAXPAUthreadmbcinfostruct@@@Z 10007475 f   LIBCMT:mbctype.obj
- 0001:000064d9       ?setSBUpLow@@YAXPAUthreadmbcinfostruct@@@Z 100074d9 f   LIBCMT:mbctype.obj
- 0001:00006710       ?getSystemCP@@YAHH@Z       10007710 f   LIBCMT:mbctype.obj
- 0001:00006d9a       __updatetlocinfoEx_nolock  10007d9a f   LIBCMT:setlocal.obj
- 0001:00007238       __unwind_handler4          10008238 f   LIBCMT:exsup4.obj
- 0001:0000744d       _fastzero_I                1000844d f   LIBCMT:p4_memset.obj
- 0001:0000792d       _siglookup                 1000892d f   LIBCMT:winsig.obj
- 0001:00007b3f       ?x_ismbbtype_l@@YAHPAUlocaleinfo_struct@@IHH@Z 10008b3f f   LIBCMT:ismbbyte.obj
- 0001:00007ce4       __unwind_handler           10008ce4 f   LIBCMT:exsup.obj
- 0001:0000833a       _flsall                    1000933a f   LIBCMT:fflush.obj
- 0001:0000843d       ?__crtLCMapStringA_stat@@YAHPAUlocaleinfo_struct@@KKPBDHPADHHH@Z 1000943d f   LIBCMT:a_map.obj
- 0001:00008827       ?__crtGetStringTypeA_stat@@YAHPAUlocaleinfo_struct@@KPBDHPAGHHH@Z 10009827 f   LIBCMT:a_str.obj
- 0001:00008e49       ?strtoxl@@YAKPAUlocaleinfo_struct@@PBDPAPBDHH@Z 10009e49 f   LIBCMT:strtol.obj
+ 0001:0000239e       ___DllMainCRTStartup       1000339e f   LIBCMT:dllcrt0.obj
+ 0001:00004138       __onexit_nolock            10005138 f   LIBCMT:onexit.obj
+ 0001:00004a45       __initterm                 10005a45 f   LIBCMT:crt0dat.obj
+ 0001:00004b0b       _doexit                    10005b0b f   LIBCMT:crt0dat.obj
+ 0001:0000502a       _parse_cmdline             1000602a f   LIBCMT:stdargv.obj
+ 0001:00005714       _fastcopy_I                10006714 f   LIBCMT:p4_memcpy.obj
+ 0001:0000587e       _has_osfxsr_set            1000687e f   LIBCMT:cpu_disp.obj
+ 0001:00006416       ?CPtoLCID@@YAHH@Z          10007416 f   LIBCMT:mbctype.obj
+ 0001:00006445       ?setSBCS@@YAXPAUthreadmbcinfostruct@@@Z 10007445 f   LIBCMT:mbctype.obj
+ 0001:000064a9       ?setSBUpLow@@YAXPAUthreadmbcinfostruct@@@Z 100074a9 f   LIBCMT:mbctype.obj
+ 0001:000066e0       ?getSystemCP@@YAHH@Z       100076e0 f   LIBCMT:mbctype.obj
+ 0001:00006d6a       __updatetlocinfoEx_nolock  10007d6a f   LIBCMT:setlocal.obj
+ 0001:00007208       __unwind_handler4          10008208 f   LIBCMT:exsup4.obj
+ 0001:0000741d       _fastzero_I                1000841d f   LIBCMT:p4_memset.obj
+ 0001:000078fd       _siglookup                 100088fd f   LIBCMT:winsig.obj
+ 0001:00007b0f       ?x_ismbbtype_l@@YAHPAUlocaleinfo_struct@@IHH@Z 10008b0f f   LIBCMT:ismbbyte.obj
+ 0001:00007cb4       __unwind_handler           10008cb4 f   LIBCMT:exsup.obj
+ 0001:0000830a       _flsall                    1000930a f   LIBCMT:fflush.obj
+ 0001:0000840d       ?__crtLCMapStringA_stat@@YAHPAUlocaleinfo_struct@@KKPBDHPADHHH@Z 1000940d f   LIBCMT:a_map.obj
+ 0001:000087f7       ?__crtGetStringTypeA_stat@@YAHPAUlocaleinfo_struct@@KPBDHPAGHHH@Z 100097f7 f   LIBCMT:a_str.obj
+ 0001:00008e19       ?strtoxl@@YAKPAUlocaleinfo_struct@@PBDPAPBDHH@Z 10009e19 f   LIBCMT:strtol.obj
