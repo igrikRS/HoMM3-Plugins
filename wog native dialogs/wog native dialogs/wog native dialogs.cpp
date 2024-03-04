@@ -25,7 +25,7 @@ namespace wndText
 {
     const char* PLUGIN_NAME = "WoG native dialogs";
     const char* PLUGIN_AUTHOR = "igrik";
-    const char* PLUGIN_DATA = "12.03.2022";
+    const char* PLUGIN_DATA = "03.03.2024";
 } 
 
 //////////////////////////////////
