@@ -89,14 +89,17 @@ void CreateNewBattleLogDlg(_BattleMgr_* bm)
 
 int __stdcall BattleLog_Proc(HiHook* hook, _BattleMgr_* bm, _EventMsg_*msg)
 {
-    if (msg->type == MT_MOUSEBUTTON)
-        if (msg->subtype == MST_LBUTTONCLICK)
-            if ( msg->item_id == 2005 ) 
-                CreateNewBattleLogDlg(bm);
+    if (!bm->isTactics)
+    {
+      if (msg->type == MT_MOUSEBUTTON)
+          if (msg->subtype == MST_LBUTTONCLICK)
+              if ( msg->item_id == 2005 ) 
+                  CreateNewBattleLogDlg(bm);
 
-    if (msg->type == MT_KEYDOWN)
-        if ( msg->subtype == HK_H )
-            CreateNewBattleLogDlg(bm);
+      if (msg->type == MT_KEYDOWN)
+          if ( msg->subtype == HK_H )
+              CreateNewBattleLogDlg(bm);
+    }
 
     return CALL_2(int, __thiscall, hook->GetDefaultFunc(), bm, msg);
 }
@@ -104,8 +107,13 @@ int __stdcall BattleLog_Proc(HiHook* hook, _BattleMgr_* bm, _EventMsg_*msg)
 
 void __stdcall BattleLog_ReportNewRound(HiHook* hook, _dword_ battleDlg, const char* textRound, int a3, char a4)
 {
-    sprintf(myString3, "%s {(%d)}", textRound, o_BattleMgr->round);
-    CALL_4(void, __thiscall, hook->GetDefaultFunc(), battleDlg, myString3, a3, a4);
+    // o_BattleMgr->round
+    _int_ round = Era::v[997];
+    if (round > 0)
+    {
+        sprintf(myString3, "%s {(%d)}", textRound, round);
+        CALL_4(void, __thiscall, hook->GetDefaultFunc(), battleDlg, myString3, a3, a4);
+    }    
 }
 
 
