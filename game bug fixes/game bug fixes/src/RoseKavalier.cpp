@@ -60,22 +60,81 @@ int __stdcall AI_TP_cursed_check(LoHook *h, HookContext *c)
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
+_bool8_ GetCreatureCostGradeText(_dword_ dlg, _bool8_ rmc)
+{
+    sprintf(o_TextBuffer, "");
+    sprintf(MyString, "");
+    if (!dlg) return false;
+
+    _int_ monDeGrade = IntAt(dlg + 96);
+    _int_ monUpGrade = IntAt(dlg + 144);
+    _int_ count = IntAt(dlg + 100);
+
+    if (monDeGrade < 0 && monUpGrade < 0 && count < 1) 
+        return false;
+
+    _dword_ ptrText = rmc ? *(int*)0x6A752C : *(int*)0x6A7528;
+    char* separator = rmc ? "\n" : " ";
+
+    _Resources_* cost = (_Resources_*)o_New(sizeof(_Resources_));
+    cost->GetUpradeCreatureCost(monDeGrade, monUpGrade, count);
+    std::string costtext;
+
+    for (int i = 6; i >= 0; --i)
+    {
+      if (cost->GetByIndex(i) > 0)
+      {
+     // sprintf(MyString, "{~>TSRESOUR.DEF:%d valign=middle}%d, ", i, cost->GetByIndex(i));
+        sprintf(MyString, "%s: %d, ", cost->GetNameByIndex(i), cost->GetByIndex(i));
+        costtext.append(MyString);
+      }
+    }
+    o_Delete(cost);    
+    if (costtext.length() < 2) return false;
+
+    // стереть 2 последних символа
+    costtext.erase(costtext.end()-2, costtext.end());
+    
+    sprintf(o_TextBuffer, "%s%s(%s)", ptrText, separator, (const char*)costtext.c_str());
+    return true;
+}
+
+#define UPGRADE_BUTTON 13
+#define FAERIE_BUTTON 15
+
 int __stdcall FaerieButton(LoHook *h, HookContext *c)
 {
-    if (c->eax == 15) // item 0xF is spellbook for Faerie Dragon
+    if (c->eax == FAERIE_BUTTON)
     {
         c->edi = *(int*)0x6A6A00; // "Cast Spell" text ~ taken from 0x46B4FE
         return NO_EXEC_DEFAULT;
     }
+    else if (c->eax == UPGRADE_BUTTON)
+    {
+        if (GetCreatureCostGradeText(c->ebx, FALSE))
+        {
+          c->edi = (int)o_TextBuffer;
+          return NO_EXEC_DEFAULT;
+        }
+    }
+
     return EXEC_DEFAULT;
 }
 
 int __stdcall FaerieButton_RMB(LoHook *h, HookContext *c)
 {
-    if (c->esi == 15)
+    if (c->esi == FAERIE_BUTTON)
     {
         c->esi = *(int*)0x6A6A00; // "Cast Spell" text ~ taken from 0x46B4FE
         return NO_EXEC_DEFAULT;
+    }
+    else if (c->esi == UPGRADE_BUTTON)
+    {
+        if (GetCreatureCostGradeText(c->ebx, TRUE))
+        {
+          c->esi = (int)o_TextBuffer;
+          return NO_EXEC_DEFAULT;
+        }
     }
     return EXEC_DEFAULT;
 }
@@ -124,9 +183,9 @@ void RK(Patcher* _P, PatcherInstance* _PI)
         // работающая кнопка Отмена в Арене			
         _PI->WriteByte(0x49E4EC +1, 99); 
 		
-		// функцию регена в фазе ожидания (я не совсем понимаю зачем)
-		// _PI->WriteLoHook(0x446BCD, RK_WaitPhaseBug); // Wait Phase Bug part 2 (WTF?)
-		// _PI->WriteJmp(0x464DF1, 0x464DFB);  // Wait Phase Bug part 1 (WTF?)
+		    // функцию регена в фазе ожидания (я не совсем понимаю зачем)
+		    // _PI->WriteLoHook(0x446BCD, RK_WaitPhaseBug); // Wait Phase Bug part 2 (WTF?)
+		    // _PI->WriteJmp(0x464DF1, 0x464DFB);  // Wait Phase Bug part 1 (WTF?)
 
         // ХЗ  что это (возможно операции со стеками)
         _PI->WriteByte(0x49C021, 183);
