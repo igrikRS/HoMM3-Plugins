@@ -32,13 +32,13 @@ int __stdcall Y_SetCanselScholarlySS(LoHook* h, HookContext* c)
 // Исправляем косяк, из-за которого ИИ не мог использовать торговцев артефактами в Сопряжении
 int __stdcall R_FixAI_ConfluxNerchant(LoHook* h, HookContext* c)
 {
-	if ((c->eax & 0xFF) == TOWN_CONFLUX) // al
-	{
-		*(int*)(c->ebp - 36) = c->ecx;
-		c->return_address = 0x525EE0;
-		return NO_EXEC_DEFAULT;
-	}
-	return EXEC_DEFAULT;
+    if ((c->eax & 0xFF) == TOWN_CONFLUX) // al
+    {
+        *(int*)(c->ebp - 36) = c->ecx;
+        c->return_address = 0x525EE0;
+        return NO_EXEC_DEFAULT;
+    }
+    return EXEC_DEFAULT;
 }
 
 
@@ -231,7 +231,6 @@ _LHF_(Y_Dlg_BattleResults_IgnoreClones)
         return NO_EXEC_DEFAULT;
     }
 
- 
     return EXEC_DEFAULT;
 }
 

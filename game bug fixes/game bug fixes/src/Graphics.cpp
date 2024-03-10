@@ -1,11 +1,11 @@
 // исправление отображения графики тени Силового Поля
 int __stdcall Fix_ForceFieldShadow(LoHook *h, HookContext *c)
 {
-	if (o_BattleMgr->action == SPL_FORCE_FIELD) { // если заклинание Силовое Поле
-		IntAt(c->ebp -0x14) = 0x63AC6C; // активная сторона тут всегда должна быть 0 (0x63AC6C всегда равна нулю!)
-		c->return_address = 0x5A3699;
-		return NO_EXEC_DEFAULT;
-	}
+    if (o_BattleMgr->action == SPL_FORCE_FIELD) { // если заклинание Силовое Поле
+        IntAt(c->ebp -0x14) = 0x63AC6C; // активная сторона тут всегда должна быть 0 (0x63AC6C всегда равна нулю!)
+        c->return_address = 0x5A3699;
+        return NO_EXEC_DEFAULT;
+    }
     return EXEC_DEFAULT;
 }
 
@@ -47,7 +47,7 @@ void Graphics(PatcherInstance* _PI)
     // в диалоге таверны
     _PI->WriteDword(0x5D7ACA, 0x682A24); // iCN6432.def
     // в диалоге резделения отрядов
-    _PI->WriteDword(0x449A41, 0x682A24); // iCN6432.def	
+    _PI->WriteDword(0x449A41, 0x682A24); // iCN6432.def
     // в диалоге преобразователя скелетов
     _PI->WriteDword(0x565E4A, 0x682A24); // iCN6432.def
 
@@ -73,16 +73,16 @@ void Graphics(PatcherInstance* _PI)
     _PI->WriteByte(0x7217BB, 0xB6);
     _PI->WriteByte(0x723CBD, 0xB6);
     _PI->WriteByte(0x721B03, 0xB6);
-    _PI->WriteByte(0x722792, 0xB6); 
+    _PI->WriteByte(0x722792, 0xB6);
     _PI->WriteByte(0x723ACB, 0xB6);
     _PI->WriteByte(0x723F1C, 0xB6);
 
     // исправление включения тени, которое не выполняется при автобитве
     _PI->WriteLoHook(0x462C6C, Y_RestoreBattleShadow);
 
-	// исправление отображения графики тени Силового Поля
+    // исправление отображения графики тени Силового Поля
     _PI->WriteLoHook(0x5A368C, Fix_ForceFieldShadow); 
-	// включить показ тени для Силового Поля (by RoseKavalier)
+    // включить показ тени для Силового Поля (by RoseKavalier)
     _PI->WriteJmp(0x5A365D, 0x5A3666);
     _PI->WriteJmp(0x5A37B9, 0x5A37C2);
 

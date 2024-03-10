@@ -11,7 +11,7 @@ int __stdcall setActStack(LoHook* h, HookContext* c)
         if ( mon->creature.shots < 1 ) {
             c->return_address = 0x464DAD;
             return NO_EXEC_DEFAULT;
-        }	
+        }
     }
     // если выстрелов у циклопов больше нет
     // то забираем флаг "катапульта"
@@ -23,7 +23,7 @@ int __stdcall setActStack(LoHook* h, HookContext* c)
         }
     }
     return EXEC_DEFAULT;
-} 
+}
 
 // создание инкремента боезапаса при атаке осадных стен "катапульта"
 int __stdcall catapultaShoot(LoHook* h, HookContext* c)
@@ -32,7 +32,7 @@ int __stdcall catapultaShoot(LoHook* h, HookContext* c)
     mon->creature.shots -= 1;
 
     return EXEC_DEFAULT;
-} 
+}
 
 // запрет на второй выстрел, если боезапас закончился
 // для баллисты и стрелков
@@ -42,11 +42,11 @@ int __stdcall monstreShoot(LoHook* h, HookContext* c)
 
     if (mon->creature.shots < 1) {
         c->return_address = 0x43FFFC;
-        return NO_EXEC_DEFAULT;		
+        return NO_EXEC_DEFAULT;
     }
 
     return EXEC_DEFAULT;
-} 
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -146,30 +146,30 @@ int __stdcall ERM_Fix_EA_E(HiHook* hook, _BattleStack_* stack )
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//// фикс переполнения опыта существ (фикс проверки на max опыт)	
+//// фикс переполнения опыта существ (фикс проверки на max опыт)
 //_int_ __stdcall Y_WoGCrExpoSet_AddExpo(LoHook* h, HookContext* c)
 //{
-//	int cr_Expo = DwordAt(c->ebp -0x8);
+//  int cr_Expo = DwordAt(c->ebp -0x8);
 //
-//	if ( cr_Expo ) {
-//		int expoOld = IntAt(cr_Expo);
-//		int expoAdd = IntAt(c->ebp -0xC);
+//  if ( cr_Expo ) {
+//      int expoOld = IntAt(cr_Expo);
+//      int expoAdd = IntAt(c->ebp -0xC);
 //
-//		if ( expoAdd < 0 || expoAdd > 200000 ) 
-//			expoAdd = 0;
+//      if ( expoAdd < 0 || expoAdd > 200000 ) 
+//          expoAdd = 0;
 //
-//		// если опыт по какой то причине перевалил 
-//		// через предел (2^32)/4 и ушёл в отрицательное число
-//		// ставим максимальный опыт
-//		if (expoOld < -1073741824) {
-//			IntAt(cr_Expo) = 200000;
-//		}
+//      // если опыт по какой то причине перевалил 
+//      // через предел (2^32)/4 и ушёл в отрицательное число
+//      // ставим максимальный опыт
+//      if (expoOld < -1073741824) {
+//          IntAt(cr_Expo) = 200000;
+//      }
 //
-//		// если опыт был < 0 && > -1073741824, обнуляем опыт
-//		if (expoOld < 0) { 
-//		   IntAt(cr_Expo) = expoAdd; 
-//		}
-//	}
+//      // если опыт был < 0 && > -1073741824, обнуляем опыт
+//      if (expoOld < 0) { 
+//         IntAt(cr_Expo) = expoAdd; 
+//      }
+//  }
 //
 //    return EXEC_DEFAULT;
 //} 
@@ -353,9 +353,9 @@ void Monsters(PatcherInstance* _PI)
     // при передаче хода стеку
     _PI->WriteLoHook(0x464D75, setActStack);
     // при стрельбе по стенам (катапульта, циклопы)
-    _PI->WriteLoHook(0x445CF9, catapultaShoot);	
+    _PI->WriteLoHook(0x445CF9, catapultaShoot);
     // второй выстрел монстрами
-    _PI->WriteLoHook(0x43FF92, monstreShoot);	
+    _PI->WriteLoHook(0x43FF92, monstreShoot);
     // второй выстрел баллистой
     _PI->WriteLoHook(0x43FFF4, monstreShoot);
 
@@ -387,14 +387,14 @@ void Monsters(PatcherInstance* _PI)
     // Из-за этого теряются бонусы наложенных заклинаний (например бонус скорости от ускорения)
     _PI->WriteHiHook(0x726DE4, CALL_, EXTENDED_, CDECL_, ERM_Fix_EA_E);
 
-    // фикс переполнения опыта существ (вызов проверки на max опыт)	
-	// _PI->WriteLoHook(0x71924A, Y_WoGCrExpoSet_AddExpo);
+    // фикс переполнения опыта существ (вызов проверки на max опыт) 
+    // _PI->WriteLoHook(0x71924A, Y_WoGCrExpoSet_AddExpo);
 
     // вызовы драконов от артефакта сердце дракона
-    // меняем местами номера гексов, 
+    // меняем местами номера гексов,
     // чтобы в банках существ не перекрывался стек №3
-    _PI->WriteByte(0x767A05 +1, 55); 
-    _PI->WriteByte(0x767A2A +1, 89); 
+    _PI->WriteByte(0x767A05 +1, 55);
+    _PI->WriteByte(0x767A2A +1, 89);
 
     // Решение бага ERM: триггер MA:U#/-2 приводил к тому, что любое существо при установке такой команды улучшалось в копейщика
     _PI->WriteDword(0x724A9F, -2);  _PI->WriteLoHook(0x724AC5, Fix_WoG_GetCreatureGrade_Expo);
@@ -412,7 +412,7 @@ void Monsters(PatcherInstance* _PI)
     _PI->WriteCodePatch(0x717B37, "%n", 20); // 20 nops
     _PI->WriteCodePatch(0x717FAB, "%n", 20); // 20 nops
 
-    // баг, из-за которого палатки могут атаковать вблизи. 
+    // баг, из-за которого палатки могут атаковать вблизи.
     // Причина в построении вектора гексов целей
     // © daemon_n    
     _PI->WriteLoHook(0x4B3309, Gem_OnBattleStackCheckReachability);

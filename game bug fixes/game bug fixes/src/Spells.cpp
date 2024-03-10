@@ -7,8 +7,8 @@ _bool_ isVisible_Gates;
 
 int __stdcall Y_Fix_ViewEarthOrAirSpell_Add_Monoliths_Show(LoHook* h, HookContext* c)
 {
-    c->edi = c->ecx;					// mov edi, ecx
-    c->ecx = *(_dword_*)(c->esi +30);	// mov ecx, [esi+1Eh]
+    c->edi = c->ecx;                    // mov edi, ecx
+    c->ecx = *(_dword_*)(c->esi +30);   // mov ecx, [esi+1Eh]
     int obj_id = c->ecx; // номер объекта
     _byte_ isVisible = *(_byte_*)(c->ebp +8 +3);
 
@@ -99,11 +99,11 @@ _int_ __stdcall Y_Fix_ReportStatusMsg_CastArmageddonSpell(HiHook* hook, _BattleM
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 // запрет выдачи заклинаний у артефактов, если они запрещены через UN:J0/spell_id/1;
-int __stdcall Y_ArtGive_Spell(HiHook* hook, int spells_array, unsigned int spell_id, char enable) 
+int __stdcall Y_ArtGive_Spell(HiHook* hook, int spells_array, unsigned int spell_id, char enable)
 {
     if (enable && o_GameMgr->disabled_spells[spell_id]) {
         if ( spell_id != SPL_TITANS_LIGHTNING_BOLT ) {
-        	return 0;
+            return 0;
         }
     }
 
@@ -149,7 +149,7 @@ void Spells(PatcherInstance* _PI)
     // исправление бага WOG: IDummy(0x83EEFC) иногда может возвращать мусор см.функцию 0x75D654
     _PI->WriteHiHook(0x5A1C7B, CALL_, EXTENDED_, THISCALL_, Y_Fix_WoG_HeroGetSpellSpecialityEffect);
 
-    // фиксим неотображение Монолитов и Подземных врат в диалоге заклинания Просмотр Земли и Воздуха		
+    // фиксим неотображение Монолитов и Подземных врат в диалоге заклинания Просмотр Земли и Воздуха
     _PI->WriteLoHook(0x5FC3EC, Y_Fix_ViewEarthOrAirSpell_Add_Monoliths_Prepare);
     _PI->WriteLoHook(0x5F8545, Y_Fix_ViewEarthOrAirSpell_Add_Monoliths_Show);
 
