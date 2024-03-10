@@ -2,11 +2,22 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 // by RoseKavalier //////////////////////////////////////////////////////////////////////////////////
 
-int __stdcall AI_split_div0(LoHook *h, HookContext *c)
+
+// This hook prevents division by 0 during tactics phase when you have no army.
+// When AI has tactics or attacks you, they split their shooters...
+_LHF_ (AI_split_div0)
 {
     if (c->ebx == 0) // enemy army value of 0?
-        c->ebx = 1; // make it 1 to prevent crash
+        c->ebx = 1;  // make it 1 to prevent crash
     return EXEC_DEFAULT;
+}
+
+// The AI was observed to divide by speed = 0 in "Rise of The Sun King"
+_LHF_(AI_combat_div0)
+{
+	if (c->edi == 0)
+		  c->edi = 1;
+	return EXEC_DEFAULT;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -161,13 +172,15 @@ int __stdcall RK_WaitPhaseBug(LoHook *h, HookContext *c)
 
 void RK(Patcher* _P, PatcherInstance* _PI)
 { 
-
     PatcherInstance* _RK = _P->GetInstance("ERA_bug_fixes");
 
     if (!_RK ) 
     {
-        // Prevent crash when AI attacks "ghost" hero
+        // if AI has tactics and shooters, but you have 0 creatures -> crash
         _PI->WriteLoHook(0x42DDA6, AI_split_div0); 
+
+        // divides by speed which shouldn't be 0
+        _PI->WriteLoHook(0x42437D, AI_combat_div0);
 
         // описание кнопки сказочного дракона
         _PI->WriteLoHook(0x5F5320, FaerieButton);
@@ -175,6 +188,9 @@ void RK(Patcher* _P, PatcherInstance* _PI)
 
         // исправление бага посещения банков в которых дают существ (вылет в диалоге присоедиенния монстров) © RoseKavalier
         _PI->WriteHiHook(0x5D52CA, CALL_, EXTENDED_, THISCALL_, HH_Show_Hero_Info_Dlg); // alternative 2 - should
+
+        // небольшое исправление блоков на дорогах
+        _PI->WriteByte(0x541B6A, 235);
 
         ////////////////////////// AI BAGs ///////////////////////////////////////
         _PI->WriteLoHook(0x56B344, AI_TP_cursed_check);
