@@ -183,9 +183,9 @@ void RK(Patcher* _P, PatcherInstance* _PI)
         // работающая кнопка Отмена в Арене         
         _PI->WriteByte(0x49E4EC +1, 99); 
         
-            // функцию регена в фазе ожидания (я не совсем понимаю зачем)
-            // _PI->WriteLoHook(0x446BCD, RK_WaitPhaseBug); // Wait Phase Bug part 2 (WTF?)
-            // _PI->WriteJmp(0x464DF1, 0x464DFB);  // Wait Phase Bug part 1 (WTF?)
+        // функцию регена в фазе ожидания (я не совсем понимаю зачем)
+        // _PI->WriteLoHook(0x446BCD, RK_WaitPhaseBug); // Wait Phase Bug part 2 (WTF?)
+        // _PI->WriteJmp(0x464DF1, 0x464DFB);  // Wait Phase Bug part 1 (WTF?)
 
         // ХЗ  что это (возможно операции со стеками)
         _PI->WriteByte(0x49C021, 183);
