@@ -308,6 +308,14 @@ int __stdcall Y_Dlg_AddCreatures_Init_Leave(HiHook* hook, _Hero_* hero, _Army_* 
     return CALL_3(int, __fastcall, hook->GetDefaultFunc(), hero, army, creatureType);
 }
 
+// фикс кол-ва артов (опыт существ) при осаде города, когда армия охраны соединяется с армией героя гостя
+_LHF_(Y_Fix_CrExpo_ArtsNum_OnArmy_AddCreatures_BeforeBattleInTown)
+{
+  DwordAt(c->ebp -0x4) = 0;
+  DwordAt(c->ebp -0x24) = 0;
+  return NO_EXEC_DEFAULT;
+}
+
 // баг, из-за которого палатки могут атаковать вблизи. 
 // Причина в построении вектора пути для боевых машин (© daemon_n)
 _LHF_(Gem_OnBattleStackCheckReachability)
@@ -407,6 +415,13 @@ void Monsters(PatcherInstance* _PI)
     // показ лычек опыта в диалоге присоединения и оставления монстров на карте
     _PI->WriteHiHook(0x5D15D0, SPLICE_, EXTENDED_, FASTCALL_, Y_Dlg_AddCreatures_Init_Add); 
     _PI->WriteHiHook(0x5D16B0, SPLICE_, EXTENDED_, FASTCALL_, Y_Dlg_AddCreatures_Init_Leave);
+
+    // фикс Вога: при нападении на город армия в городе соединяется с армией героя
+    // но Вог, когда не находит опыт существа, обнуляет опыт, но не обнуляет кол-во артов
+    // и поэтому вместо количества артов суёт мусор. Мы - обнулим количество артов
+    _PI->WriteLoHook(0x759C78, Y_Fix_CrExpo_ArtsNum_OnArmy_AddCreatures_BeforeBattleInTown);
+    _PI->WriteLoHook(0x759E7D, Y_Fix_CrExpo_ArtsNum_OnArmy_AddCreatures_BeforeBattleInTown);
+    
 
     // убираем отображение двух ошибок от опыта существ
     _PI->WriteCodePatch(0x717B37, "%n", 20); // 20 nops
