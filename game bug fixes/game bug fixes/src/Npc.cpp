@@ -70,7 +70,22 @@ int __stdcall get_Fight_Value_Hook(LoHook* h, HookContext* c)
     c->ecx += getAIValue_NPC(hero->id);
 
     return EXEC_DEFAULT;
-} 
+}
+
+_LHF_(Y_FixCrit_SuccubusNotCharmed)
+{
+  //c->return_address = 0x76CECC;
+  //return NO_EXEC_DEFAULT;
+
+  _dword_ hero = DwordAt(c->ebp +0x8);
+
+  if (hero)
+    c->return_address = 0x76CB7B;
+  else
+    c->return_address = 0x76CD1E;
+  
+  return NO_EXEC_DEFAULT;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -91,6 +106,12 @@ void Npc(PatcherInstance* _PI)
     _PI->WriteCodePatch(0x76E7D7, "%n", 24); // 15 nop 
     _PI->WriteCodePatch(0x76E80B, "%n", 13); // 13 nop
     _PI->WriteHexPatch(0x76E7D7, "8B4D 08 C601 01 C641 02 04");
+
+    // исправление вылета при присоединении монстров Суккубом
+    // в замке, когда разрушаем здание и провоцируем бой
+    // отменяем диалог очарования монстров
+    _PI->WriteCodePatch(0x76CB70, "%n", 6); // 6 nops
+    _PI->WriteLoHook(0x76CB76, Y_FixCrit_SuccubusNotCharmed);
 
     // исправление одного из багов Астрального духа
     // убираем WoG сообщение, которое вызывает непонятную ошибку

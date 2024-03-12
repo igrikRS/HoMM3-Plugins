@@ -293,6 +293,44 @@ _LHF_(Y_Fix_HeroesOnWaterCheckInteract)
   return NO_EXEC_DEFAULT;
 }
 
+// решение вылета в городе после битвы, когда её инициируют в городе (например ERM или очарование Суккубов)
+void __stdcall Y_CallManager(HiHook* hook, _ExecMgr_* execMgr, _Manager_* callMgr) 
+{
+  if ( execMgr->current == &o_TownMgr->mgr && callMgr == &o_BattleMgr->mgr  )
+  {
+    _Manager_* mgr = &o_TownMgr->mgr;
+    execMgr->RemoveManager(mgr);
+    execMgr->AddManager(callMgr);
+    execMgr->RunManager();
+    execMgr->RemoveManager(callMgr);
+
+    o_TownMgr->town = o_GameMgr->GetTownByMapPoint(o_BattleMgr->mapPoint);
+    execMgr->AddManager(mgr);
+    execMgr->current = mgr;
+  }
+  else
+  {
+    CALL_2(void, __thiscall, hook->GetDefaultFunc(), execMgr, callMgr);
+  }
+}
+
+// убираем обновление панели ресурсов, если активный менеджер это менеджер города
+void __stdcall Y_RedrawResources(HiHook* hook, _dword_ a1, _int_ a2, _int_ a3)
+{
+  if (!(o_HD_Y >= 660 && o_ExecMgr->current == &o_TownMgr->mgr))
+    CALL_3(void, __thiscall, hook->GetDefaultFunc(), a1, a2, a3);
+}
+
+// убираем обновление инфо-панели, если активный менеджер не менеджер карты приключений
+_LHF_(Y_AdvMgr_RedrawInfoPanel)
+{
+  if (o_ExecMgr->current == &o_AdvMgr->mgr)
+    return EXEC_DEFAULT;
+
+  c->return_address = 0x415E5D;
+  return NO_EXEC_DEFAULT;
+}
+
 
 // ##############################################################################################################################
 // ##############################################################################################################################
@@ -405,6 +443,14 @@ void GameLogic(PatcherInstance* _PI)
     // фикс вылета: при удалении препятствия в битве, когда его стуктура таблицы равна нуля 
     // (привет WoG и его стена огня у Огненных Лошадей)
     _PI->WriteLoHook(0x46681B, Y_FixCrash_RemoveObstacle);
+
+    // решение вылета битвы, когда её инициируют в городе (например ERM или очарование Суккубов)
+    _PI->WriteHiHook(0x4B09D0, SPLICE_, EXTENDED_, THISCALL_, Y_CallManager);
+
+    // убираем обновление инфо-панели и панели ресурсов, если активный менеджер не менеджер карты приключений
+    _PI->WriteHiHook(0x403F00, SPLICE_, EXTENDED_, THISCALL_, Y_RedrawResources);
+    _PI->WriteLoHook(0x415D4D, Y_AdvMgr_RedrawInfoPanel);
+
 
     //// ЧИТ-Меню ////
     // Увеличиваем кол-во заклинаний 999 -> 9999

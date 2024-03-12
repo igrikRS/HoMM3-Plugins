@@ -420,8 +420,7 @@ void Monsters(PatcherInstance* _PI)
     // но Вог, когда не находит опыт существа, обнуляет опыт, но не обнуляет кол-во артов
     // и поэтому вместо количества артов суёт мусор. Мы - обнулим количество артов
     _PI->WriteLoHook(0x759C78, Y_Fix_CrExpo_ArtsNum_OnArmy_AddCreatures_BeforeBattleInTown);
-    _PI->WriteLoHook(0x759E7D, Y_Fix_CrExpo_ArtsNum_OnArmy_AddCreatures_BeforeBattleInTown);
-    
+    _PI->WriteLoHook(0x759E7D, Y_Fix_CrExpo_ArtsNum_OnArmy_AddCreatures_BeforeBattleInTown);    
 
     // убираем отображение двух ошибок от опыта существ
     _PI->WriteCodePatch(0x717B37, "%n", 20); // 20 nops
