@@ -331,6 +331,22 @@ _LHF_(Y_AdvMgr_RedrawInfoPanel)
   return NO_EXEC_DEFAULT;
 }
 
+// фикс бага при удалении объектов - не даём удалять разные типы объектов
+_LHF_(Y_OnDeleteObjectOnMap)
+{
+  _MapItem_* currentMapItem = (_MapItem_*)c->edx;
+  _MapItem_* deletingMapItem = *(_MapItem_**)(c->ebp +8);
+
+  if (currentMapItem && deletingMapItem)
+  {
+    if (currentMapItem->GetReal__object_type() != deletingMapItem->GetReal__object_type())
+    {
+      c->return_address = 0x4AA984;
+      return NO_EXEC_DEFAULT;
+    }
+  }
+  return EXEC_DEFAULT;
+}
 
 // ##############################################################################################################################
 // ##############################################################################################################################
@@ -405,6 +421,11 @@ void GameLogic(PatcherInstance* _PI)
     _PI->WriteByte(0x464044, 0xEB);
     _PI->WriteDword(0x6408D8 + 5*4, 6);
 
+    // фикс бага при удалении объектов - затираются данные, 
+    // если жёлтая клетка другого объекта
+    // стоит выше на 1 ед. по y-координате
+    _PI->WriteLoHook(0x4AA979, Y_OnDeleteObjectOnMap);
+
     ///////////////////////////////////////////////////////////////////////////
     ///////////////////////// Фиксы раздвоения героя //////////////////////////
 
@@ -450,7 +471,6 @@ void GameLogic(PatcherInstance* _PI)
     // убираем обновление инфо-панели и панели ресурсов, если активный менеджер не менеджер карты приключений
     _PI->WriteHiHook(0x403F00, SPLICE_, EXTENDED_, THISCALL_, Y_RedrawResources);
     _PI->WriteLoHook(0x415D4D, Y_AdvMgr_RedrawInfoPanel);
-
 
     //// ЧИТ-Меню ////
     // Увеличиваем кол-во заклинаний 999 -> 9999
