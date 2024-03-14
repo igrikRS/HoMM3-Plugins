@@ -6,6 +6,9 @@ _LHF_(Y_BeforeWog)
     // Фикс Димера - герой имеет продвинутую разведку на старте
     o_pHeroInfo[HID_DEEMER].second_skill_2_lvl = HSSL_BASIC;
 
+   if (_P->GetInstance(BATTLE_DLG_NAME))
+      BATTLE_DLG_PLUGIN = true;
+
     return EXEC_DEFAULT;
 }
 

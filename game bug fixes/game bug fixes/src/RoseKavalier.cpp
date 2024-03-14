@@ -120,7 +120,7 @@ int __stdcall FaerieButton(LoHook *h, HookContext *c)
         c->edi = *(int*)0x6A6A00; // "Cast Spell" text ~ taken from 0x46B4FE
         return NO_EXEC_DEFAULT;
     }
-    else if (c->eax == UPGRADE_BUTTON)
+    else if (!BATTLE_DLG_PLUGIN && c->eax == UPGRADE_BUTTON)
     {
         if (GetCreatureCostGradeText(c->ebx, FALSE))
         {
@@ -139,7 +139,7 @@ int __stdcall FaerieButton_RMB(LoHook *h, HookContext *c)
         c->esi = *(int*)0x6A6A00; // "Cast Spell" text ~ taken from 0x46B4FE
         return NO_EXEC_DEFAULT;
     }
-    else if (c->esi == UPGRADE_BUTTON)
+    else if (!BATTLE_DLG_PLUGIN && c->esi == UPGRADE_BUTTON)
     {
         if (GetCreatureCostGradeText(c->ebx, TRUE))
         {

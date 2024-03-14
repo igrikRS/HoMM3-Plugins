@@ -9,6 +9,9 @@ char myString[1024];
 #define MyString  (char*)myString
 
 static _bool_ TIPHON = false;
+static _bool_ BATTLE_DLG_PLUGIN = false;
+
+char* BATTLE_DLG_NAME = "battle_dlg.daemon.plugin";
 
 #include "src\RoseKavalier.cpp"
 #include "src\Ben.cpp"
