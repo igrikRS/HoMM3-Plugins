@@ -324,7 +324,7 @@ void __stdcall Y_RedrawResources(HiHook* hook, _dword_ a1, _int_ a2, _int_ a3)
 // убираем обновление инфо-панели, если активный менеджер не менеджер карты приключений
 _LHF_(Y_AdvMgr_RedrawInfoPanel)
 {
-  if (o_ExecMgr->current == &o_AdvMgr->mgr)
+  if (!o_ExecMgr->current || o_ExecMgr->current == &o_AdvMgr->mgr)
     return EXEC_DEFAULT;
 
   c->return_address = 0x415E5D;
