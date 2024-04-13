@@ -189,9 +189,6 @@ void RK(Patcher* _P, PatcherInstance* _PI)
         // исправление бага посещения банков в которых дают существ (вылет в диалоге присоедиенния монстров) © RoseKavalier
         _PI->WriteHiHook(0x5D52CA, CALL_, EXTENDED_, THISCALL_, HH_Show_Hero_Info_Dlg); // alternative 2 - should
 
-        // небольшое исправление блоков на дорогах
-        _PI->WriteByte(0x541B6A, 235);
-
         ////////////////////////// AI BAGs ///////////////////////////////////////
         _PI->WriteLoHook(0x56B344, AI_TP_cursed_check);
         _PI->WriteLoHook(0x43020E, AI_waterwalk_fly);
