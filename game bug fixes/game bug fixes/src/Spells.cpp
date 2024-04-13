@@ -134,6 +134,16 @@ int __stdcall Y_ArtGive_AllSpells(HiHook* hook, int spells_array, char enable)
 }
 
 
+// фикс бага: зацикливание игры стека ИИ после воскрешения в фазе ожидания
+_byte_ __stdcall Y_BattleMgr_ResurectSpell(HiHook* hook, _BattleMgr_* bm, _BattleStack_* stack, int power, int level)
+{
+    if (bm->waitPhase && (stack->creature.flags & BCF_DEFENDING))
+    {
+        stack->creature.flags |= BCF_WAITING;
+    }
+    return CALL_4(_byte_, __thiscall, hook->GetDefaultFunc(), bm, stack, power, level);;
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -155,6 +165,9 @@ void Spells(PatcherInstance* _PI)
 
     // фикс неправильного отображения величины урона в окне статуса битвы при касте заклинания Армагеддон
     _PI->WriteHiHook(0x5A5522, CALL_, EXTENDED_, THISCALL_, Y_Fix_ReportStatusMsg_CastArmageddonSpell);
+
+    // фикс бага: зацикливание игры стека ИИ после воскрешения в фазе ожидания
+    _PI->WriteHiHook(0x5A7870, SPLICE_, EXTENDED_, THISCALL_, Y_BattleMgr_ResurectSpell);
 
     // патчи без Tiphon.dll
     if (!TIPHON)

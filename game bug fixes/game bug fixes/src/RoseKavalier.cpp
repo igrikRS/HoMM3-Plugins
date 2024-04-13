@@ -174,7 +174,7 @@ void RK(Patcher* _P, PatcherInstance* _PI)
 { 
     PatcherInstance* _RK = _P->GetInstance("ERA_bug_fixes");
 
-    if (!_RK ) 
+    if (!_RK )
     {
         // if AI has tactics and shooters, but you have 0 creatures -> crash
         _PI->WriteLoHook(0x42DDA6, AI_split_div0); 
@@ -196,8 +196,8 @@ void RK(Patcher* _P, PatcherInstance* _PI)
         _PI->WriteLoHook(0x56B344, AI_TP_cursed_check);
         _PI->WriteLoHook(0x43020E, AI_waterwalk_fly);
 
-        // работающая кнопка Отмена в Арене         
-        _PI->WriteByte(0x49E4EC +1, 99); 
+        // работающая кнопка Отмена в Арене
+        _PI->WriteByte(0x49E4EC +1, 99);
         
         // функцию регена в фазе ожидания (я не совсем понимаю зачем)
         // _PI->WriteLoHook(0x446BCD, RK_WaitPhaseBug); // Wait Phase Bug part 2 (WTF?)
@@ -211,7 +211,7 @@ void RK(Patcher* _P, PatcherInstance* _PI)
         _PI->WriteByte(0x4C9662, 183);
         _PI->WriteByte(0x4FD164, 183);
         _PI->WriteByte(0x505C9F, 183);
-        _PI->WriteByte(0x52CD36, 183);      
+        _PI->WriteByte(0x52CD36, 183);
         
         _PI->WriteHexPatch(0x4FD12A, "0F BF 78 24 83 FF FF 0F 84");
         _PI->WriteHexPatch(0x505C75, "0F BF 77 24 83 FE FF 74");
