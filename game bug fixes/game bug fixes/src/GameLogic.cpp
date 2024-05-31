@@ -182,7 +182,7 @@ _LHF_(Y_FixBattle_StackStepBack)
 
     if(stack->creature.flags & BCF_2HEX_WIDE && target_pos != stack->GetSecondGexID()) {
         _int_ backGexID = target_pos +1 -2*stack->orientation;
-        if (backGexID % 17 > 0 && backGexID % 17 < 16) {
+        if (backGexID % 17 > 0 && backGexID % 17 < 16 && !o_BattleMgr->IsGexNotFree(backGexID)) {
             if(stack->creature.flags & BCF_CAN_FLY) {
                 c->eax = 2;
             } else {
